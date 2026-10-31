@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/admin/(.*)", "destination": "/index.html" },
+    { "source": "/gallery", "destination": "/index.html" },
+    { "source": "/video", "destination": "/index.html" },
+    { "source": "/courses", "destination": "/index.html" },
+    { "source": "/courses/(.*)", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" }
+  ]
+}

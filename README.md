@@ -108,6 +108,25 @@ To add additional photos or campaign graphics at any time:
 
 ---
 
+## ☁️ Deploying to Vercel (100% Free & Automatic)
+
+This project is pre-configured with `vercel.json` and a serverless API engine (`api/index.js` with Vercel Blob support).
+
+### 3-Step Vercel Setup:
+1. **Import Repository**:
+   - Go to [vercel.com](https://vercel.com) and click **"Add New..."** → **"Project"**.
+   - Select your repository: **`isakhu/yehulu.digital`**.
+   - Click **"Deploy"** (Vercel automatically detects the static assets, SPA routes, and serverless functions).
+2. **Enable Free Permanent Uploads (1-Click)**:
+   - In your newly created Vercel project, go to the **"Storage"** tab.
+   - Click **"Create Database"** → Select **"Blob"** → Click **"Create"**.
+   - Vercel automatically links the `BLOB_READ_WRITE_TOKEN` to your deployment.
+3. **Done!**:
+   - Your website is now live globally with high-speed CDN caching.
+   - Your client can log in at `https://your-domain.vercel.app/admin/login` and upload new photos, posters, and videos anytime. All uploads persist permanently on Vercel's global CDN!
+
+---
+
 ## 📄 License & Attribution
 
 © 2026 **Yehulu Digital**. All rights reserved.

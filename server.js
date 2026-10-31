@@ -2,6 +2,12 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+let putBlob = null;
+try {
+  const blobPkg = require('@vercel/blob');
+  putBlob = blobPkg.put;
+} catch (_) {}
+
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const DATA_DIR = path.join(__dirname, 'data');
@@ -287,8 +293,23 @@ async function handleRequest(req, res) {
         .replace(/[^a-zA-Z0-9_-]/g, '_')
         .toLowerCase();
       const uniqueName = `${Date.now()}-${cleanBase}${ext}`;
-      const savePath = path.join(UPLOADS_DIR, uniqueName);
 
+      // If Vercel Blob token is configured
+      if (putBlob && process.env.BLOB_READ_WRITE_TOKEN) {
+        const blob = await putBlob(`projects/${uniqueName}`, file.data, {
+          access: 'public',
+          contentType: file.contentType || 'image/jpeg'
+        });
+        console.log(`[VERCEL BLOB] Uploaded: ${blob.url}`);
+        return sendJSON(res, 200, {
+          success: true,
+          url: blob.url,
+          filename: uniqueName,
+          size: file.data.length
+        });
+      }
+
+      const savePath = path.join(UPLOADS_DIR, uniqueName);
       fs.writeFileSync(savePath, file.data);
       const fileUrl = `/uploads/projects/${uniqueName}`;
 
