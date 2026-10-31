@@ -3,9 +3,13 @@ const fs = require('fs');
 const path = require('path');
 
 let putBlob = null;
+let getBlob = null;
+let headBlob = null;
 try {
   const blobPkg = require('@vercel/blob');
   putBlob = blobPkg.put;
+  getBlob = blobPkg.get;
+  headBlob = blobPkg.head;
 } catch (_) {}
 
 const PORT = process.env.PORT || 3000;
@@ -275,6 +279,47 @@ async function handleRequest(req, res) {
     return sendJSON(res, 200, users);
   }
 
+  // ── GET /api/blob-proxy (Streaming support for private blob stores) ──
+  if (pathname === '/api/blob-proxy' && (method === 'GET' || method === 'HEAD')) {
+    const targetPath = parsed.searchParams.get('pathname') || parsed.searchParams.get('url');
+    if (!targetPath) {
+      return sendJSON(res, 400, { error: 'Missing pathname or url parameter' });
+    }
+    try {
+      if (getBlob) {
+        const result = await getBlob(targetPath, { access: 'private' });
+        if (!result) return sendJSON(res, 404, { error: 'Blob not found' });
+        const contentType = result.blob?.contentType || 'image/jpeg';
+        res.writeHead(200, {
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Access-Control-Allow-Origin': '*'
+        });
+        if (method === 'HEAD') return res.end();
+        if (result.stream) {
+          const { Readable } = require('stream');
+          if (typeof Readable.fromWeb === 'function') {
+            Readable.fromWeb(result.stream).pipe(res);
+          } else {
+            const reader = result.stream.getReader();
+            const pump = async () => {
+              const { done, value } = await reader.read();
+              if (done) return res.end();
+              res.write(Buffer.from(value));
+              pump();
+            };
+            pump();
+          }
+          return;
+        }
+      }
+      return sendJSON(res, 404, { error: 'Blob streaming not available' });
+    } catch (err) {
+      console.error('Blob proxy error:', err);
+      return sendJSON(res, 500, { error: err.message || 'Error streaming blob' });
+    }
+  }
+
   // ══════════════════════════════════════════════
   //  2. FILE & MEDIA UPLOADS (IMAGES & VIDEOS)
   // ══════════════════════════════════════════════
@@ -293,20 +338,38 @@ async function handleRequest(req, res) {
         .replace(/[^a-zA-Z0-9_-]/g, '_')
         .toLowerCase();
       const uniqueName = `${Date.now()}-${cleanBase}${ext}`;
+      const blobPath = `projects/${uniqueName}`;
 
       // If Vercel Blob token is configured
       if (putBlob && process.env.BLOB_READ_WRITE_TOKEN) {
-        const blob = await putBlob(`projects/${uniqueName}`, file.data, {
-          access: 'public',
-          contentType: file.contentType || 'image/jpeg'
-        });
-        console.log(`[VERCEL BLOB] Uploaded: ${blob.url}`);
-        return sendJSON(res, 200, {
-          success: true,
-          url: blob.url,
-          filename: uniqueName,
-          size: file.data.length
-        });
+        try {
+          const blob = await putBlob(blobPath, file.data, {
+            access: 'public',
+            contentType: file.contentType || 'image/jpeg'
+          });
+          console.log(`[VERCEL BLOB - PUBLIC] Uploaded: ${blob.url}`);
+          return sendJSON(res, 200, {
+            success: true,
+            url: blob.url,
+            filename: uniqueName,
+            size: file.data.length
+          });
+        } catch (pubErr) {
+          console.warn('[VERCEL BLOB] Public store not allowed or error, falling back to private access:', pubErr.message);
+          const blob = await putBlob(blobPath, file.data, {
+            access: 'private',
+            contentType: file.contentType || 'image/jpeg'
+          });
+          console.log(`[VERCEL BLOB - PRIVATE] Uploaded: ${blob.url}`);
+          const proxyUrl = `/api/blob-proxy?pathname=${encodeURIComponent(blobPath)}`;
+          return sendJSON(res, 200, {
+            success: true,
+            url: proxyUrl,
+            directUrl: blob.url,
+            filename: uniqueName,
+            size: file.data.length
+          });
+        }
       }
 
       const savePath = path.join(UPLOADS_DIR, uniqueName);
