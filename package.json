@@ -1,0 +1,13 @@
+{
+  "name": "yehulu-digitals",
+  "version": "1.0.0",
+  "description": "Yehulu Digitals Modern Website & Project Portfolio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "sync": "node sync-gallery.js"
+  },
+  "keywords": ["agency", "branding", "portfolio"],
+  "author": "Yehulu Digital",
+  "license": "ISC"
+}

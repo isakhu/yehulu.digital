@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>About — Yehulu Digital</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('yehulu_theme');
+          var theme = saved || 'dark';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch(e) {}
+      })();
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: '#B6FF00',
+              darkBg: '#050505',
+              cardBg: '#0a0a0a',
+            },
+            fontFamily: {
+              bricolage: ['"Bricolage Grotesque"', 'sans-serif'],
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      :root, [data-theme="dark"] {
+        --bg-main: #050505;
+        --bg-card: #0a0a0a;
+        --bg-sub: #111111;
+        --text-main: #ffffff;
+        --text-muted: #a1a1aa;
+        --border-main: rgba(255, 255, 255, 0.08);
+        --border-highlight: rgba(188, 255, 0, 0.35);
+        --brand-accent: #B6FF00;
+        --dock-bg: rgba(10, 10, 10, 0.88);
+        --dock-border: rgba(188, 255, 0, 0.25);
+        --dock-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 16px rgba(182, 255, 0, 0.12);
+        --topbar-bg: rgba(5, 5, 5, 0.92);
+        color-scheme: dark;
+      }
+
+      [data-theme="light"] {
+        --bg-main: #f6f8f4;
+        --bg-card: #ffffff;
+        --bg-sub: #edf1e8;
+        --text-main: #0c1109;
+        --text-muted: #4b5545;
+        --border-main: rgba(0, 0, 0, 0.08);
+        --border-highlight: rgba(143, 199, 0, 0.45);
+        --brand-accent: #8ec900;
+        --dock-bg: rgba(255, 255, 255, 0.92);
+        --dock-border: rgba(0, 0, 0, 0.12);
+        --dock-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 0 16px rgba(142, 201, 0, 0.1);
+        --topbar-bg: rgba(246, 248, 244, 0.94);
+        color-scheme: light;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      ::selection { background-color: #B6FF00; color: #000; }
+      html { scroll-behavior: smooth; }
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        overflow-x: hidden;
+        padding-bottom: 74px; /* Tight compact spacing for floating dock */
+        cursor: auto !important; /* Clean native pointer */
+        transition: background-color 0.25s ease, color 0.25s ease;
+      }
+
+      .font-display { font-family: 'Bricolage Grotesque', sans-serif; }
+      .font-mono-ui { font-family: 'Courier New', monospace; }
+
+      header {
+        background: var(--topbar-bg) !important;
+        border-bottom: 1px solid var(--border-main) !important;
+        backdrop-filter: blur(16px);
+      }
+
+      /* ── UNIFIED SOCIAL MEDIA HUB (All Logos in One Place) ── */
+      .social-media-hub {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        background: var(--dock-bg);
+        border: 1px solid var(--border-main);
+        padding: 3px 5px;
+        border-radius: 999px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .social-hub-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+      .social-hub-link:hover {
+        color: #B6FF00;
+        background: rgba(182, 255, 0, 0.1);
+        transform: translateY(-1.5px) scale(1.08);
+      }
+      .social-hub-link svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .theme-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        background: var(--dock-bg);
+        border: 1px solid var(--border-main);
+        color: var(--text-main);
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+      .theme-toggle-btn:hover {
+        border-color: #B6FF00;
+        color: #B6FF00;
+        transform: translateY(-1.5px);
+      }
+
+      /* ── FLOATING BOTTOM NAVIGATION DOCK ── */
+      #floating-dock {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9990;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 7px;
+        background: var(--dock-bg);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--dock-border);
+        border-radius: 999px;
+        box-shadow: var(--dock-shadow);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
+        max-width: calc(100vw - 28px);
+      }
+
+      .dock-item {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .dock-item:hover {
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+      }
+      [data-theme="light"] .dock-item:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .dock-item svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+        transition: transform 0.2s ease;
+      }
+
+      .dock-item.active {
+        background: #B6FF00 !important;
+        color: #000000 !important;
+        transform: translateY(-1.5px) scale(1.04);
+        box-shadow: 0 0 16px rgba(182, 255, 0, 0.45);
+      }
+
+      .dock-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%) translateY(3px);
+        background: var(--bg-card);
+        color: var(--text-main);
+        font-family: 'Courier New', monospace;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 5px;
+        border: 1px solid var(--border-highlight);
+        pointer-events: none;
+        white-space: nowrap;
+        opacity: 0;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+      }
+      .dock-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 3px solid transparent;
+        border-top-color: var(--bg-card);
+      }
+      .dock-item:hover .dock-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 640px) {
+        #floating-dock { bottom: 10px; padding: 4px 5px; gap: 3px; }
+        .dock-item { width: 36px; height: 36px; }
+        .dock-item svg { width: 16px; height: 16px; }
+        .dock-tooltip { display: none; }
+      }
+
+      /* Card styling */
+      .card-box {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-main);
+        transition: border-color 0.25s ease, background-color 0.25s ease;
+      }
+      .card-box:hover {
+        border-color: var(--border-highlight);
+      }
+
+      /* Light mode class overrides */
+      [data-theme="light"] .bg-\[\#050505\] { background-color: var(--bg-main) !important; color: var(--text-main) !important; }
+      [data-theme="light"] .bg-\[\#0a0a0a\],
+      [data-theme="light"] .bg-\[\#111111\],
+      [data-theme="light"] .bg-\[\#111\] {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-main) !important;
+      }
+      [data-theme="light"] .text-white { color: var(--text-main) !important; }
+      [data-theme="light"] .text-gray-300,
+      [data-theme="light"] .text-gray-400,
+      [data-theme="light"] .text-gray-500 {
+        color: var(--text-muted) !important;
+      }
+      [data-theme="light"] .border-white\/10,
+      [data-theme="light"] .border-white\/5,
+      [data-theme="light"] .border-white\/15,
+      [data-theme="light"] .border-white\/20 {
+        border-color: var(--border-main) !important;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <!-- ══════════ TOPBAR ══════════ -->
+    <header class="fixed top-0 left-0 right-0 z-50 py-3">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/assets/logopng-BhI97nKv.png" alt="Yehulu Digital Logo" class="h-7 object-contain" />
+        </a>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- UNIFIED SOCIAL MEDIA HUB -->
+          <div class="social-media-hub" title="Yehulu Digital Social Channels">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/yehuludigital" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="Instagram" title="Instagram @yehuludigital">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+            </a>
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@yehuludigital" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="TikTok" title="TikTok @yehuludigital">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.47 6.27 6.27 0 0 0 1.94-4.52V8.7a8.18 8.18 0 0 0 4.83 1.57v-3.58z"/></svg>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/251964251882" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="WhatsApp" title="WhatsApp Chat (+251 964251882)">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+            </a>
+            <!-- YouTube -->
+            <a href="https://youtube.com/@yehulu.digital" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="YouTube" title="YouTube Channel">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+          </button>
+
+          <!-- Contact Quick CTA -->
+          <a href="/contact" class="px-3.5 py-1.5 bg-[#B6FF00] text-black font-extrabold text-[11px] uppercase tracking-wider hover:bg-white transition flex items-center gap-1 border border-[#B6FF00]">
+            <span>CONTACT</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════ MAIN CONTENT (TIGHT, COMPACT, HIGH-DENSITY SPACING) ══════════ -->
+    <main class="pt-24 pb-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+
+        <!-- 01. WHO WE ARE & BRAND SYSTEM -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <div class="lg:col-span-5 space-y-4">
+            <div class="space-y-1">
+              <span class="text-xs font-black tracking-[0.25em] text-[#B6FF00] uppercase block font-mono-ui">
+                WHO WE ARE
+              </span>
+              <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight font-display leading-tight">
+                THIS IS <br />
+                <span class="text-[#B6FF00]">YEHULU.</span>
+              </h1>
+            </div>
+
+            <div class="space-y-2 text-gray-300 text-xs sm:text-sm leading-relaxed">
+              <p>
+                Yehulu Digital is a creative digital agency focused on branding, visual content,
+                video production, social media campaigns, and digital product experiences.
+              </p>
+              <p class="text-gray-400 text-xs">
+                We combine sharp visual design, cinematic storytelling, and digital precision to build enduring
+                brand assets for forward-thinking clients worldwide.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-3 border-t border-white/10 text-xs font-mono-ui">
+              <div>
+                <span class="text-gray-500 uppercase tracking-widest block text-[10px]">HEADQUARTERS</span>
+                <span class="font-bold tracking-wider mt-0.5 block">HAWASSA / ADDIS ABABA</span>
+              </div>
+              <div>
+                <span class="text-gray-500 uppercase tracking-widest block text-[10px]">CLIENT SCOPE</span>
+                <span class="text-[#B6FF00] font-bold tracking-wider mt-0.5 block">GLOBAL DIGITAL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Brand System Showcase (Clean & Streamlined, Pointer Color Changer Removed) -->
+          <div class="card-box lg:col-span-7 p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between text-[11px] font-mono-ui tracking-widest border-b border-white/10 pb-3">
+              <span class="text-gray-400 uppercase">BRAND IDENTITY SYSTEM</span>
+              <span class="text-[#B6FF00] font-bold uppercase">YEHULU DIGITAL</span>
+            </div>
+
+            <!-- Logo Showcase Box -->
+            <div class="w-full h-40 sm:h-44 flex items-center justify-center p-6 relative border border-white/5 bg-[#050505]">
+              <img 
+                src="/assets/logopng-BhI97nKv.png" 
+                alt="Yehulu Digital Logo" 
+                class="max-h-20 sm:max-h-24 max-w-full object-contain filter drop-shadow-[0_4px_20px_rgba(182,255,0,0.3)]"
+              />
+            </div>
+
+            <!-- Typography & Brand Spec -->
+            <div class="grid grid-cols-2 gap-4 pt-2 border-t border-white/10">
+              <div>
+                <span class="text-[10px] font-mono-ui text-gray-400 uppercase tracking-widest block">BRAND MOTTO</span>
+                <p class="text-lg sm:text-xl font-black font-display tracking-tight mt-0.5">
+                  WE CREATE <span class="text-[#B6FF00]">BRANDS.</span>
+                </p>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono-ui text-gray-400 uppercase tracking-widest block">CORE PALETTE</span>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="w-4 h-4 rounded-full bg-[#050505] border border-white/30" title="#050505"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#B6FF00]" title="#B6FF00"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#ffffff]" title="#FFFFFF"></span>
+                  <span class="text-[11px] font-mono font-bold text-[#B6FF00] ml-1">#B6FF00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 02. TYPOGRAPHY SCALE & BRAND PHILOSOPHY (Tight & Structured) -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <!-- Card 03: Typography Scale -->
+          <div class="card-box lg:col-span-5 p-5 space-y-3 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <span class="text-xs font-mono-ui font-bold text-[#B6FF00] tracking-widest uppercase">
+                  TYPOGRAPHY TESTER
+                </span>
+                <span class="text-[10px] font-mono text-gray-400 uppercase">BRICOLAGE</span>
+              </div>
+
+              <input
+                type="text"
+                id="typeTesterInput"
+                value="YEHULU DIGITAL"
+                oninput="updateTypePreview(this.value)"
+                class="w-full bg-[#111111] border border-white/15 px-3 py-1.5 text-xs text-[#B6FF00] font-mono-ui focus:outline-none focus:border-[#B6FF00] transition"
+              />
+
+              <div class="bg-[#111111] border border-white/10 p-4 min-h-[90px] flex items-center justify-center">
+                <h3 
+                  id="typePreview"
+                  class="text-center font-display text-2xl sm:text-3xl font-black uppercase tracking-tight break-words max-w-full"
+                >
+                  YEHULU DIGITAL
+                </h3>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-gray-400 leading-normal border-t border-white/10 pt-2">
+              High contrast display typography engineered for modern digital touchpoints.
+            </p>
+          </div>
+
+          <!-- Card 04: Brand Philosophy -->
+          <div class="card-box lg:col-span-7 p-5 space-y-3 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <span class="text-xs font-mono-ui font-bold text-[#B6FF00] tracking-widest uppercase">
+                  BRAND PHILOSOPHY
+                </span>
+                <span class="text-[10px] font-mono-ui text-gray-400 uppercase tracking-widest">
+                  CORE VALUES
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-[#111111] border border-white/10 p-3.5 space-y-1.5 hover:border-[#B6FF00] transition group">
+                  <h4 class="text-xs font-black font-display group-hover:text-[#B6FF00] transition uppercase">
+                    CREATE. <br /><span class="text-gray-400 group-hover:text-white text-[10px]">BOLD VISUALS</span>
+                  </h4>
+                  <p class="text-[11px] text-gray-400 leading-snug">
+                    Striking aesthetics demanding visual curiosity.
+                  </p>
+                </div>
+
+                <div class="bg-[#111111] border border-white/10 p-3.5 space-y-1.5 hover:border-[#B6FF00] transition group">
+                  <h4 class="text-xs font-black font-display group-hover:text-[#B6FF00] transition uppercase">
+                    CONNECT. <br /><span class="text-gray-400 group-hover:text-white text-[10px]">DEEP RESONANCE</span>
+                  </h4>
+                  <p class="text-[11px] text-gray-400 leading-snug">
+                    Authentic storytelling that builds community trust.
+                  </p>
+                </div>
+
+                <div class="bg-[#111111] border border-white/10 p-3.5 space-y-1.5 hover:border-[#B6FF00] transition group">
+                  <h4 class="text-xs font-black font-display group-hover:text-[#B6FF00] transition uppercase">
+                    GROW. <br /><span class="text-gray-400 group-hover:text-white text-[10px]">MEASURABLE ROI</span>
+                  </h4>
+                  <p class="text-[11px] text-gray-400 leading-snug">
+                    Campaigns driving tangible market expansion.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[10px] font-mono-ui text-gray-500 uppercase tracking-widest border-t border-white/10 pt-2">
+              <span>YEHULU CREATIVE FRAMEWORK</span>
+              <span>3-STEP METHODOLOGY</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 03. PROVEN IMPACT / BUILT FOR GROWTH (Compact Metric Cards) -->
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <div class="flex items-end justify-between">
+            <div>
+              <span class="text-[10px] font-mono-ui font-black tracking-[0.25em] text-[#B6FF00] uppercase block">
+                PROVEN IMPACT
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-black uppercase tracking-tight font-display">
+                BUILT FOR <span class="text-[#B6FF00]">GROWTH.</span>
+              </h2>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="card-box p-4 space-y-1 hover:border-[#B6FF00] transition group">
+              <span class="text-3xl sm:text-4xl font-black text-[#B6FF00] font-display block tracking-tight">
+                2+
+              </span>
+              <span class="text-[10px] font-bold tracking-widest uppercase block font-mono-ui text-gray-300">
+                YEARS EXPERIENCE
+              </span>
+            </div>
+
+            <div class="card-box p-4 space-y-1 hover:border-[#B6FF00] transition group">
+              <span class="text-3xl sm:text-4xl font-black text-[#B6FF00] font-display block tracking-tight">
+                30+
+              </span>
+              <span class="text-[10px] font-bold tracking-widest uppercase block font-mono-ui text-gray-300">
+                PROJECTS COMPLETED
+              </span>
+            </div>
+
+            <div class="card-box p-4 space-y-1 hover:border-[#B6FF00] transition group">
+              <span class="text-3xl sm:text-4xl font-black text-[#B6FF00] font-display block tracking-tight">
+                5+
+              </span>
+              <span class="text-[10px] font-bold tracking-widest uppercase block font-mono-ui text-gray-300">
+                CORE SERVICES
+              </span>
+            </div>
+
+            <div class="card-box p-4 space-y-1 hover:border-[#B6FF00] transition group">
+              <span class="text-3xl sm:text-4xl font-black text-[#B6FF00] font-display block tracking-tight">
+                ∞
+              </span>
+              <span class="text-[10px] font-bold tracking-widest uppercase block font-mono-ui text-gray-300">
+                CREATIVE IDEAS
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 04. HAVE A PROJECT? (Compact Banner) -->
+        <section class="bg-[#B6FF00] text-black p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center md:text-left">
+            <span class="text-[10px] font-black uppercase tracking-widest bg-black text-[#B6FF00] px-2.5 py-0.5 inline-block font-mono-ui">
+              LET'S TALK
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black uppercase tracking-tight font-display leading-tight">
+              HAVE A PROJECT?
+            </h3>
+            <p class="text-xs font-bold tracking-wider uppercase text-black/80">
+              LET'S BUILD SOMETHING GREAT TOGETHER.
+            </p>
+          </div>
+
+          <a 
+            href="/contact"
+            class="inline-flex items-center gap-1.5 px-6 py-2.5 bg-black text-white hover:bg-zinc-900 font-bold text-xs uppercase tracking-widest transition hover:scale-105 shadow-xl shrink-0"
+          >
+            <span>START A PROJECT</span>
+            <span>↗</span>
+          </a>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ══════════ FLOATING BOTTOM NAVIGATION DOCK ══════════ -->
+    <nav id="floating-dock" aria-label="Bottom Navigation">
+      <a href="/#home" class="dock-item" data-target="home" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span class="dock-tooltip">Home</span>
+      </a>
+
+      <a href="/about" class="dock-item active" data-target="about" aria-label="About">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span class="dock-tooltip">About</span>
+      </a>
+
+      <a href="/#services" class="dock-item" data-target="services" aria-label="Services">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span class="dock-tooltip">Services</span>
+      </a>
+
+      <a href="/gallery" class="dock-item" data-target="work" aria-label="Projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <path d="M9 21V9"></path>
+        </svg>
+        <span class="dock-tooltip">Projects</span>
+      </a>
+
+      <a href="/#estimate" class="dock-item" data-target="estimate" aria-label="Estimator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        <span class="dock-tooltip">Estimator</span>
+      </a>
+
+      <a href="/contact" class="dock-item" data-target="contact" aria-label="Contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"></path>
+          <path d="M22 2 11 13"></path>
+        </svg>
+        <span class="dock-tooltip">Contact</span>
+      </a>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8 text-xs text-gray-500 font-mono-ui">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img src="/assets/logopng-BhI97nKv.png" alt="Yehulu Digital Logo" class="h-5 object-contain" />
+        </div>
+        <div class="flex items-center gap-5 text-gray-400 text-[11px]">
+          <span>Hawassa / Addis Ababa</span>
+          <span>+251 964251882</span>
+          <span>contact@yehulu.digital</span>
+        </div>
+        <div>
+          © 2026 YEHULU DIGITAL. ALL RIGHTS RESERVED.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+      function getActiveTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'dark';
+      }
+
+      function setTheme(newTheme) {
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('yehulu_theme', newTheme);
+        updateThemeToggleIcons(newTheme);
+      }
+
+      function toggleTheme() {
+        var current = getActiveTheme();
+        var next = current === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+      }
+
+      function updateThemeToggleIcons(theme) {
+        var btn = document.getElementById('theme-toggle-btn');
+        if (!btn) return;
+        if (theme === 'light') {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>';
+          btn.setAttribute('aria-label', 'Switch to Dark Mode');
+        } else {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>';
+          btn.setAttribute('aria-label', 'Switch to Light Mode');
+        }
+      }
+
+      updateThemeToggleIcons(getActiveTheme());
+
+      function updateTypePreview(val) {
+        document.getElementById('typePreview').innerText = val.trim() ? val : 'YEHULU DIGITAL';
+      }
+    </script>
+  </body>
+</html>

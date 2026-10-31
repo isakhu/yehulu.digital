@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Yehulu Digital — Creative Digital Agency</title>
+    <meta name="description" content="Yehulu Digital is a creative digital agency focused on branding, visual content, video production, social media campaigns, and digital product experiences." />
+    <meta name="theme-color" content="#050505" />
+
+    <!-- Google Fonts: Bricolage Grotesque & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Theme Initialization Script (Zero-FOUC) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('yehulu_theme');
+          var theme = saved || 'dark'; // Dark is client approved default
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch(e) {}
+      })();
+    </script>
+
+    <!-- GSAP (loaded before React for smooth entry) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Global Styles & Tight Spacing Design Tokens -->
+    <style>
+      :root, [data-theme="dark"] {
+        --bg-main: #050505;
+        --bg-card: #0a0a0a;
+        --bg-sub: #111111;
+        --text-main: #ffffff;
+        --text-muted: #a1a1aa;
+        --text-sub: #71717a;
+        --border-main: rgba(255, 255, 255, 0.08);
+        --border-highlight: rgba(188, 255, 0, 0.35);
+        --brand-accent: #B6FF00;
+        --brand-text: #050505;
+        --dock-bg: rgba(10, 10, 10, 0.88);
+        --dock-border: rgba(188, 255, 0, 0.25);
+        --dock-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 16px rgba(182, 255, 0, 0.12);
+        --topbar-bg: rgba(5, 5, 5, 0.92);
+        color-scheme: dark;
+      }
+
+      [data-theme="light"] {
+        --bg-main: #f6f8f4;
+        --bg-card: #ffffff;
+        --bg-sub: #edf1e8;
+        --text-main: #0c1109;
+        --text-muted: #4b5545;
+        --text-sub: #6c7566;
+        --border-main: rgba(0, 0, 0, 0.08);
+        --border-highlight: rgba(143, 199, 0, 0.45);
+        --brand-accent: #8ec900;
+        --brand-text: #000000;
+        --dock-bg: rgba(255, 255, 255, 0.92);
+        --dock-border: rgba(0, 0, 0, 0.12);
+        --dock-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 0 16px rgba(142, 201, 0, 0.1);
+        --topbar-bg: rgba(246, 248, 244, 0.94);
+        color-scheme: light;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.25s ease, color 0.25s ease;
+        padding-bottom: 74px; /* Tight compact spacing for floating dock */
+        cursor: auto !important; /* Native cursor preserved */
+      }
+
+      ::selection {
+        background-color: #B6FF00;
+        color: #000000;
+      }
+
+      /* ── Page Loader ── */
+      #yeh-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: var(--bg-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        pointer-events: all;
+        transition: opacity 0.4s ease;
+      }
+      #yeh-loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loader-logo {
+        width: 120px;
+        object-fit: contain;
+        animation: logoPulse 1.2s ease-in-out infinite alternate;
+        filter: drop-shadow(0 0 20px rgba(182, 255, 0, 0.35));
+      }
+      @keyframes logoPulse {
+        from { opacity: .7; transform: scale(.98); }
+        to   { opacity: 1;  transform: scale(1.02); }
+      }
+      .loader-bar-wrap {
+        width: 150px;
+        height: 2px;
+        background: var(--border-main);
+        overflow: hidden;
+        position: relative;
+      }
+      .loader-bar {
+        position: absolute;
+        top: 0; left: -100%;
+        height: 100%;
+        width: 100%;
+        background: #B6FF00;
+        animation: loaderSlide 1s ease-in-out infinite;
+      }
+      @keyframes loaderSlide {
+        0%   { left: -100%; }
+        50%  { left: 0;    }
+        100% { left: 100%; }
+      }
+      .loader-tag {
+        font-family: 'Courier New', monospace;
+        font-size: 9px;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        color: #B6FF00;
+      }
+
+      /* ── Scroll Progress Bar ── */
+      #yeh-progress {
+        position: fixed;
+        top: 0; left: 0;
+        height: 2px;
+        width: 0%;
+        background: linear-gradient(90deg, #B6FF00, #95db00);
+        z-index: 99998;
+        pointer-events: none;
+        transition: width .05s linear;
+        box-shadow: 0 0 8px rgba(182,255,0,.5);
+      }
+
+      /* ── Topbar Optimization & Clean Tight Spacing ── */
+      header nav.hidden.md\:flex,
+      header .md\:hidden {
+        display: none !important;
+      }
+      header {
+        background-color: var(--topbar-bg) !important;
+        border-bottom: 1px solid var(--border-main) !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+      }
+
+      /* Topbar Actions Container */
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* ── UNIFIED SOCIAL MEDIA HUB (All Logos in One Place) ── */
+      .social-media-hub {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        background: var(--dock-bg);
+        border: 1px solid var(--border-main);
+        padding: 3px 5px;
+        border-radius: 999px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .social-hub-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+      .social-hub-link:hover {
+        color: #B6FF00;
+        background: rgba(182, 255, 0, 0.1);
+        transform: translateY(-1.5px) scale(1.08);
+      }
+      .social-hub-link svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      /* Theme Switcher Button */
+      .theme-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        background: var(--dock-bg);
+        border: 1px solid var(--border-main);
+        color: var(--text-main);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+      }
+      .theme-toggle-btn:hover {
+        border-color: #B6FF00;
+        color: #B6FF00;
+        transform: translateY(-1.5px);
+      }
+      .theme-toggle-btn svg {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.3s ease;
+      }
+      .theme-toggle-btn:hover svg {
+        transform: rotate(20deg);
+      }
+
+      /* ── FLOATING BOTTOM NAVIGATION DOCK ── */
+      #floating-dock {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9990;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 7px;
+        background: var(--dock-bg);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--dock-border);
+        border-radius: 999px;
+        box-shadow: var(--dock-shadow);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
+        max-width: calc(100vw - 28px);
+      }
+
+      .dock-item {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        outline: none;
+      }
+      .dock-item:hover {
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+      }
+      [data-theme="light"] .dock-item:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .dock-item svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+        transition: transform 0.2s ease;
+      }
+
+      /* Active Dock State */
+      .dock-item.active {
+        background: #B6FF00 !important;
+        color: #000000 !important;
+        transform: translateY(-1.5px) scale(1.04);
+        box-shadow: 0 0 16px rgba(182, 255, 0, 0.45);
+      }
+      .dock-item.active svg {
+        stroke-width: 2.3;
+      }
+
+      /* Dock Tooltip */
+      .dock-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%) translateY(3px);
+        background: var(--bg-card);
+        color: var(--text-main);
+        font-family: 'Courier New', monospace;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 5px;
+        border: 1px solid var(--border-highlight);
+        pointer-events: none;
+        white-space: nowrap;
+        opacity: 0;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+      }
+      .dock-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 3px solid transparent;
+        border-top-color: var(--bg-card);
+      }
+      .dock-item:hover .dock-tooltip,
+      .dock-item:focus-visible .dock-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 640px) {
+        #floating-dock {
+          bottom: 10px;
+          padding: 4px 5px;
+          gap: 3px;
+        }
+        .dock-item {
+          width: 36px;
+          height: 36px;
+        }
+        .dock-item svg {
+          width: 16px;
+          height: 16px;
+        }
+        .dock-tooltip {
+          display: none;
+        }
+      }
+
+      /* ── Back to Top Button ── */
+      #yeh-top {
+        position: fixed;
+        bottom: 74px;
+        right: 18px;
+        z-index: 9987;
+        width: 38px; height: 38px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-main);
+        color: var(--brand-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all .25s ease;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        cursor: pointer;
+      }
+      #yeh-top.visible {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+      #yeh-top:hover {
+        background: #B6FF00;
+        color: #000;
+        border-color: #B6FF00;
+        box-shadow: 0 0 20px rgba(182,255,0,.35);
+        transform: translateY(-2px);
+      }
+
+      /* ── Toast Notifications ── */
+      #yeh-toasts {
+        position: fixed;
+        bottom: 18px;
+        left: 18px;
+        z-index: 99995;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+      .yeh-toast {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-main);
+        color: var(--text-main);
+        padding: 10px 14px;
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        max-width: 320px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.45);
+        animation: toastIn .3s ease forwards;
+        pointer-events: all;
+      }
+      .yeh-toast.success { border-left: 3px solid #B6FF00; }
+      .yeh-toast.error   { border-left: 3px solid #ff4444; }
+      .yeh-toast.info    { border-left: 3px solid var(--brand-accent); }
+      .yeh-toast .toast-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .yeh-toast.success .toast-dot { background: #B6FF00; }
+      .yeh-toast.error   .toast-dot { background: #ff4444; }
+      .yeh-toast.info    .toast-dot { background: var(--brand-accent); }
+      @keyframes toastIn {
+        from { opacity: 0; transform: translateX(-16px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+      .yeh-toast.removing {
+        animation: toastOut .25s ease forwards;
+      }
+      @keyframes toastOut {
+        to { opacity: 0; transform: translateX(-16px); height: 0; padding: 0; margin: 0; }
+      }
+
+      /* ── TIGHTENED SPACING OVERRIDES (Eliminates excessive empty gaps) ── */
+      main > div.space-y-24,
+      main > div.space-y-20,
+      main > div.space-y-32,
+      div.space-y-20, div.space-y-24, div.space-y-32 {
+        row-gap: 1.75rem !important; /* Compact high-density spacing */
+      }
+      main {
+        padding-top: 4.25rem !important; /* Compact top clearance */
+        padding-bottom: 2rem !important;
+      }
+      section, div.border-b {
+        margin-bottom: 0 !important;
+      }
+      .py-20, .py-24, .py-28, .py-32 {
+        padding-top: 2.25rem !important;
+        padding-bottom: 2.25rem !important;
+      }
+      .py-12, .py-16 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+      .space-y-24 > :not([hidden]) ~ :not([hidden]),
+      .space-y-20 > :not([hidden]) ~ :not([hidden]),
+      .space-y-16 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 1.25rem !important;
+      }
+      .space-y-12 > :not([hidden]) ~ :not([hidden]),
+      .space-y-8 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 1rem !important;
+      }
+      .mb-12, .mb-16, .mb-20, .mb-24 {
+        margin-bottom: 1.25rem !important;
+      }
+      .pb-12, .pb-16, .pb-20, .pb-24 {
+        padding-bottom: 1.25rem !important;
+      }
+
+      /* ── FULLSCREEN LIGHTBOX ACTIVE STYLES ── */
+      #project-lightbox {
+        transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #project-lightbox.active {
+        display: flex !important;
+        opacity: 1 !important;
+      }
+
+      /* ── 30+ CLIENT PROJECTS ARCHIVE CONTAINER & GRID ── */
+      .archive-grid-section {
+        border-top: 1px solid var(--border-main);
+        padding-top: 2rem;
+        margin-top: 2rem;
+      }
+      .archive-card {
+        position: relative;
+        aspect-ratio: 4/5;
+        background: var(--bg-card);
+        border: 1px solid var(--border-main);
+        overflow: hidden;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.25rem;
+        transition: all 0.25s ease;
+      }
+      .archive-card:hover {
+        border-color: #B6FF00;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(182, 255, 0, 0.15);
+      }
+      .archive-card img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(70%);
+        opacity: 0.82;
+        transition: all 0.4s ease;
+      }
+      .archive-card:hover img {
+        filter: grayscale(0%);
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      .archive-card-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+        pointer-events: none;
+      }
+      .archive-card-meta {
+        position: relative;
+        z-index: 10;
+      }
+
+      /* ── Light Mode Color Adaptations ── */
+      [data-theme="light"] .bg-\[\#050505\] { background-color: var(--bg-main) !important; color: var(--text-main) !important; }
+      [data-theme="light"] .bg-\[\#0a0a0a\],
+      [data-theme="light"] .bg-zinc-950,
+      [data-theme="light"] .bg-zinc-900 {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-main) !important;
+      }
+      [data-theme="light"] .text-white { color: var(--text-main) !important; }
+      [data-theme="light"] .text-gray-300,
+      [data-theme="light"] .text-gray-400,
+      [data-theme="light"] .text-gray-500 {
+        color: var(--text-muted) !important;
+      }
+      [data-theme="light"] .border-white\/10,
+      [data-theme="light"] .border-white\/5,
+      [data-theme="light"] .border-white\/15,
+      [data-theme="light"] .border-white\/20 {
+        border-color: var(--border-main) !important;
+      }
+
+      /* ── Modern FAQ Section Component Styles (Tight & Clean) ── */
+      .faq-card {
+        border: 1px solid var(--border-main);
+        background: var(--bg-card);
+        transition: all 0.25s ease;
+      }
+      .faq-card:hover {
+        border-color: var(--border-highlight);
+      }
+      .faq-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        text-align: left;
+        background: transparent;
+        border: none;
+        color: var(--text-main);
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+      }
+      .faq-icon {
+        width: 16px;
+        height: 16px;
+        color: #B6FF00;
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+        margin-left: 8px;
+      }
+      .faq-card.open .faq-icon {
+        transform: rotate(45deg);
+      }
+      .faq-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.25s ease;
+        padding: 0 18px;
+        color: var(--text-muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .faq-card.open .faq-content {
+        max-height: 240px;
+        padding: 0 18px 14px 18px;
+      }
+    </style>
+
+    <!-- React bundle (Vite SPA) -->
+    <script type="module" crossorigin src="/assets/index-BSXl1opM.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Bs1w5tPm.css">
+  </head>
+
+  <body>
+
+    <!-- ══════════ PAGE LOADER ══════════ -->
+    <div id="yeh-loader" role="status" aria-label="Loading">
+      <img class="loader-logo" src="/assets/logopng-BhI97nKv.png" alt="Yehulu Digital" />
+      <div class="loader-bar-wrap">
+        <div class="loader-bar"></div>
+      </div>
+      <span class="loader-tag">YEHULU DIGITAL</span>
+    </div>
+
+    <!-- ══════════ SCROLL PROGRESS ══════════ -->
+    <div id="yeh-progress" aria-hidden="true"></div>
+
+    <!-- ══════════ REACT APPLICATION ROOT ══════════ -->
+    <div id="root"></div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!--  1. FLOATING BOTTOM NAVIGATION DOCK (FIXED VIEWPORT)   -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <nav id="floating-dock" aria-label="Bottom Navigation">
+      <!-- Home -->
+      <a href="#home" class="dock-item active" data-target="home" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span class="dock-tooltip">Home</span>
+      </a>
+
+      <!-- About -->
+      <a href="#about" class="dock-item" data-target="about" aria-label="About">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span class="dock-tooltip">About</span>
+      </a>
+
+      <!-- Services -->
+      <a href="#services" class="dock-item" data-target="services" aria-label="Services">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span class="dock-tooltip">Services</span>
+      </a>
+
+      <!-- Projects / Work -->
+      <a href="#work" class="dock-item" data-target="work" aria-label="Projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <path d="M9 21V9"></path>
+        </svg>
+        <span class="dock-tooltip">Projects</span>
+      </a>
+
+      <!-- Estimator -->
+      <a href="#estimate" class="dock-item" data-target="estimate" aria-label="Estimator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        <span class="dock-tooltip">Estimator</span>
+      </a>
+
+      <!-- Contact -->
+      <a href="#contact" class="dock-item" data-target="contact" aria-label="Contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"></path>
+          <path d="M22 2 11 13"></path>
+        </svg>
+        <span class="dock-tooltip">Contact</span>
+      </a>
+    </nav>
+
+    <!-- ══════════ BACK TO TOP ══════════ -->
+    <button id="yeh-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
+    <!-- ══════════ FULLSCREEN PROJECT LIGHTBOX MODAL ══════════ -->
+    <div id="project-lightbox" class="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center p-4 select-none opacity-0 transition-opacity duration-300">
+      <button id="lightbox-close" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-zinc-900 border border-white/20 text-white hover:text-[#B6FF00] hover:border-[#B6FF00] flex items-center justify-center transition" aria-label="Close Preview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <!-- Nav buttons -->
+      <button id="lightbox-prev" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-zinc-900/80 border border-white/20 text-white hover:text-[#B6FF00] hover:border-[#B6FF00] flex items-center justify-center transition" aria-label="Previous Project">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button id="lightbox-next" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-zinc-900/80 border border-white/20 text-white hover:text-[#B6FF00] hover:border-[#B6FF00] flex items-center justify-center transition" aria-label="Next Project">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <!-- Image display container -->
+      <div class="max-w-4xl max-h-[80vh] flex flex-col items-center justify-center">
+        <img id="lightbox-img" src="" alt="Project Showcase" class="max-w-full max-h-[72vh] object-contain rounded border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]" />
+        <div class="mt-4 text-center">
+          <span id="lightbox-category" class="text-[10px] font-mono-ui font-bold text-[#B6FF00] uppercase tracking-widest block mb-1"></span>
+          <h3 id="lightbox-title" class="text-base sm:text-lg font-bold font-display text-white uppercase tracking-tight"></h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ TOAST NOTIFICATIONS ══════════ -->
+    <div id="yeh-toasts" aria-live="polite" aria-label="Notifications"></div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!--  GLOBAL MODERNIZATION ENGINE (NAV, THEME, SCROLL-SPY)  -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <script>
+      // ─────────────────────────────────────────────────
+      //  1. THEME SWITCHER (Dark / Light Mode)
+      // ─────────────────────────────────────────────────
+      function getActiveTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'dark';
+      }
+
+      function setTheme(newTheme) {
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('yehulu_theme', newTheme);
+        updateThemeToggleIcons(newTheme);
+      }
+
+      function toggleTheme() {
+        var current = getActiveTheme();
+        var next = current === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        if (window.yehToast) {
+          window.yehToast('Switched to ' + next.toUpperCase() + ' mode', 'info', 1800);
+        }
+      }
+
+      function updateThemeToggleIcons(theme) {
+        var btn = document.getElementById('theme-toggle-btn');
+        if (!btn) return;
+        if (theme === 'light') {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>';
+          btn.setAttribute('aria-label', 'Switch to Dark Mode');
+        } else {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>';
+          btn.setAttribute('aria-label', 'Switch to Light Mode');
+        }
+      }
+
+      // ─────────────────────────────────────────────────
+      //  2. INJECT TOPBAR: ALL SOCIAL MEDIA LOGOS IN ONE PLACE
+      // ─────────────────────────────────────────────────
+      function injectTopbarActions() {
+        var header = document.querySelector('header');
+        if (!header) return;
+
+        var headerInner = header.querySelector('div');
+        if (!headerInner || headerInner.querySelector('.topbar-actions')) return;
+
+        var actions = document.createElement('div');
+        actions.className = 'topbar-actions';
+        actions.innerHTML = [
+          // ── ALL SOCIAL LOGOS IN ONE UNIFIED CAPSULE ──
+          '<div class="social-media-hub" title="Yehulu Digital Social Channels">',
+          '  <!-- Instagram -->',
+          '  <a href="https://www.instagram.com/yehuludigital" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="Instagram" title="Instagram @yehuludigital">',
+          '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>',
+          '  </a>',
+          '  <!-- TikTok -->',
+          '  <a href="https://www.tiktok.com/@yehuludigital" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="TikTok" title="TikTok @yehuludigital">',
+          '    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.47 6.27 6.27 0 0 0 1.94-4.52V8.7a8.18 8.18 0 0 0 4.83 1.57v-3.58z"/></svg>',
+          '  </a>',
+          '  <!-- WhatsApp -->',
+          '  <a href="https://wa.me/251964251882" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="WhatsApp" title="WhatsApp Chat (+251 964251882)">',
+          '    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.885 3.488"/></svg>',
+          '  </a>',
+          '  <!-- YouTube -->',
+          '  <a href="https://youtube.com/@yehulu.digital" target="_blank" rel="noopener noreferrer" class="social-hub-link" aria-label="YouTube" title="YouTube Channel">',
+          '    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+          '  </a>',
+          '</div>',
+          // Theme Switcher Button
+          '<button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">',
+          '</button>'
+        ].join('');
+
+        headerInner.appendChild(actions);
+        updateThemeToggleIcons(getActiveTheme());
+      }
+
+      // ─────────────────────────────────────────────────
+      //  3. SECTION ASSIGNMENT & COMPACT SCROLL-SPY
+      // ─────────────────────────────────────────────────
+      function assignSectionIds() {
+        var main = document.querySelector('main');
+        if (!main) return;
+
+        var hero = main.firstElementChild;
+        if (hero && !hero.id) hero.id = 'home';
+
+        var headings = main.querySelectorAll('h1, h2, h3, span');
+        headings.forEach(function(h) {
+          var txt = h.textContent.trim().toUpperCase();
+          if (txt.includes('WHO WE ARE') || txt.includes('THIS IS YEHULU')) {
+            var sect = h.closest('section') || h.closest('div.border-b') || h.parentElement.parentElement;
+            if (sect && !sect.id) sect.id = 'about';
+          }
+          if (txt.includes('CORE DISCIPLINES') || txt.includes('WHAT WE DO')) {
+            var sSect = h.closest('section') || h.closest('div.space-y') || h.parentElement.parentElement;
+            if (sSect && !sSect.id) sSect.id = 'services';
+          }
+          if (txt.includes('PROJECT ESTIMATOR') || txt.includes('ESTIMATE YOUR PROJECT')) {
+            var eSect = h.closest('section') || h.closest('div.space-y') || h.parentElement.parentElement;
+            if (eSect && !eSect.id) eSect.id = 'estimate';
+          }
+          if (txt.includes('HAVE A PROJECT?') || txt.includes('START A PROJECT')) {
+            var cSect = h.closest('section') || h.closest('div.bg-\\[\\#B6FF00\\]') || h.parentElement;
+            if (cSect && !cSect.id) cSect.id = 'contact';
+          }
+        });
+
+        injectFaqSection(main);
+      }
+
+      // ─────────────────────────────────────────────────
+      //  4. INJECT COMPACT FAQ ACCORDION
+      // ─────────────────────────────────────────────────
+      function injectFaqSection(main) {
+        if (document.getElementById('yehulu-faq-section')) return;
+
+        var faqWrapper = document.createElement('section');
+        faqWrapper.id = 'yehulu-faq-section';
+        faqWrapper.className = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-6 border-t border-white/10';
+        faqWrapper.innerHTML = [
+          '<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">',
+          '  <div>',
+          '    <span class="text-xs font-mono font-bold tracking-[0.25em] text-[#B6FF00] uppercase block mb-1">COMMON QUESTIONS</span>',
+          '    <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white font-[\'Bricolage_Grotesque\']">FREQUENTLY ASKED</h2>',
+          '  </div>',
+          '  <p class="text-xs font-mono text-gray-400 uppercase tracking-widest max-w-xs">TRANSPARENT ANSWERS ON PROCESS, TIMELINES, AND IP OWNERSHIP.</p>',
+          '</div>',
+          '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">',
+          '  <div class="faq-card" onclick="toggleFaq(this)">',
+          '    <button class="faq-trigger"><span>What services does Yehulu Digital deliver?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
+          '    <div class="faq-content">We build full-spectrum digital assets: Brand Identity suites, 4K Commercial Video & Reels, Graphic Design collateral, performance Social Media marketing, and bespoke modern web applications.</div>',
+          '  </div>',
+          '  <div class="faq-card" onclick="toggleFaq(this)">',
+          '    <button class="faq-trigger"><span>What is the standard turnaround time?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
+          '    <div class="faq-content">Our 2-Week Brand Sprint delivers complete visual identity systems rapidly. Commercial video reels and digital products typically range from 2 to 4 weeks depending on the agreed scope.</div>',
+          '  </div>',
+          '  <div class="faq-card" onclick="toggleFaq(this)">',
+          '    <button class="faq-trigger"><span>Do I get 100% full source file ownership?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
+          '    <div class="faq-content">Yes. Upon project completion and final milestone sign-off, all editable source files (vector logos, raw 4K video exports, brand guidelines, and codebases) are transferred entirely to your company.</div>',
+          '  </div>',
+          '  <div class="faq-card" onclick="toggleFaq(this)">',
+          '    <button class="faq-trigger"><span>Can we collaborate if we are based abroad?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
+          '    <div class="faq-content">Yes. While headquartered in Ethiopia (Hawassa & Addis Ababa), our client scope is Global Digital. We communicate via Google Meet, WhatsApp, and Telegram across North America, Europe, and Africa.</div>',
+          '  </div>',
+          '</div>'
+        ].join('');
+
+        var contactSect = document.getElementById('contact');
+        if (contactSect) {
+          contactSect.parentNode.insertBefore(faqWrapper, contactSect);
+        } else {
+          main.appendChild(faqWrapper);
+        }
+      }
+
+      function toggleFaq(card) {
+        var isOpen = card.classList.contains('open');
+        document.querySelectorAll('.faq-card').forEach(function(c) { c.classList.remove('open'); });
+        if (!isOpen) card.classList.add('open');
+      }
+
+      // ─────────────────────────────────────────────────
+      //  5. DOCK CLICK & SCROLL-SPY ENGINE
+      // ─────────────────────────────────────────────────
+      function setupDockNavigation() {
+        var dock = document.getElementById('floating-dock');
+        if (!dock) return;
+
+        var items = dock.querySelectorAll('.dock-item');
+        items.forEach(function(item) {
+          item.addEventListener('click', function(e) {
+            var targetId = item.getAttribute('data-target');
+            var isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+
+            if (isHomePage) {
+              e.preventDefault();
+              var targetEl = document.getElementById(targetId);
+              if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setActiveDockItem(targetId);
+              }
+            } else {
+              if (targetId === 'home') {
+                window.location.href = '/';
+              } else {
+                window.location.href = '/#' + targetId;
+              }
+            }
+          });
+        });
+
+        setupScrollSpy();
+      }
+
+      function setActiveDockItem(targetId) {
+        var dock = document.getElementById('floating-dock');
+        if (!dock) return;
+        var items = dock.querySelectorAll('.dock-item');
+        items.forEach(function(el) {
+          if (el.getAttribute('data-target') === targetId) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
+          }
+        });
+      }
+
+      function setupScrollSpy() {
+        var sectionIds = ['home', 'about', 'services', 'work', 'estimate', 'contact'];
+        var observerOptions = {
+          root: null,
+          rootMargin: '-20% 0px -60% 0px',
+          threshold: 0
+        };
+
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting && entry.target.id) {
+              setActiveDockItem(entry.target.id);
+            }
+          });
+        }, observerOptions);
+
+        sectionIds.forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) observer.observe(el);
+        });
+      }
+
+      // ─────────────────────────────────────────────────
+      //  6. PAGE LIFECYCLE & MUTATION OBSERVER
+      // ─────────────────────────────────────────────────
+      var loader = document.getElementById('yeh-loader');
+      function dismissLoader() {
+        if (loader && loader.style.display !== 'none') {
+          gsap.to(loader, {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.inOut',
+            onComplete: function() {
+              loader.style.display = 'none';
+            }
+          });
+        }
+      }
+
+      var rootElement = document.getElementById('root');
+      var observer = new MutationObserver(function() {
+        injectTopbarActions();
+        assignSectionIds();
+        setupDockNavigation();
+        dismissLoader();
+      });
+
+      if (rootElement) {
+        observer.observe(rootElement, { childList: true, subtree: true });
+      }
+
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          injectTopbarActions();
+          assignSectionIds();
+          setupDockNavigation();
+          dismissLoader();
+        }, 500);
+      });
+
+      // ─────────────────────────────────────────────────
+      //  7. PROGRESS BAR & BACK TO TOP
+      // ─────────────────────────────────────────────────
+      var progressBar = document.getElementById('yeh-progress');
+      var topBtn = document.getElementById('yeh-top');
+
+      window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        if (progressBar) progressBar.style.width = pct + '%';
+
+        if (topBtn) {
+          if (scrollTop > 400) {
+            topBtn.classList.add('visible');
+          } else {
+            topBtn.classList.remove('visible');
+          }
+        }
+      }, { passive: true });
+
+      // ─────────────────────────────────────────────────
+      //  8. TOAST SYSTEM
+      // ─────────────────────────────────────────────────
+      var toastsContainer = document.getElementById('yeh-toasts');
+      window.yehToast = function(message, type, duration) {
+        type = type || 'info';
+        duration = duration || 3000;
+        var toast = document.createElement('div');
+        toast.className = 'yeh-toast ' + type;
+        toast.innerHTML = '<div class="toast-dot"></div><span>' + message + '</span>';
+        if (toastsContainer) toastsContainer.appendChild(toast);
+
+        setTimeout(function() {
+          toast.classList.add('removing');
+          setTimeout(function() { toast.remove(); }, 300);
+        }, duration);
+
+        return toast;
+      };
+
+      // ─────────────────────────────────────────────────
+      //  9. FULLSCREEN LIGHTBOX & 30+ CLIENT PROJECT ARCHIVE
+      // ─────────────────────────────────────────────────
+      window.yehuluGallery = [];
+      window.currentLightboxIndex = 0;
+
+      function updateLightboxView() {
+        if (!window.yehuluGallery || !window.yehuluGallery.length) return;
+        var item = window.yehuluGallery[window.currentLightboxIndex];
+        if (!item) return;
+
+        var imgEl = document.getElementById('lightbox-img');
+        var titleEl = document.getElementById('lightbox-title');
+        var catEl = document.getElementById('lightbox-category');
+
+        if (imgEl) {
+          imgEl.src = item.imageUrl;
+          imgEl.alt = item.title || 'Project Preview';
+        }
+        if (titleEl) {
+          titleEl.textContent = item.title || '';
+        }
+        if (catEl) {
+          var clientInfo = item.client ? ' • ' + item.client : '';
+          catEl.textContent = (item.category || 'COMMERCIAL') + clientInfo + ' (' + (window.currentLightboxIndex + 1) + '/' + window.yehuluGallery.length + ')';
+        }
+      }
+
+      function openLightbox(index) {
+        var modal = document.getElementById('project-lightbox');
+        if (!modal) return;
+        window.currentLightboxIndex = typeof index === 'number' ? index : 0;
+        updateLightboxView();
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        var modal = document.getElementById('project-lightbox');
+        if (!modal) return;
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      function nextLightbox() {
+        if (!window.yehuluGallery.length) return;
+        window.currentLightboxIndex = (window.currentLightboxIndex + 1) % window.yehuluGallery.length;
+        updateLightboxView();
+      }
+
+      function prevLightbox() {
+        if (!window.yehuluGallery.length) return;
+        window.currentLightboxIndex = (window.currentLightboxIndex - 1 + window.yehuluGallery.length) % window.yehuluGallery.length;
+        updateLightboxView();
+      }
+
+      function setupLightboxControls() {
+        var closeBtn = document.getElementById('lightbox-close');
+        var prevBtn = document.getElementById('lightbox-prev');
+        var nextBtn = document.getElementById('lightbox-next');
+        var modal = document.getElementById('project-lightbox');
+
+        if (closeBtn) closeBtn.onclick = function(e) { e.stopPropagation(); closeLightbox(); };
+        if (prevBtn) prevBtn.onclick = function(e) { e.stopPropagation(); prevLightbox(); };
+        if (nextBtn) nextBtn.onclick = function(e) { e.stopPropagation(); nextLightbox(); };
+
+        if (modal) {
+          modal.onclick = function(e) {
+            if (e.target === modal || e.target.id === 'project-lightbox') {
+              closeLightbox();
+            }
+          };
+        }
+
+        window.addEventListener('keydown', function(e) {
+          var modal = document.getElementById('project-lightbox');
+          if (!modal || !modal.classList.contains('active')) return;
+          if (e.key === 'Escape') closeLightbox();
+          else if (e.key === 'ArrowRight') nextLightbox();
+          else if (e.key === 'ArrowLeft') prevLightbox();
+        });
+      }
+
+      function initGalleryArchive() {
+        fetch('/api/gallery')
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            if (!Array.isArray(data) || !data.length) return;
+            window.yehuluGallery = data;
+
+            injectExpandableArchive(data);
+            wireCardClicks();
+          })
+          .catch(function(err) {
+            console.warn('Failed to load gallery for lightbox:', err);
+          });
+      }
+
+      function injectExpandableArchive(items) {
+        var workSection = document.getElementById('work');
+        if (!workSection || document.getElementById('expanded-project-archive')) return;
+
+        var archiveWrapper = document.createElement('div');
+        archiveWrapper.id = 'expanded-project-archive';
+        archiveWrapper.className = 'archive-grid-section';
+
+        var total = items.length;
+        var counts = { 'ALL': total, 'COMMERCIAL': 0, 'SOCIAL MEDIA': 0, 'BRAND IDENTITY': 0 };
+        items.forEach(function(it) {
+          var c = (it.category || '').toUpperCase();
+          if (c.includes('COMMERCIAL') || c.includes('PHOTO')) counts['COMMERCIAL']++;
+          else if (c.includes('SOCIAL')) counts['SOCIAL MEDIA']++;
+          else if (c.includes('BRAND')) counts['BRAND IDENTITY']++;
+        });
+
+        var categories = [
+          { id: 'ALL', label: 'ALL (' + total + ')' },
+          { id: 'SOCIAL MEDIA', label: 'SOCIAL MEDIA (' + counts['SOCIAL MEDIA'] + ')' },
+          { id: 'COMMERCIAL', label: 'COMMERCIAL (' + counts['COMMERCIAL'] + ')' },
+          { id: 'BRAND IDENTITY', label: 'BRAND IDENTITY (' + counts['BRAND IDENTITY'] + ')' }
+        ];
+
+        var html = [
+          '<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">',
+          '  <div>',
+          '    <div class="flex items-center gap-2 mb-1">',
+          '      <span class="w-2 h-2 rounded-full bg-[#B6FF00] animate-pulse"></span>',
+          '      <span class="text-xs font-mono font-bold tracking-[0.25em] text-[#B6FF00] uppercase">EXPANDED CLIENT PORTFOLIO</span>',
+          '    </div>',
+          '    <h3 class="text-xl sm:text-2xl font-black uppercase text-white font-[\'Bricolage_Grotesque\']">ALL DELIVERABLES <span class="text-[#B6FF00]">(' + total + ' ASSETS)</span></h3>',
+          '    <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">High-resolution campaign posters, commercial billboards, executive suites, and corporate captures.</p>',
+          '  </div>',
+          '  <div class="flex flex-wrap items-center gap-2" id="archive-filter-bar">'
+        ];
+
+        categories.forEach(function(cat) {
+          var isAll = cat.id === 'ALL';
+          html.push(
+            '    <button type="button" onclick="filterArchiveCategory(\'' + cat.id + '\')" class="archive-cat-btn text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 border transition-all ' +
+            (isAll ? 'bg-[#B6FF00] text-black border-[#B6FF00]' : 'bg-zinc-950 text-gray-400 border-white/10 hover:border-white/30 hover:text-white') +
+            '" data-cat="' + cat.id + '">' + cat.label + '</button>'
+          );
+        });
+
+        html.push(
+          '    <a href="/gallery" class="inline-flex items-center gap-1 px-3 py-1.5 border border-white/20 text-[#B6FF00] hover:border-[#B6FF00] hover:bg-[#B6FF00] hover:text-black font-extrabold text-[11px] uppercase tracking-wider transition-all">DEDICATED ARCHIVE ↗</a>',
+          '  </div>',
+          '</div>',
+          '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="archive-items-grid">'
+        );
+
+        items.forEach(function(item, idx) {
+          var clientBadge = item.client ? '<span class="text-[9px] font-mono text-gray-300 block truncate">' + item.client + '</span>' : '';
+          var isHiddenInitially = idx >= 12 ? ' style="display:none;" data-overflow="true"' : '';
+          html.push(
+            '<div class="archive-card group" data-category="' + (item.category || '') + '" onclick="openLightbox(' + idx + ')" title="Click to view full size"' + isHiddenInitially + '>',
+            '  <img src="' + item.imageUrl + '" alt="' + item.title + '" loading="lazy" />',
+            '  <div class="archive-card-gradient"></div>',
+            '  <div class="archive-card-meta space-y-1">',
+            '    <span class="inline-block text-[9px] font-extrabold uppercase px-2 py-0.5 bg-[#B6FF00] text-black tracking-wider">' + (item.category || 'COMMERCIAL') + '</span>',
+            '    <h4 class="text-xs sm:text-sm font-black text-white uppercase tracking-tight group-hover:text-[#B6FF00] transition-colors leading-tight line-clamp-2">' + item.title + '</h4>',
+            clientBadge,
+            '  </div>',
+            '</div>'
+          );
+        });
+
+        html.push('</div>');
+
+        if (total > 12) {
+          html.push(
+            '<div id="archive-load-more-wrap" class="mt-8 text-center">',
+            '  <button type="button" id="archive-load-more-btn" onclick="expandAllArchiveItems()" class="inline-flex items-center gap-2 bg-zinc-950 border border-white/20 hover:border-[#B6FF00] text-white hover:text-[#B6FF00] font-extrabold text-xs uppercase tracking-widest px-8 py-3.5 transition-all">',
+            '    <span>LOAD ALL ' + total + ' PROJECTS</span>',
+            '    <svg class="w-4 h-4 text-[#B6FF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>',
+            '  </button>',
+            '</div>'
+          );
+        }
+
+        archiveWrapper.innerHTML = html.join('');
+        workSection.appendChild(archiveWrapper);
+      }
+
+      window.expandAllArchiveItems = function() {
+        var overflowCards = document.querySelectorAll('#archive-items-grid .archive-card[data-overflow="true"]');
+        overflowCards.forEach(function(c) {
+          c.style.display = 'flex';
+          c.removeAttribute('data-overflow');
+        });
+        var btnWrap = document.getElementById('archive-load-more-wrap');
+        if (btnWrap) btnWrap.style.display = 'none';
+      };
+
+      window.filterArchiveCategory = function(cat) {
+        var buttons = document.querySelectorAll('.archive-cat-btn');
+        buttons.forEach(function(btn) {
+          if (btn.getAttribute('data-cat') === cat) {
+            btn.className = 'archive-cat-btn text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 border transition-all bg-[#B6FF00] text-black border-[#B6FF00]';
+          } else {
+            btn.className = 'archive-cat-btn text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 border transition-all bg-zinc-950 text-gray-400 border-white/10 hover:border-white/30 hover:text-white';
+          }
+        });
+
+        // If filtering by specific category, reveal all cards matching it
+        var cards = document.querySelectorAll('#archive-items-grid .archive-card');
+        var btnWrap = document.getElementById('archive-load-more-wrap');
+        if (cat !== 'ALL' && btnWrap) {
+          btnWrap.style.display = 'none';
+        }
+
+        cards.forEach(function(card) {
+          var cardCat = (card.getAttribute('data-category') || '').toUpperCase();
+          if (cat === 'ALL') {
+            if (card.hasAttribute('data-overflow')) {
+              card.style.display = 'none';
+            } else {
+              card.style.display = 'flex';
+            }
+          } else if (cardCat.includes(cat.toUpperCase()) || (cat === 'COMMERCIAL' && cardCat.includes('PHOTO'))) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      };
+
+      function wireCardClicks() {
+        // Wire React-rendered work cards to lightbox
+        var workEl = document.getElementById('work');
+        if (!workEl) return;
+
+        var reactCards = workEl.querySelectorAll('.aspect-\\[4\\/5\\]');
+        reactCards.forEach(function(card) {
+          var img = card.querySelector('img');
+          if (img && !card.dataset.lightboxWired) {
+            card.dataset.lightboxWired = 'true';
+            card.addEventListener('click', function(e) {
+              var src = img.getAttribute('src');
+              var foundIndex = window.yehuluGallery.findIndex(function(it) {
+                return it.imageUrl === src;
+              });
+              if (foundIndex !== -1) {
+                e.preventDefault();
+                e.stopPropagation();
+                openLightbox(foundIndex);
+              }
+            }, true);
+          }
+        });
+      }
+
+      // Check on mutation and after mount
+      setupLightboxControls();
+      initGalleryArchive();
+
+      var pollGalleryMount = setInterval(function() {
+        if (document.getElementById('work')) {
+          initGalleryArchive();
+          wireCardClicks();
+          clearInterval(pollGalleryMount);
+        }
+      }, 500);
+    </script>
+  </body>
+</html>
