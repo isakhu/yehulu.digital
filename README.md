@@ -54,6 +54,27 @@ mihreteab/
 
 ---
 
+## 🔐 Client Admin Portal (Add Images & Videos Anytime)
+
+Your client has full administrative access to log in and upload new images and videos anytime:
+
+- **Portal URL**: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
+- **Admin Email**: `admin@yehuludigital.com` (or `admin@yehulu.digital`)
+- **Default Password**: `YehuluAdmin2026!`
+
+### Features Available to the Client:
+1. **Gallery Management (`/admin/gallery`)**:
+   - Upload new image assets directly from their phone or computer.
+   - Enter title, category (`BRAND IDENTITY`, `COMMERCIAL`, `SOCIAL MEDIA`), client partner, and description.
+   - Edit or delete existing projects anytime.
+2. **Video Portfolio Management (`/admin/videos`)**:
+   - Add commercial video reels, TikTok shorts, and YouTube links.
+   - Upload custom video thumbnails.
+3. **Inbound Messages (`/admin/messages`)**:
+   - View client leads and contact form inquiries.
+
+---
+
 ## 🚀 Quick Start
 
 No heavy dependencies or build steps required. Simply run:
