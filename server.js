@@ -199,74 +199,7 @@ async function handleRequest(req, res) {
   const accountResponse = await handleAccountApi(pathname, method, req, authenticatedUser);
   if (accountResponse) return sendJSON(res, accountResponse.status, accountResponse.body);
 
-  // Authentication and administrator account routes are handled by lib/account-api.js.
-
-  // ══════════════════════════════════════════════
-
-  // ── POST /api/auth/login ──
-  if (pathname === '/api/auth/login' && method === 'POST') {
-    const body = await readBody(req);
-    const email = (body.email || '').trim().toLowerCase();
-    const password = (body.password || '').trim();
-
-    const users = getUsers();
-    const user = users.find(u => u.email.toLowerCase() === email && (u.password === password || password === 'YehuluAdmin2026!'));
-
-    if (user || email.includes('admin') || email.includes('yehulu')) {
-      const matched = user || users[0];
-      const token = `yehulu-token-${matched.id}-${Date.now()}`;
-      activeTokens.add(token);
-
-      console.log(`[AUTH] Admin signed in successfully: ${matched.email}`);
-      return sendJSON(res, 200, {
-        token,
-        user: {
-          id: matched.id,
-          name: matched.name,
-          email: matched.email,
-          role: matched.role || 'ADMIN'
-        }
-      });
-    }
-
-    return sendJSON(res, 401, { error: 'Invalid email or password. Please use admin@yehuludigital.com / YehuluAdmin2026!' });
-  }
-
-  // ── GET /api/auth/me ──
-  if (pathname === '/api/auth/me' && method === 'GET') {
-    const user = getAuthenticatedUser(req);
-    if (user) {
-      return sendJSON(res, 200, {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role || 'ADMIN'
-        }
-      });
-    }
-    return sendJSON(res, 401, { error: 'Not authenticated' });
-  }
-
-  // ── POST /api/auth/logout ──
-  if (pathname === '/api/auth/logout' && method === 'POST') {
-    const authHeader = req.headers['authorization'] || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-    if (token) activeTokens.delete(token);
-    return sendJSON(res, 200, { success: true });
-  }
-
-  // ── GET /api/admin/users ──
-  if (pathname === '/api/admin/users' && method === 'GET') {
-    const users = getUsers().map(u => ({
-      id: u.id,
-      name: u.name,
-      email: u.email,
-      role: u.role || 'ADMIN',
-      createdAt: u.createdAt
-    }));
-    return sendJSON(res, 200, users);
-  }
+  // Shared authentication and account routes are handled above.
 
   // ── GET /api/blob-proxy (Streaming support for private blob stores) ──
   if (pathname === '/api/blob-proxy' && (method === 'GET' || method === 'HEAD')) {
