@@ -365,6 +365,29 @@
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
       }
+      body[data-yd-view="projects"] .yd-project-image-card {
+        opacity: 0;
+        transform: perspective(900px) translateY(28px) rotateX(5deg) scale(.96);
+        transition: opacity .75s ease, transform .85s cubic-bezier(.2,.75,.2,1);
+        transition-delay: var(--yd-project-delay, 0ms);
+        transform-origin: center bottom;
+      }
+      body[data-yd-view="projects"] .yd-project-image-card.yd-project-revealed {
+        opacity: 1;
+        transform: perspective(900px) translateY(0) rotateX(0) scale(1);
+      }
+      body[data-yd-view="projects"] .yd-project-external-image {
+        display: none !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        body[data-yd-view="projects"] .yd-project-image-card,
+        body[data-yd-view="projects"] .yd-project-image-card img {
+          opacity: 1 !important;
+          transform: none !important;
+          animation: none !important;
+          transition: none !important;
+        }
+      }
       body[data-yd-view="home"] #root footer {
         display: none !important;
       }
@@ -1064,6 +1087,7 @@
 
         var currentPath = window.location.pathname || '/';
         var currentView = currentPath === '/services' ? 'services' :
+          currentPath === '/gallery' ? 'projects' :
           currentPath === '/estimate' ? 'estimate' :
           (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
         if (currentView) document.body.setAttribute('data-yd-view', currentView);
@@ -1405,6 +1429,52 @@
         if (installButton) installButton.remove();
       });
 
+      var projectImageObserver = null;
+      function enhanceProjectsGallery() {
+        if (document.body.getAttribute('data-yd-view') !== 'projects') return;
+        var main = document.querySelector('#root main');
+        if (!main) return;
+
+        var projectGrid = Array.prototype.slice.call(main.querySelectorAll('.grid')).find(function(grid) {
+          return Array.prototype.slice.call(grid.children).some(function(card) {
+            return card.querySelector('img');
+          });
+        });
+        if (!projectGrid) return;
+
+        if (!projectImageObserver && 'IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          projectImageObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('yd-project-revealed');
+              projectImageObserver.unobserve(entry.target);
+            });
+          }, { threshold: 0.14, rootMargin: '0px 0px -5% 0px' });
+        }
+
+        Array.prototype.slice.call(projectGrid.children).forEach(function(card, index) {
+          var image = card.querySelector('img');
+          if (!image) return;
+          var imagePath = image.getAttribute('src') || '';
+          if (imagePath.indexOf('/uploads/projects/') !== 0) {
+            card.classList.add('yd-project-external-image');
+            return;
+          }
+
+          card.classList.remove('yd-project-external-image');
+          card.classList.add('yd-project-image-card');
+          card.style.setProperty('--yd-project-delay', (index % 8) * 65 + 'ms');
+          if (card.dataset.ydProjectReveal === 'ready') return;
+          card.dataset.ydProjectReveal = 'ready';
+
+          if (!projectImageObserver) {
+            card.classList.add('yd-project-revealed');
+          } else {
+            projectImageObserver.observe(card);
+          }
+        });
+      }
+
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/sw.js').catch(function(error) {
@@ -1420,6 +1490,7 @@
         setupDockNavigation();
         setupYehuluInstallButton();
         enhanceServiceDoorCards();
+        enhanceProjectsGallery();
         dismissLoader();
       });
 
@@ -1434,6 +1505,7 @@
           setupDockNavigation();
           setupYehuluInstallButton();
           enhanceServiceDoorCards();
+          enhanceProjectsGallery();
           dismissLoader();
         }, 500);
       });
