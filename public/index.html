@@ -1079,7 +1079,6 @@
         injectTopbarActions();
         assignSectionIds();
         setupDockNavigation();
-        injectAdminLoginHelper();
         dismissLoader();
       });
 
@@ -1087,34 +1086,12 @@
         observer.observe(rootElement, { childList: true, subtree: true });
       }
 
-      function injectAdminLoginHelper() {
-        if (!window.location.pathname.startsWith('/admin/login')) return;
-        var form = document.querySelector('form');
-        if (!form || document.getElementById('admin-credential-hint')) return;
-
-        var hint = document.createElement('div');
-        hint.id = 'admin-credential-hint';
-        hint.className = 'mt-6 p-4 bg-zinc-950 border border-[#B6FF00]/40 text-left font-mono text-xs space-y-1.5 shadow-lg';
-        hint.innerHTML = [
-          '<div class="flex items-center gap-2 text-[#B6FF00] font-black uppercase tracking-wider mb-2">',
-          '  <span class="w-2 h-2 rounded-full bg-[#B6FF00] animate-pulse"></span>',
-          '  <span>CLIENT ADMIN CREDENTIALS</span>',
-          '</div>',
-          '<div class="text-gray-300">Email: <strong class="text-white selection:bg-[#B6FF00] selection:text-black">admin@yehuludigital.com</strong></div>',
-          '<div class="text-gray-300">Password: <strong class="text-white selection:bg-[#B6FF00] selection:text-black">YehuluAdmin2026!</strong></div>',
-          '<p class="text-[10px] text-gray-500 pt-2 border-t border-white/10 uppercase tracking-widest leading-relaxed">Sign in here to upload new images & videos, manage portfolio deliverables, and view customer messages.</p>'
-        ].join('');
-
-        form.parentNode.appendChild(hint);
-      }
-
       window.addEventListener('load', function() {
         setTimeout(function() {
           injectTopbarActions();
           assignSectionIds();
           setupDockNavigation();
-          injectAdminLoginHelper();
-          dismissLoader();
+            dismissLoader();
         }, 500);
       });
 
