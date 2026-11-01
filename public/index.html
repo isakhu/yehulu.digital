@@ -353,153 +353,203 @@
         display: none !important;
       }
 
-      /* ── SERVICE DOORS: closed front, open reveal ── */
+      /* ── SERVICE DOORS: tall arched doors inspired by the supplied reference ── */
+      body[data-yd-view="services"] #services {
+        padding-top: clamp(3rem, 7vh, 5.5rem) !important;
+        padding-bottom: 7rem !important;
+      }
+      body[data-yd-view="services"] #services > div:first-child {
+        margin-bottom: clamp(2rem, 5vh, 3.5rem) !important;
+      }
+      body[data-yd-view="services"] #services .grid {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        align-items: end;
+        gap: clamp(12px, 1.5vw, 20px) !important;
+      }
       body[data-yd-view="services"] #services .grid > div.yd-service-door-card {
+        --yd-door-face: #2d5278;
+        --yd-door-edge: #1c3857;
         position: relative !important;
         isolation: isolate;
         overflow: hidden !important;
-        min-height: 280px;
-        perspective: 1200px;
+        display: flex !important;
+        align-items: stretch;
+        min-width: 0;
+        min-height: 365px;
+        padding: 0 !important;
+        border: 1px solid rgba(255,255,255,.18) !important;
+        border-radius: 112px 112px 8px 8px !important;
+        background: linear-gradient(180deg, #161a1f 0%, #090b0d 100%) !important;
+        box-shadow: 0 22px 54px rgba(0,0,0,.32), inset 0 0 0 1px rgba(255,255,255,.035);
+        perspective: 1500px;
+        transform: translateY(0);
         cursor: pointer;
-        background: #080d05 !important;
-        border-color: rgba(182,255,0,.32) !important;
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,.025), 0 18px 42px rgba(0,0,0,.28);
-        transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+        transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+      }
+      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(2) {
+        --yd-door-face: #46423d;
+        --yd-door-edge: #292622;
+      }
+      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(3) {
+        --yd-door-face: #aeb9a0;
+        --yd-door-edge: #7b8971;
+      }
+      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(4) {
+        --yd-door-face: #bd6846;
+        --yd-door-edge: #87442d;
+      }
+      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(5) {
+        --yd-door-face: #a88d54;
+        --yd-door-edge: #6d5730;
       }
       body[data-yd-view="services"] #services .grid > div.yd-service-door-card:hover,
       body[data-yd-view="services"] #services .grid > div.yd-service-door-card:focus-visible {
-        border-color: #B6FF00 !important;
-        background: #101a08 !important;
-        box-shadow: 0 20px 50px rgba(0,0,0,.42), 0 0 24px rgba(182,255,0,.12);
-        transform: translateY(-4px);
+        z-index: 8;
+        transform: translateY(-6px);
+        border-color: rgba(255,255,255,.55) !important;
+        box-shadow: 0 28px 64px rgba(0,0,0,.46), 0 0 26px rgba(182,255,0,.1);
         outline: none;
       }
-      body[data-yd-view="services"] .yd-service-door-card::before,
-      body[data-yd-view="services"] .yd-service-door-card::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 50%;
-        z-index: 4;
-        pointer-events: none;
-        backface-visibility: hidden;
-        transform-style: preserve-3d;
-        transition: transform .85s cubic-bezier(.2,.75,.15,1), filter .55s ease;
-        background-color: #0b1306;
-        background-image:
-          linear-gradient(90deg, rgba(255,255,255,.06), transparent 12%, transparent 82%, rgba(0,0,0,.45)),
-          repeating-linear-gradient(0deg, transparent 0 38px, rgba(182,255,0,.055) 39px, transparent 40px),
-          linear-gradient(135deg, #17210c 0%, #080d05 52%, #101a08 100%);
-        box-shadow: inset 0 0 0 1px rgba(182,255,0,.16), inset 0 0 28px rgba(0,0,0,.6);
-      }
       body[data-yd-view="services"] .yd-service-door-card::before {
-        left: 0;
-        transform-origin: left center;
-        border-right: 1px solid rgba(182,255,0,.3);
-        background-image:
-          linear-gradient(90deg, rgba(255,255,255,.07), transparent 18%, transparent 82%, rgba(0,0,0,.5)),
-          linear-gradient(90deg, transparent 82%, rgba(182,255,0,.42) 83%, transparent 84%),
-          repeating-linear-gradient(0deg, transparent 0 38px, rgba(182,255,0,.055) 39px, transparent 40px),
-          linear-gradient(135deg, #17210c 0%, #080d05 100%);
-      }
-      body[data-yd-view="services"] .yd-service-door-card::after {
-        right: 0;
-        transform-origin: right center;
-        border-left: 1px solid rgba(182,255,0,.3);
-        background-image:
-          linear-gradient(270deg, rgba(255,255,255,.07), transparent 18%, transparent 82%, rgba(0,0,0,.5)),
-          linear-gradient(270deg, transparent 82%, rgba(182,255,0,.42) 83%, transparent 84%),
-          repeating-linear-gradient(0deg, transparent 0 38px, rgba(182,255,0,.055) 39px, transparent 40px),
-          linear-gradient(225deg, #17210c 0%, #080d05 100%);
-      }
-      body[data-yd-view="services"] .yd-service-door-content {
-        position: relative;
-        z-index: 5;
-        min-height: 238px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        opacity: .04;
-        transform: translateY(10px) scale(.98);
-        transition: opacity .35s ease .12s, transform .45s ease .1s;
-      }
-      body[data-yd-view="services"] .yd-service-door-content::before {
-        content: attr(data-door-number) "  /  " attr(data-door-title) "\A\A OPEN TO EXPLORE  ↗";
+        content: attr(data-door-number) "  /  " attr(data-door-title) "\A\A OPEN THE DOOR  ↗";
         white-space: pre-line;
         position: absolute;
-        inset: -10px;
-        z-index: 8;
+        inset: 0;
+        z-index: 5;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
+        padding: 0 13px 43px;
+        border-radius: inherit;
+        color: #fff;
         text-align: center;
-        padding: 18px;
-        color: #f8ffe9;
         font-family: 'Bricolage Grotesque', sans-serif;
-        font-size: clamp(13px, 1.25vw, 17px);
+        font-size: clamp(10px, .86vw, 13px);
         font-weight: 900;
-        line-height: 1.75;
-        letter-spacing: .13em;
+        line-height: 1.8;
+        letter-spacing: .12em;
         text-transform: uppercase;
-        text-shadow: 0 2px 16px rgba(0,0,0,.7);
-        transition: opacity .3s ease;
+        text-shadow: 0 2px 12px rgba(0,0,0,.35);
+        background-color: var(--yd-door-face);
+        background-image:
+          radial-gradient(circle at calc(100% - 27px) 56%, #ead69a 0 3px, #9c783b 4px 5px, #4b3b24 6px, transparent 7px),
+          linear-gradient(90deg, rgba(255,255,255,.18), transparent 13%, transparent 82%, rgba(0,0,0,.22)),
+          linear-gradient(180deg, rgba(255,255,255,.08), transparent 42%, rgba(0,0,0,.13)),
+          repeating-linear-gradient(0deg, transparent 0 74px, rgba(255,255,255,.07) 75px, transparent 77px),
+          linear-gradient(135deg, var(--yd-door-face), var(--yd-door-edge));
+        border: 1px solid rgba(255,255,255,.17);
+        box-shadow:
+          inset 0 0 0 10px rgba(0,0,0,.065),
+          inset 0 0 0 12px rgba(255,255,255,.1),
+          inset 0 0 0 14px rgba(0,0,0,.08),
+          inset 0 -24px 48px rgba(0,0,0,.14),
+          10px 0 18px rgba(0,0,0,.16);
+        transform-origin: left center;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        will-change: transform;
+        transition: transform .95s cubic-bezier(.18,.76,.16,1), filter .55s ease, opacity .55s ease;
+      }
+      body[data-yd-view="services"] .yd-service-door-card::after {
+        content: "";
+        position: absolute;
+        inset: 12px 10px 10px;
+        z-index: 6;
+        border: 1px solid rgba(255,255,255,.23);
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: .42;
+        transition: opacity .4s ease;
+      }
+      body[data-yd-view="services"] .yd-service-door-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        min-height: 365px;
+        padding: 28px 18px 24px;
+        border-radius: inherit;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(182,255,0,.08), transparent 48%),
+          linear-gradient(180deg, #151b20 0%, #080b0e 100%);
+        opacity: 1 !important;
+        transform: none !important;
+        transition: background .35s ease;
+      }
+      body[data-yd-view="services"] .yd-service-door-content::before {
+        content: none !important;
+        display: none !important;
       }
       body[data-yd-view="services"] .yd-service-door-content > * {
-        opacity: 0;
-        transition: opacity .35s ease .12s;
+        opacity: 1 !important;
+        transition: opacity .3s ease;
       }
       body[data-yd-view="services"] .yd-service-door-card:hover::before,
       body[data-yd-view="services"] .yd-service-door-card:focus-visible::before,
       body[data-yd-view="services"] .yd-service-door-card.yd-door-opening::before {
-        transform: rotateY(-108deg);
-        filter: brightness(1.3);
+        transform: perspective(1500px) rotateY(-106deg);
+        filter: brightness(1.18);
+        opacity: .38;
       }
       body[data-yd-view="services"] .yd-service-door-card:hover::after,
       body[data-yd-view="services"] .yd-service-door-card:focus-visible::after,
       body[data-yd-view="services"] .yd-service-door-card.yd-door-opening::after {
-        transform: rotateY(108deg);
-        filter: brightness(1.3);
+        opacity: .08;
       }
       body[data-yd-view="services"] .yd-service-door-card:hover .yd-service-door-content,
       body[data-yd-view="services"] .yd-service-door-card:focus-visible .yd-service-door-content,
       body[data-yd-view="services"] .yd-service-door-card.yd-door-opening .yd-service-door-content {
-        opacity: 1;
-        transform: none;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(182,255,0,.13), transparent 52%),
+          linear-gradient(180deg, #182129 0%, #080b0e 100%);
       }
-      body[data-yd-view="services"] .yd-service-door-card:hover .yd-service-door-content::before,
-      body[data-yd-view="services"] .yd-service-door-card:focus-visible .yd-service-door-content::before,
-      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening .yd-service-door-content::before {
-        opacity: 0;
+      @media (max-width: 1100px) {
+        body[data-yd-view="services"] #services .grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+        body[data-yd-view="services"] #services .grid > div.yd-service-door-card,
+        body[data-yd-view="services"] .yd-service-door-content {
+          min-height: 340px;
+        }
       }
-      body[data-yd-view="services"] .yd-service-door-card:hover .yd-service-door-content > *,
-      body[data-yd-view="services"] .yd-service-door-card:focus-visible .yd-service-door-content > *,
-      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening .yd-service-door-content > * {
-        opacity: 1;
+      @media (max-width: 720px) {
+        body[data-yd-view="services"] #services .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+        body[data-yd-view="services"] #services .grid > div.yd-service-door-card,
+        body[data-yd-view="services"] .yd-service-door-content {
+          min-height: 330px;
+        }
       }
-      /* Preserve the existing package-detail modal above the isolated Services page. */
-      body[data-yd-view="services"] #root main > #home > .fixed.inset-0 {
-        display: flex !important;
+      @media (max-width: 480px) {
+        body[data-yd-view="services"] #services .grid {
+          grid-template-columns: minmax(0, 1fr) !important;
+          max-width: 360px;
+          margin-inline: auto;
+        }
+        body[data-yd-view="services"] #services .grid > div.yd-service-door-card,
+        body[data-yd-view="services"] .yd-service-door-content {
+          min-height: 380px;
+        }
+        body[data-yd-view="services"] #services .grid > div.yd-service-door-card {
+          border-radius: 180px 180px 8px 8px !important;
+        }
       }
       @media (hover: none) {
-        body[data-yd-view="services"] .yd-service-door-card::before,
-        body[data-yd-view="services"] .yd-service-door-card::after {
-          transition-duration: .65s;
-        }
-        body[data-yd-view="services"] .yd-service-door-content {
-          opacity: .12;
-        }
-        body[data-yd-view="services"] .yd-service-door-content::before {
-          font-size: 14px;
+        body[data-yd-view="services"] .yd-service-door-card::before {
+          transition-duration: .72s;
         }
       }
       @media (prefers-reduced-motion: reduce) {
         body[data-yd-view="services"] .yd-service-door-card,
         body[data-yd-view="services"] .yd-service-door-card::before,
         body[data-yd-view="services"] .yd-service-door-card::after,
-        body[data-yd-view="services"] .yd-service-door-content,
-        body[data-yd-view="services"] .yd-service-door-content > * {
+        body[data-yd-view="services"] .yd-service-door-content {
           transition-duration: .01ms !important;
         }
       }
@@ -902,8 +952,8 @@
       <a href="/courses" class="dock-item" data-target="courses" aria-label="Courses" title="Courses">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m2 8 10-5 10 5-10 5-10-5Z"></path><path d="M6 10v6c3.5 3 8.5 3 12 0v-6"></path><path d="M22 8v6"></path></svg><span class="dock-tooltip">Courses</span>
       </a>
-      <a href="/estimate" class="dock-item" data-target="estimate" aria-label="Estimator" title="Estimator">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><path d="M8 6h8"></path><path d="M8 11h.01M12 11h.01M16 11h.01M8 16h.01M12 16h.01M16 16h.01"></path></svg><span class="dock-tooltip">Estimator</span>
+      <a href="/admin/login" class="dock-item" data-target="admin" aria-label="Admin Login" title="Admin Login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg><span class="dock-tooltip">Admin</span>
       </a>
       <a href="/contact" class="dock-item" data-target="contact" aria-label="Contact" title="Contact">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg><span class="dock-tooltip">Contact</span>
@@ -1025,6 +1075,7 @@
           '/video': ['Video Production | Yehulu Digital', 'Watch commercial videos, short-form content, and creative campaigns produced by Yehulu Digital.'],
           '/courses': ['Courses | Yehulu Digital', 'Explore practical creative and digital courses from Yehulu Digital.'],
           '/estimate': ['Project Estimator | Yehulu Digital', 'Estimate your project investment and timeline with the Yehulu Digital project calculator.'],
+          '/admin/login': ['Admin Login | Yehulu Digital', 'Secure client portal for managing Yehulu Digital projects and videos.'],
           '/contact': ['Contact Yehulu Digital | Start a Project', 'Contact Yehulu Digital in Hawassa, Ethiopia to discuss your next creative project.']
         };
         var meta = pageMeta[currentPath] || (currentPath.indexOf('/courses/') === 0
@@ -1135,39 +1186,57 @@
         var section = document.getElementById('services');
         if (!section) return;
 
-        section.querySelectorAll('.grid > div').forEach(function(card) {
-          if (card.dataset.ydServiceDoor === 'ready') return;
+        var heading = section.querySelector('h2');
+        if (heading && !heading.textContent.includes('MAGIC HAPPENS')) {
+          heading.innerHTML = 'MAGIC HAPPENS<br><span class="text-[#B6FF00]">BEHIND THE DOORS.</span>';
+        }
+        var eyebrow = section.querySelector('span.text-xs.font-black');
+        if (eyebrow && eyebrow.textContent.trim() !== 'THE CREATIVE COLLECTION') {
+          eyebrow.textContent = 'THE CREATIVE COLLECTION';
+        }
+        var intro = section.querySelector(':scope > div:first-child p');
+        if (intro) {
+          intro.textContent = 'Choose a door. Step inside to discover the creative services, deliverables, and ideas we can bring to life for your brand.';
+        }
+
+        section.querySelectorAll('.grid > div').forEach(function(card, index) {
           var titleNode = card.querySelector('h3');
           var content = card.firstElementChild;
           if (!titleNode || !content) return;
 
           var numberNode = card.querySelector('span.text-2xl');
           var title = titleNode.textContent.trim();
-          var number = numberNode ? numberNode.textContent.trim() : '01';
+          var number = numberNode ? numberNode.textContent.trim() : String(index + 1).padStart(2, '0');
 
           card.classList.add('yd-service-door-card');
           content.classList.add('yd-service-door-content');
-          content.setAttribute('data-door-title', title);
-          content.setAttribute('data-door-number', number);
+          card.setAttribute('data-door-title', title);
+          card.setAttribute('data-door-number', number);
+          card.setAttribute('data-door-index', String(index + 1));
           card.setAttribute('tabindex', '0');
           card.setAttribute('role', 'button');
           card.setAttribute('aria-label', 'Open ' + title + ' service details');
-          card.dataset.ydServiceDoor = 'ready';
+          card.setAttribute('aria-haspopup', 'dialog');
 
-          // The existing React click handler still opens the original service package modal.
-          card.addEventListener('click', function() {
-            card.classList.add('yd-door-opening');
-            window.setTimeout(function() {
-              card.classList.remove('yd-door-opening');
-            }, 1000);
-          }, true);
+          if (card.dataset.ydServiceDoor !== 'ready') {
+            card.dataset.ydServiceDoor = 'ready';
 
-          card.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              card.click();
-            }
-          });
+            // Keep the original React click action: the door swings and its existing package
+            // detail dialog opens with deliverables, investment, and the enquiry action.
+            card.addEventListener('click', function() {
+              card.classList.add('yd-door-opening');
+              window.setTimeout(function() {
+                card.classList.remove('yd-door-opening');
+              }, 1100);
+            }, true);
+
+            card.addEventListener('keydown', function(event) {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                card.click();
+              }
+            });
+          }
         });
       }
 
