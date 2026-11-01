@@ -194,6 +194,7 @@ async function persistGallery(gallery) {
       await putBlob('data/gallery.json', JSON.stringify(gallery), {
         access: 'public',
         addRandomSuffix: false,
+        allowOverwrite: true,
         contentType: 'application/json'
       });
     } catch (e) {
@@ -201,6 +202,7 @@ async function persistGallery(gallery) {
         await putBlob('data/gallery.json', JSON.stringify(gallery), {
           access: 'private',
           addRandomSuffix: false,
+          allowOverwrite: true,
           contentType: 'application/json'
         });
       } catch (err2) {
@@ -222,6 +224,7 @@ async function persistVideos(videos) {
       await putBlob('data/videos.json', JSON.stringify(videos), {
         access: 'public',
         addRandomSuffix: false,
+        allowOverwrite: true,
         contentType: 'application/json'
       });
     } catch (e) {
@@ -229,6 +232,7 @@ async function persistVideos(videos) {
         await putBlob('data/videos.json', JSON.stringify(videos), {
           access: 'private',
           addRandomSuffix: false,
+          allowOverwrite: true,
           contentType: 'application/json'
         });
       } catch (err2) {
