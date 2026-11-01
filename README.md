@@ -10,6 +10,7 @@ Official web platform for **Yehulu Digital** — a creative digital marketing ag
 ## 🌟 Modernization & Feature Highlights
 
 - **Fixed Bottom Navigation**: Eight icon-only destinations open dedicated Home, About, Services, Projects, Videos, Courses, Estimator, and Contact pages. The active page stays highlighted; the dock remains fixed on desktop and mobile.
+- **Interactive Service Doors**: The five service cards open with a two-panel door animation on hover, focus, or tap, then reveal the existing service details and project enquiry action.
 - **Dynamic Theme Switcher**: Dual mode (Dark default `#050505` with `#B6FF00` accent, and Light `#f6f8f4`) with persistent `localStorage` preference and zero flash of unstyled content (zero-FOUC).
 - **Fullscreen Interactive Lightbox**: Click any portfolio asset across the home page or gallery to inspect full-resolution artwork with previous/next keyboard shortcuts (`←`/`→`), close on `ESC`, and swipe support.
 - **30+ Client Project Archive**: Complete portfolio showcasing 37 verified client deliverables across Brand Identity, Commercial Outdoor Advertising, Social Media, and Hospitality (featuring Rori Hotel Hawassa).
