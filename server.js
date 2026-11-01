@@ -1,4 +1,9 @@
+require('./lib/load-env')();
+
 const http = require('http');
+const { getAuthenticatedUser } = require('./lib/accounts');
+const { handleAccountApi } = require('./lib/account-api');
+const { buildCourseRecord } = require('./lib/courses');
 const fs = require('fs');
 const path = require('path');
 
@@ -37,35 +42,6 @@ const MIME_TYPES = {
   '.webm': 'video/webm',
   '.mov':  'video/quicktime',
 };
-
-// ─── Default Admin Users Store ───
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
-function getUsers() {
-  if (fs.existsSync(USERS_FILE)) {
-    try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); } catch (_) {}
-  }
-  return [
-    {
-      id: 'admin-1',
-      name: 'Yehulu Admin',
-      email: 'admin@yehuludigital.com',
-      password: 'YehuluAdmin2026!',
-      role: 'ADMIN',
-      createdAt: '2026-10-31T00:00:00.000Z'
-    },
-    {
-      id: 'admin-2',
-      name: 'Yehulu Client',
-      email: 'admin@yehulu.digital',
-      password: 'YehuluAdmin2026!',
-      role: 'ADMIN',
-      createdAt: '2026-10-31T00:00:00.000Z'
-    }
-  ];
-}
-
-// Active in-memory session tokens
-const activeTokens = new Set(['yehulu-permanent-session-key']);
 
 // ─── Helpers ───
 function sendJSON(res, status, body) {
@@ -177,17 +153,21 @@ function writeJsonFile(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// ─── Authentication Check ───
-function getAuthenticatedUser(req) {
-  const authHeader = req.headers['authorization'] || '';
-  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+function isPublicApiRequest(pathname, method) {
+  if (pathname === '/api/auth/login' && method === 'POST') return true;
+  if (pathname === '/api/auth/me' && (method === 'GET' || method === 'HEAD')) return true;
+  if (pathname === '/api/messages' && method === 'POST') return true;
+  if (method !== 'GET' && method !== 'HEAD') return false;
 
-  if (!token) return null;
-  if (activeTokens.has(token) || token.startsWith('yehulu-token-')) {
-    const users = getUsers();
-    return users[0] || { id: 'admin-1', name: 'Yehulu Admin', email: 'admin@yehuludigital.com', role: 'ADMIN' };
-  }
-  return null;
+  return pathname === '/api/gallery' ||
+    /^\/api\/gallery\/[^/]+$/.test(pathname) ||
+    pathname === '/api/videos' ||
+    /^\/api\/videos\/[^/]+$/.test(pathname) ||
+    pathname === '/api/contact-info' ||
+    pathname === '/api/estimator-config' ||
+    pathname === '/api/courses' ||
+    /^\/api\/courses\/[^/]+$/.test(pathname) ||
+    pathname === '/api/blob-proxy';
 }
 
 // ─── Server ───
@@ -210,8 +190,17 @@ async function handleRequest(req, res) {
 
   if (method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
-  // ══════════════════════════════════════════════
-  //  1. AUTHENTICATION API
+  let authenticatedUser = null;
+  if (pathname.startsWith('/api/') && !isPublicApiRequest(pathname, method)) {
+    authenticatedUser = await getAuthenticatedUser(req);
+    if (!authenticatedUser) return sendJSON(res, 401, { error: 'Authentication required. Please sign in as an administrator.' });
+  }
+
+  const accountResponse = await handleAccountApi(pathname, method, req, authenticatedUser);
+  if (accountResponse) return sendJSON(res, accountResponse.status, accountResponse.body);
+
+  // Authentication and administrator account routes are handled by lib/account-api.js.
+
   // ══════════════════════════════════════════════
 
   // ── POST /api/auth/login ──
@@ -285,6 +274,9 @@ async function handleRequest(req, res) {
     if (!targetPath) {
       return sendJSON(res, 400, { error: 'Missing pathname or url parameter' });
     }
+    if (!/^projects\/[a-zA-Z0-9_-]+\.(?:jpe?g|png|webp|gif|mp4|webm|mov)$/i.test(targetPath)) {
+      return sendJSON(res, 400, { error: 'Only project media files can be requested.' });
+    }
     try {
       if (getBlob) {
         const result = await getBlob(targetPath, { access: 'private' });
@@ -334,6 +326,9 @@ async function handleRequest(req, res) {
 
       const file = files[0];
       const ext = path.extname(file.filename || '').toLowerCase() || '.jpg';
+      const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.mov']);
+      if (!allowedExtensions.has(ext)) return sendJSON(res, 400, { error: 'Unsupported file type. Upload an image or supported video file.' });
+      if (file.data.length > 25 * 1024 * 1024) return sendJSON(res, 413, { error: 'The upload exceeds the 25 MB limit.' });
       const cleanBase = path.basename(file.filename || 'asset', ext)
         .replace(/[^a-zA-Z0-9_-]/g, '_')
         .toLowerCase();
@@ -542,7 +537,6 @@ async function handleRequest(req, res) {
   //  5. MESSAGES & CONTACT FORM
   // ══════════════════════════════════════════════
 
-  // ── POST /api/messages ──
   if (pathname === '/api/messages' && method === 'POST') {
     const body = await readBody(req);
     if (!body.name || !body.email || !body.message) {
@@ -551,15 +545,14 @@ async function handleRequest(req, res) {
 
     const msgFile = path.join(DATA_DIR, 'messages.json');
     const msgs = readJsonFile(msgFile, []);
-
     const entry = {
       id: Date.now().toString(),
-      name: body.name || '',
-      email: body.email || '',
-      phone: body.phone || '',
-      company: body.company || '',
-      service: body.service || '',
-      message: body.message || '',
+      name: String(body.name).trim().slice(0, 120),
+      email: String(body.email).trim().slice(0, 254),
+      phone: String(body.phone || '').trim().slice(0, 40),
+      company: String(body.company || '').trim().slice(0, 120),
+      service: String(body.service || '').trim().slice(0, 100),
+      message: String(body.message).trim().slice(0, 5000),
       createdAt: new Date().toISOString(),
       status: 'NEW',
       read: false
@@ -567,25 +560,38 @@ async function handleRequest(req, res) {
 
     msgs.unshift(entry);
     writeJsonFile(msgFile, msgs);
-
-    console.log(`[MESSAGE] From: ${entry.name} <${entry.email}> | Service: ${entry.service}`);
-    return sendJSON(res, 200, { success: true, id: entry.id });
+    console.log(`[MESSAGE] New inquiry received from ${entry.email}`);
+    return sendJSON(res, 201, { success: true, id: entry.id });
   }
 
-  // ── GET /api/messages ──
-  if (pathname === '/api/messages' && method === 'GET') {
-    const msgFile = path.join(DATA_DIR, 'messages.json');
-    return serveJsonFile(msgFile, res, []);
+  if (pathname === '/api/messages' && (method === 'GET' || method === 'HEAD')) {
+    return serveJsonFile(path.join(DATA_DIR, 'messages.json'), res, []);
   }
 
-  // ── DELETE /api/messages/:id ──
-  const msgMatch = pathname.match(/^\/api\/messages\/([^/]+)$/);
-  if (msgMatch && method === 'DELETE') {
+  const msgMatch = pathname.match(/^\\/api\\/messages\\/([^/]+)$/);
+  if (msgMatch) {
     const id = msgMatch[1];
     const msgFile = path.join(DATA_DIR, 'messages.json');
-    const msgs = readJsonFile(msgFile, []).filter(m => m.id !== id);
-    writeJsonFile(msgFile, msgs);
-    return sendJSON(res, 200, { success: true, deletedId: id });
+    const msgs = readJsonFile(msgFile, []);
+    const index = msgs.findIndex(message => message.id === id);
+    if (index === -1) return sendJSON(res, 404, { error: 'Message not found' });
+
+    if (method === 'PATCH') {
+      const body = await readBody(req);
+      const updated = { ...msgs[index] };
+      if (typeof body.status === 'string') updated.status = body.status.trim().toUpperCase().slice(0, 40);
+      if (typeof body.read === 'boolean') updated.read = body.read;
+      updated.updatedAt = new Date().toISOString();
+      msgs[index] = updated;
+      writeJsonFile(msgFile, msgs);
+      return sendJSON(res, 200, updated);
+    }
+
+    if (method === 'DELETE') {
+      msgs.splice(index, 1);
+      writeJsonFile(msgFile, msgs);
+      return sendJSON(res, 200, { success: true, deletedId: id });
+    }
   }
 
   // ══════════════════════════════════════════════
@@ -616,8 +622,57 @@ async function handleRequest(req, res) {
     }
   }
 
-  if (pathname === '/api/courses' && method === 'GET') {
-    return serveJsonFile(path.join(DATA_DIR, 'courses.json'), res, []);
+  if (pathname === '/api/admin/courses' && (method === 'GET' || method === 'HEAD')) {
+    return sendJSON(res, 200, readJsonFile(path.join(DATA_DIR, 'courses.json'), []));
+  }
+
+  if (pathname === '/api/admin/courses' && method === 'POST') {
+    const body = await readBody(req);
+    const result = buildCourseRecord(body);
+    if (result.error) return sendJSON(res, 400, { error: result.error });
+    const coursesFile = path.join(DATA_DIR, 'courses.json');
+    const courses = readJsonFile(coursesFile, []);
+    courses.unshift(result.course);
+    writeJsonFile(coursesFile, courses);
+    return sendJSON(res, 201, result.course);
+  }
+
+  const adminCourseMatch = pathname.match(/^\\/api\\/admin\\/courses\\/([^/]+)$/);
+  if (adminCourseMatch) {
+    const coursesFile = path.join(DATA_DIR, 'courses.json');
+    const courses = readJsonFile(coursesFile, []);
+    const index = courses.findIndex(course => course.id === adminCourseMatch[1]);
+    if (index === -1) return sendJSON(res, 404, { error: 'Course not found' });
+
+    if (method === 'PUT') {
+      const body = await readBody(req);
+      const result = buildCourseRecord(body, courses[index]);
+      if (result.error) return sendJSON(res, 400, { error: result.error });
+      courses[index] = result.course;
+      writeJsonFile(coursesFile, courses);
+      return sendJSON(res, 200, result.course);
+    }
+
+    if (method === 'DELETE') {
+      courses.splice(index, 1);
+      writeJsonFile(coursesFile, courses);
+      return sendJSON(res, 200, { success: true, deletedId: adminCourseMatch[1] });
+    }
+  }
+
+  if (pathname === '/api/courses' && (method === 'GET' || method === 'HEAD')) {
+    const courses = readJsonFile(path.join(DATA_DIR, 'courses.json'), []);
+    return sendJSON(res, 200, courses.filter(course => course.status === 'PUBLISHED'));
+  }
+
+  const publicCourseMatch = pathname.match(/^\\/api\\/courses\\/([^/]+)$/);
+  if (publicCourseMatch && (method === 'GET' || method === 'HEAD')) {
+    const courses = readJsonFile(path.join(DATA_DIR, 'courses.json'), []);
+    const course = courses.find(item => item.id === publicCourseMatch[1]);
+    if (!course || (course.status !== 'PUBLISHED' && !await getAuthenticatedUser(req))) {
+      return sendJSON(res, 404, { error: 'Course not found' });
+    }
+    return sendJSON(res, 200, course);
   }
 
   // ── Unknown /api/* ──
@@ -667,9 +722,8 @@ server.listen(PORT, () => {
   console.log('  ├────────────────────────────────────────────────────────┤');
   console.log(`  │  Website:  http://localhost:${PORT}                        │`);
   console.log(`  │  Admin:    http://localhost:${PORT}/admin/login            │`);
-  console.log('  │  Account:  admin@yehuludigital.com                     │');
-  console.log('  │  Pass:     YehuluAdmin2026!                            │');
-  console.log('  │  Status:   Running ✓ (Media Uploads & CRUD Enabled)    │');
+  console.log('  │  Admin access: configure .env before signing in       │');
+  console.log('  │  Status:   Running ✓ (Protected Admin API)            │');
   console.log('  └────────────────────────────────────────────────────────┘');
   console.log('');
 });
