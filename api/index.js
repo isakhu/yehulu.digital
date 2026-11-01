@@ -28,9 +28,7 @@ let cachedCourses = null;
 function sendJSON(res, status, body) {
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    'X-Content-Type-Options': 'nosniff'
   });
   res.end(JSON.stringify(body));
 }
@@ -318,7 +316,7 @@ module.exports = async (req, res) => {
         res.writeHead(200, {
           'Content-Type': contentType,
           'Cache-Control': 'public, max-age=31536000, immutable',
-          'Access-Control-Allow-Origin': '*'
+          'X-Content-Type-Options': 'nosniff'
         });
 
         if (method === 'HEAD') return res.end();
