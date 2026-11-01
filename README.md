@@ -93,6 +93,7 @@ For local use, copy `.env.example` to `.env`, fill in the values, then run `npm 
 
 - Passwords are stored as scrypt hashes, not plaintext.
 - Admin sessions are signed, expire after 8 hours, and are checked by both the local server and Vercel API.
+- Admin login is limited to 10 attempts per client per 15 minutes in each running server instance. For deployments with multiple instances, configure an edge-level rate limit as well.
 - Admin-only endpoints protect uploads, gallery/video/course changes, contact messages, pricing settings, and account management.
 - Administrator accounts and CMS records are stored in a private Vercel Blob store in production.
 - Public visitors can submit the contact form and view published portfolio/course content only.

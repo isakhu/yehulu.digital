@@ -4,6 +4,7 @@ const http = require('http');
 const { getAuthenticatedUser } = require('./lib/accounts');
 const { handleAccountApi } = require('./lib/account-api');
 const { buildCourseRecord } = require('./lib/courses');
+const { readRequestBuffer } = require('./lib/request-body');
 const fs = require('fs');
 const path = require('path');
 
@@ -50,76 +51,61 @@ function sendJSON(res, status, body) {
 }
 
 function readBody(req) {
-  return new Promise((resolve, reject) => {
-    let data = '';
-    req.on('data', chunk => { data += chunk; });
-    req.on('end', () => {
-      try { resolve(JSON.parse(data)); }
-      catch (e) { resolve({}); }
-    });
-    req.on('error', reject);
+  return readRequestBuffer(req, 1024 * 1024).then(data => {
+    try { return JSON.parse(data.toString('utf8')); }
+    catch (_) { return {}; }
   });
 }
 
 function parseMultipart(req) {
-  return new Promise((resolve, reject) => {
+  const maxBytes = 25 * 1024 * 1024 + 256 * 1024;
+  return readRequestBuffer(req, maxBytes).then(buffer => {
     const contentType = req.headers['content-type'] || '';
     const match = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/i);
-    if (!match) return reject(new Error('No multipart boundary found in request'));
+    if (!match) throw new Error('No multipart boundary found in request');
     const boundary = match[1] || match[2];
     const boundaryBuf = Buffer.from('--' + boundary);
-    const chunks = [];
+    let start = 0;
+    const files = [];
+    const fields = {};
 
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => {
-      try {
-        const buffer = Buffer.concat(chunks);
-        let start = 0;
-        const files = [];
-        const fields = {};
+    while (start < buffer.length) {
+      const idx = buffer.indexOf(boundaryBuf, start);
+      if (idx === -1) break;
 
-        while (start < buffer.length) {
-          const idx = buffer.indexOf(boundaryBuf, start);
-          if (idx === -1) break;
-
-          if (start > 0) {
-            let part = buffer.slice(start, idx);
-            if (part[0] === 13 && part[1] === 10) part = part.slice(2);
-            if (part.length >= 2 && part[part.length - 2] === 13 && part[part.length - 1] === 10) {
-              part = part.slice(0, part.length - 2);
-            }
-
-            const headerSep = Buffer.from('\r\n\r\n');
-            const sepIdx = part.indexOf(headerSep);
-            if (sepIdx !== -1) {
-              const headerText = part.slice(0, sepIdx).toString('utf8');
-              const body = part.slice(sepIdx + 4);
-
-              const nameMatch = headerText.match(/name="([^"]+)"/i);
-              const filenameMatch = headerText.match(/filename="([^"]+)"/i);
-
-              if (nameMatch) {
-                const fieldName = nameMatch[1];
-                if (filenameMatch) {
-                  files.push({ fieldName, filename: filenameMatch[1], data: body });
-                } else {
-                  fields[fieldName] = body.toString('utf8');
-                }
-              }
-            }
-          }
-
-          start = idx + boundaryBuf.length;
-          if (buffer[start] === 45 && buffer[start + 1] === 45) break;
-          if (buffer[start] === 13 && buffer[start + 1] === 10) start += 2;
+      if (start > 0) {
+        let part = buffer.slice(start, idx);
+        if (part[0] === 13 && part[1] === 10) part = part.slice(2);
+        if (part.length >= 2 && part[part.length - 2] === 13 && part[part.length - 1] === 10) {
+          part = part.slice(0, part.length - 2);
         }
 
-        resolve({ files, fields });
-      } catch (err) {
-        reject(err);
+        const headerSep = Buffer.from('\r\n\r\n');
+        const sepIdx = part.indexOf(headerSep);
+        if (sepIdx !== -1) {
+          const headerText = part.slice(0, sepIdx).toString('utf8');
+          const body = part.slice(sepIdx + 4);
+
+          const nameMatch = headerText.match(/name="([^"]+)"/i);
+          const filenameMatch = headerText.match(/filename="([^"]+)"/i);
+
+          if (nameMatch) {
+            const fieldName = nameMatch[1];
+            if (filenameMatch) {
+              files.push({ fieldName, filename: filenameMatch[1], data: body });
+            } else {
+              fields[fieldName] = body.toString('utf8');
+            }
+          }
+        }
       }
-    });
-    req.on('error', reject);
+
+      start = idx + boundaryBuf.length;
+      if (buffer[start] === 45 && buffer[start + 1] === 45) break;
+      if (buffer[start] === 13 && buffer[start + 1] === 10) start += 2;
+    }
+
+    return { files, fields };
   });
 }
 
@@ -174,7 +160,14 @@ function isPublicApiRequest(pathname, method) {
 const server = http.createServer((req, res) => {
   handleRequest(req, res).catch(err => {
     console.error('Request error:', err);
-    try { res.writeHead(500); res.end('Internal Server Error'); } catch(_) {}
+    if (res.headersSent) {
+      res.destroy(err);
+      return;
+    }
+    const status = Number(err.statusCode) || 500;
+    sendJSON(res, status, {
+      error: status === 413 ? err.message : 'Internal Server Error'
+    });
   });
 });
 
@@ -194,7 +187,10 @@ async function handleRequest(req, res) {
   }
 
   const accountResponse = await handleAccountApi(pathname, method, req, authenticatedUser);
-  if (accountResponse) return sendJSON(res, accountResponse.status, accountResponse.body);
+  if (accountResponse) {
+    Object.entries(accountResponse.headers || {}).forEach(([name, value]) => res.setHeader(name, value));
+    return sendJSON(res, accountResponse.status, accountResponse.body);
+  }
 
   // Shared authentication and account routes are handled above.
 
@@ -621,8 +617,19 @@ async function handleRequest(req, res) {
 
   let decodedPath = pathname;
   try { decodedPath = decodeURIComponent(pathname); } catch (_) {}
-  let relativePath = decodedPath === '/' ? 'index.html' : decodedPath.replace(/^\//, '');
-  let filePath     = path.join(PUBLIC_DIR, relativePath);
+  const relativePath = decodedPath === '/' ? 'index.html' : decodedPath.replace(/^\//, '');
+  const filePath = path.resolve(PUBLIC_DIR, relativePath);
+  const pathFromPublic = path.relative(PUBLIC_DIR, filePath);
+  if (
+    decodedPath.includes('\0') ||
+    pathFromPublic === '..' ||
+    pathFromPublic.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(pathFromPublic)
+  ) {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('404 Not Found');
+    return;
+  }
 
   // Exact file match
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -630,8 +637,16 @@ async function handleRequest(req, res) {
   }
 
   // Try with .html extension (e.g. /about → about.html)
-  if (fs.existsSync(filePath + '.html') && fs.statSync(filePath + '.html').isFile()) {
-    return serveStaticFile(filePath + '.html', res);
+  const htmlFilePath = path.resolve(PUBLIC_DIR, `${relativePath}.html`);
+  const htmlPathFromPublic = path.relative(PUBLIC_DIR, htmlFilePath);
+  if (
+    htmlPathFromPublic !== '..' &&
+    !htmlPathFromPublic.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(htmlPathFromPublic) &&
+    fs.existsSync(htmlFilePath) &&
+    fs.statSync(htmlFilePath).isFile()
+  ) {
+    return serveStaticFile(htmlFilePath, res);
   }
 
   // SPA Fallback — serve index.html for all React-Router routes (/admin, /gallery, etc.)

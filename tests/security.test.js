@@ -2,6 +2,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 process.env.SESSION_SECRET = 'test-only-session-secret-with-at-least-32-characters';
 
@@ -67,4 +69,17 @@ test('sessions are rejected when the server secret is missing', () => {
   } finally {
     process.env.SESSION_SECRET = original;
   }
+});
+
+test('gallery markup renders API content as text and accepts only safe image URLs', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
+  const start = html.indexOf('function injectExpandableArchive(items)');
+  const end = html.indexOf('window.expandAllArchiveItems =', start);
+  const archiveRenderer = html.slice(start, end);
+
+  assert.notEqual(start, -1);
+  assert.ok(end > start);
+  assert.match(archiveRenderer, /cardTitle\.textContent = title/);
+  assert.match(archiveRenderer, /image\.src = safeGalleryImageUrl\(item\.imageUrl\)/);
+  assert.doesNotMatch(archiveRenderer, /innerHTML\s*=\s*html\.join/);
 });

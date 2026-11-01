@@ -1559,7 +1559,7 @@
         var catEl = document.getElementById('lightbox-category');
 
         if (imgEl) {
-          imgEl.src = item.imageUrl;
+          imgEl.src = safeGalleryImageUrl(item.imageUrl);
           imgEl.alt = item.title || 'Project Preview';
         }
         if (titleEl) {
@@ -1665,74 +1665,105 @@
           { id: 'BRAND IDENTITY', label: 'BRAND IDENTITY (' + counts['BRAND IDENTITY'] + ')' }
         ];
 
-        var html = [
+        archiveWrapper.innerHTML = [
           '<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">',
           '  <div>',
           '    <div class="flex items-center gap-2 mb-1">',
           '      <span class="w-2 h-2 rounded-full bg-[#B6FF00] animate-pulse"></span>',
           '      <span class="text-xs font-mono font-bold tracking-[0.25em] text-[#B6FF00] uppercase">EXPANDED CLIENT PORTFOLIO</span>',
           '    </div>',
-          '    <h3 class="text-xl sm:text-2xl font-black uppercase text-white font-[\'Bricolage_Grotesque\']">ALL DELIVERABLES <span class="text-[#B6FF00]">(' + total + ' ASSETS)</span></h3>',
+          '    <h3 class="text-xl sm:text-2xl font-black uppercase text-white font-[\'Bricolage_Grotesque\']">ALL DELIVERABLES <span class="text-[#B6FF00]" id="archive-asset-count"></span></h3>',
           '    <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">High-resolution campaign posters, commercial billboards, executive suites, and corporate captures.</p>',
           '  </div>',
-          '  <div class="flex flex-wrap items-center gap-2" id="archive-filter-bar">'
-        ];
+          '  <div class="flex flex-wrap items-center gap-2" id="archive-filter-bar"></div>',
+          '</div>',
+          '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="archive-items-grid"></div>',
+          total > 12
+            ? '<div id="archive-load-more-wrap" class="mt-8 text-center"><button type="button" id="archive-load-more-btn" class="inline-flex items-center gap-2 bg-zinc-950 border border-white/20 hover:border-[#B6FF00] text-white hover:text-[#B6FF00] font-extrabold text-xs uppercase tracking-widest px-8 py-3.5 transition-all"><span></span><svg class="w-4 h-4 text-[#B6FF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></div>'
+            : ''
+        ].join('');
 
+        archiveWrapper.querySelector('#archive-asset-count').textContent = '(' + total + ' ASSETS)';
+        var filterBar = archiveWrapper.querySelector('#archive-filter-bar');
         categories.forEach(function(cat) {
           var isAll = cat.id === 'ALL';
-          html.push(
-            '    <button type="button" onclick="filterArchiveCategory(\'' + cat.id + '\')" class="archive-cat-btn text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 border transition-all ' +
-            (isAll ? 'bg-[#B6FF00] text-black border-[#B6FF00]' : 'bg-zinc-950 text-gray-400 border-white/10 hover:border-white/30 hover:text-white') +
-            '" data-cat="' + cat.id + '">' + cat.label + '</button>'
-          );
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'archive-cat-btn text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 border transition-all ' +
+            (isAll ? 'bg-[#B6FF00] text-black border-[#B6FF00]' : 'bg-zinc-950 text-gray-400 border-white/10 hover:border-white/30 hover:text-white');
+          button.setAttribute('data-cat', cat.id);
+          button.textContent = cat.label;
+          button.addEventListener('click', function() { window.filterArchiveCategory(cat.id); });
+          filterBar.appendChild(button);
         });
 
-        html.push(
-          '    <a href="/gallery" class="inline-flex items-center gap-1 px-3 py-1.5 border border-white/20 text-[#B6FF00] hover:border-[#B6FF00] hover:bg-[#B6FF00] hover:text-black font-extrabold text-[11px] uppercase tracking-wider transition-all">DEDICATED ARCHIVE ↗</a>',
-          '  </div>',
-          '</div>',
-          '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="archive-items-grid">'
-        );
+        var archiveLink = document.createElement('a');
+        archiveLink.href = '/gallery';
+        archiveLink.className = 'inline-flex items-center gap-1 px-3 py-1.5 border border-white/20 text-[#B6FF00] hover:border-[#B6FF00] hover:bg-[#B6FF00] hover:text-black font-extrabold text-[11px] uppercase tracking-wider transition-all';
+        archiveLink.textContent = 'DEDICATED ARCHIVE ↗';
+        filterBar.appendChild(archiveLink);
+        var archiveGrid = archiveWrapper.querySelector('#archive-items-grid');
 
         items.forEach(function(item, idx) {
-          var clientBadge = item.client || 'Yehulu Client Partner';
-          var itemYear = item.year || '2026';
-          var isHiddenInitially = idx >= 12 ? ' style="display:none;" data-overflow="true"' : '';
-          html.push(
-            '<div class="archive-card group" data-category="' + (item.category || '') + '" onclick="openLightbox(' + idx + ')" title="Click to view full size"' + isHiddenInitially + '>',
-            '  <div class="archive-card-image-box">',
-            '    <img src="' + item.imageUrl + '" alt="' + item.title + '" loading="lazy" />',
-            '    <span class="archive-card-badge">' + (item.category || 'COMMERCIAL') + '</span>',
-            '    <div class="archive-card-zoom-pill">',
-            '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>',
-            '      <span>VIEW</span>',
-            '    </div>',
-            '  </div>',
-            '  <div class="archive-card-body">',
-            '    <h4 class="archive-card-title">' + item.title + '</h4>',
-            '    <div class="archive-card-footer">',
-            '      <span class="archive-card-client">' + clientBadge + '</span>',
-            '      <span class="archive-card-year">' + itemYear + '</span>',
-            '    </div>',
-            '  </div>',
-            '</div>'
-          );
+          var title = String(item.title || '');
+          var category = String(item.category || 'COMMERCIAL');
+          var card = document.createElement('div');
+          card.className = 'archive-card group';
+          card.setAttribute('data-category', String(item.category || ''));
+          card.title = 'Click to view full size';
+          card.addEventListener('click', function() { openLightbox(idx); });
+          if (idx >= 12) {
+            card.style.display = 'none';
+            card.setAttribute('data-overflow', 'true');
+          }
+
+          var imageBox = document.createElement('div');
+          imageBox.className = 'archive-card-image-box';
+          var image = document.createElement('img');
+          image.src = safeGalleryImageUrl(item.imageUrl);
+          image.alt = title;
+          image.loading = 'lazy';
+          imageBox.appendChild(image);
+
+          var badge = document.createElement('span');
+          badge.className = 'archive-card-badge';
+          badge.textContent = category;
+          imageBox.appendChild(badge);
+
+          var zoomPill = document.createElement('div');
+          zoomPill.className = 'archive-card-zoom-pill';
+          zoomPill.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span>VIEW</span>';
+          imageBox.appendChild(zoomPill);
+          card.appendChild(imageBox);
+
+          var cardBody = document.createElement('div');
+          cardBody.className = 'archive-card-body';
+          var cardTitle = document.createElement('h4');
+          cardTitle.className = 'archive-card-title';
+          cardTitle.textContent = title;
+          cardBody.appendChild(cardTitle);
+
+          var footer = document.createElement('div');
+          footer.className = 'archive-card-footer';
+          var client = document.createElement('span');
+          client.className = 'archive-card-client';
+          client.textContent = String(item.client || 'Yehulu Client Partner');
+          var year = document.createElement('span');
+          year.className = 'archive-card-year';
+          year.textContent = String(item.year || '2026');
+          footer.appendChild(client);
+          footer.appendChild(year);
+          cardBody.appendChild(footer);
+          card.appendChild(cardBody);
+          archiveGrid.appendChild(card);
         });
 
-        html.push('</div>');
-
         if (total > 12) {
-          html.push(
-            '<div id="archive-load-more-wrap" class="mt-8 text-center">',
-            '  <button type="button" id="archive-load-more-btn" onclick="expandAllArchiveItems()" class="inline-flex items-center gap-2 bg-zinc-950 border border-white/20 hover:border-[#B6FF00] text-white hover:text-[#B6FF00] font-extrabold text-xs uppercase tracking-widest px-8 py-3.5 transition-all">',
-            '    <span>LOAD ALL ' + total + ' PROJECTS</span>',
-            '    <svg class="w-4 h-4 text-[#B6FF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>',
-            '  </button>',
-            '</div>'
-          );
+          var loadMore = archiveWrapper.querySelector('#archive-load-more-btn');
+          loadMore.querySelector('span').textContent = 'LOAD ALL ' + total + ' PROJECTS';
+          loadMore.addEventListener('click', window.expandAllArchiveItems);
         }
 
-        archiveWrapper.innerHTML = html.join('');
         workSection.appendChild(archiveWrapper);
       }
 

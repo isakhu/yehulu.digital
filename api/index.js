@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getAuthenticatedUser } = require('../lib/accounts');
 const { handleAccountApi } = require('../lib/account-api');
+const { readRequestBuffer } = require('../lib/request-body');
 const { readJSON: readStoredJSON, writeJSON: writeStoredJSON } = require('../lib/data-store');
 const { buildCourseRecord } = require('../lib/courses');
 
@@ -34,88 +35,79 @@ function sendJSON(res, status, body) {
 }
 
 function readBody(req) {
-  return new Promise((resolve) => {
-    if (req.body && typeof req.body === 'object') {
-      return resolve(req.body);
+  if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
+  if (typeof req.body === 'string') {
+    if (Buffer.byteLength(req.body, 'utf8') > 1024 * 1024) {
+      const error = new Error('Request body exceeds the allowed size.');
+      error.statusCode = 413;
+      return Promise.reject(error);
     }
-    if (typeof req.body === 'string') {
-      try { return resolve(JSON.parse(req.body)); } catch (_) { return resolve({}); }
-    }
-    let data = '';
-    req.on('data', chunk => { data += chunk; });
-    req.on('end', () => {
-      try { resolve(JSON.parse(data)); }
-      catch (_) { resolve({}); }
-    });
-    req.on('error', () => resolve({}));
+    try { return Promise.resolve(JSON.parse(req.body)); }
+    catch (_) { return Promise.resolve({}); }
+  }
+  return readRequestBuffer(req, 1024 * 1024).then(data => {
+    try { return JSON.parse(data.toString('utf8')); }
+    catch (_) { return {}; }
   });
 }
 
 function parseMultipart(req) {
-  return new Promise((resolve, reject) => {
+  const maxBytes = process.env.VERCEL === '1'
+    ? 4 * 1024 * 1024
+    : 25 * 1024 * 1024 + 256 * 1024;
+  return readRequestBuffer(req, maxBytes).then(buffer => {
     const contentType = req.headers['content-type'] || '';
     const match = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/i);
-    if (!match) return reject(new Error('No multipart boundary found'));
+    if (!match) throw new Error('No multipart boundary found');
     const boundary = match[1] || match[2];
     const boundaryBuf = Buffer.from('--' + boundary);
-    const chunks = [];
+    let start = 0;
+    const files = [];
+    const fields = {};
 
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => {
-      try {
-        const buffer = Buffer.concat(chunks);
-        let start = 0;
-        const files = [];
-        const fields = {};
+    while (start < buffer.length) {
+      const idx = buffer.indexOf(boundaryBuf, start);
+      if (idx === -1) break;
 
-        while (start < buffer.length) {
-          const idx = buffer.indexOf(boundaryBuf, start);
-          if (idx === -1) break;
-
-          if (start > 0) {
-            let part = buffer.slice(start, idx);
-            if (part[0] === 13 && part[1] === 10) part = part.slice(2);
-            if (part.length >= 2 && part[part.length - 2] === 13 && part[part.length - 1] === 10) {
-              part = part.slice(0, part.length - 2);
-            }
-
-            const headerSep = Buffer.from('\r\n\r\n');
-            const sepIdx = part.indexOf(headerSep);
-            if (sepIdx !== -1) {
-              const headerText = part.slice(0, sepIdx).toString('utf8');
-              const body = part.slice(sepIdx + 4);
-
-              const nameMatch = headerText.match(/name="([^"]+)"/i);
-              const filenameMatch = headerText.match(/filename="([^"]+)"/i);
-              const mimeMatch = headerText.match(/content-type:\s*([^\r\n]+)/i);
-
-              if (nameMatch) {
-                const fieldName = nameMatch[1];
-                if (filenameMatch) {
-                  files.push({
-                    fieldName,
-                    filename: filenameMatch[1],
-                    contentType: mimeMatch ? mimeMatch[1].trim() : 'application/octet-stream',
-                    data: body
-                  });
-                } else {
-                  fields[fieldName] = body.toString('utf8');
-                }
-              }
-            }
-          }
-
-          start = idx + boundaryBuf.length;
-          if (buffer[start] === 45 && buffer[start + 1] === 45) break;
-          if (buffer[start] === 13 && buffer[start + 1] === 10) start += 2;
+      if (start > 0) {
+        let part = buffer.slice(start, idx);
+        if (part[0] === 13 && part[1] === 10) part = part.slice(2);
+        if (part.length >= 2 && part[part.length - 2] === 13 && part[part.length - 1] === 10) {
+          part = part.slice(0, part.length - 2);
         }
 
-        resolve({ files, fields });
-      } catch (err) {
-        reject(err);
+        const headerSep = Buffer.from('\r\n\r\n');
+        const sepIdx = part.indexOf(headerSep);
+        if (sepIdx !== -1) {
+          const headerText = part.slice(0, sepIdx).toString('utf8');
+          const body = part.slice(sepIdx + 4);
+
+          const nameMatch = headerText.match(/name="([^"]+)"/i);
+          const filenameMatch = headerText.match(/filename="([^"]+)"/i);
+          const mimeMatch = headerText.match(/content-type:\s*([^\r\n]+)/i);
+
+          if (nameMatch) {
+            const fieldName = nameMatch[1];
+            if (filenameMatch) {
+              files.push({
+                fieldName,
+                filename: filenameMatch[1],
+                contentType: mimeMatch ? mimeMatch[1].trim() : 'application/octet-stream',
+                data: body
+              });
+            } else {
+              fields[fieldName] = body.toString('utf8');
+            }
+          }
+        }
       }
-    });
-    req.on('error', reject);
+
+      start = idx + boundaryBuf.length;
+      if (buffer[start] === 45 && buffer[start + 1] === 45) break;
+      if (buffer[start] === 13 && buffer[start + 1] === 10) start += 2;
+    }
+
+    return { files, fields };
   });
 }
 
@@ -179,65 +171,91 @@ async function getVideosData() {
 }
 
 async function persistGallery(gallery) {
-  cachedGallery = gallery;
-  // If local disk is writable:
-  try {
-    const file = path.join(DATA_DIR, 'gallery.json');
-    fs.writeFileSync(file, JSON.stringify(gallery, null, 2), 'utf8');
-  } catch (_) {}
+  const serialized = JSON.stringify(gallery);
+  let persisted = false;
 
-  // If Vercel Blob is configured (try public first, fallback to private):
-  if (putBlob && process.env.BLOB_READ_WRITE_TOKEN) {
+  if (process.env.VERCEL !== '1') {
+    const file = path.join(DATA_DIR, 'gallery.json');
     try {
-      await putBlob('data/gallery.json', JSON.stringify(gallery), {
+      fs.writeFileSync(file, JSON.stringify(gallery, null, 2), 'utf8');
+      persisted = true;
+    } catch (error) {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) throw error;
+    }
+  }
+
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    if (!putBlob) throw new Error('Vercel Blob support is unavailable for gallery updates.');
+    try {
+      await putBlob('data/gallery.json', serialized, {
         access: 'public',
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: 'application/json'
       });
-    } catch (e) {
+      persisted = true;
+    } catch (_) {
       try {
-        await putBlob('data/gallery.json', JSON.stringify(gallery), {
+        await putBlob('data/gallery.json', serialized, {
           access: 'private',
           addRandomSuffix: false,
           allowOverwrite: true,
           contentType: 'application/json'
         });
-      } catch (err2) {
-        console.warn('Vercel Blob gallery sync notice:', err2.message);
+        persisted = true;
+      } catch (error) {
+        if (!persisted) throw error;
+        console.warn('Vercel Blob gallery sync notice:', error.message);
       }
     }
   }
+
+  if (!persisted) throw new Error('Gallery updates require a writable data store.');
+  cachedGallery = gallery;
 }
 
 async function persistVideos(videos) {
-  cachedVideos = videos;
-  try {
-    const file = path.join(DATA_DIR, 'videos.json');
-    fs.writeFileSync(file, JSON.stringify(videos, null, 2), 'utf8');
-  } catch (_) {}
+  const serialized = JSON.stringify(videos);
+  let persisted = false;
 
-  if (putBlob && process.env.BLOB_READ_WRITE_TOKEN) {
+  if (process.env.VERCEL !== '1') {
+    const file = path.join(DATA_DIR, 'videos.json');
     try {
-      await putBlob('data/videos.json', JSON.stringify(videos), {
+      fs.writeFileSync(file, JSON.stringify(videos, null, 2), 'utf8');
+      persisted = true;
+    } catch (error) {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) throw error;
+    }
+  }
+
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    if (!putBlob) throw new Error('Vercel Blob support is unavailable for video updates.');
+    try {
+      await putBlob('data/videos.json', serialized, {
         access: 'public',
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: 'application/json'
       });
-    } catch (e) {
+      persisted = true;
+    } catch (_) {
       try {
-        await putBlob('data/videos.json', JSON.stringify(videos), {
+        await putBlob('data/videos.json', serialized, {
           access: 'private',
           addRandomSuffix: false,
           allowOverwrite: true,
           contentType: 'application/json'
         });
-      } catch (err2) {
-        console.warn('Vercel Blob video sync notice:', err2.message);
+        persisted = true;
+      } catch (error) {
+        if (!persisted) throw error;
+        console.warn('Vercel Blob video sync notice:', error.message);
       }
     }
   }
+
+  if (!persisted) throw new Error('Video updates require a writable data store.');
+  cachedVideos = videos;
 }
 
 function isPublicApiRequest(pathname, method) {
@@ -269,7 +287,7 @@ async function persistCourses(courses) {
   await writeStoredJSON('courses.json', courses);
 }
 
-module.exports = async (req, res) => {
+async function handleApiRequest(req, res) {
   const method = (req.method || 'GET').toUpperCase();
   const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const rewrittenPath = parsed.searchParams.get('__route');
@@ -299,7 +317,10 @@ module.exports = async (req, res) => {
   }
 
   const accountResponse = await handleAccountApi(pathname, method, req, authenticatedUser);
-  if (accountResponse) return sendJSON(res, accountResponse.status, accountResponse.body);
+  if (accountResponse) {
+    Object.entries(accountResponse.headers || {}).forEach(([name, value]) => res.setHeader(name, value));
+    return sendJSON(res, accountResponse.status, accountResponse.body);
+  }
 
   // ── Private media proxy (restricted to the projects/ asset namespace) ──
   // ── 2. SECURE BLOB PROXY (Supports Private Stores without 403 Forbidden) ──
@@ -672,4 +693,20 @@ module.exports = async (req, res) => {
   }
 
   return sendJSON(res, 404, { error: 'Endpoint not found' });
+}
+
+module.exports = async (req, res) => {
+  try {
+    return await handleApiRequest(req, res);
+  } catch (error) {
+    console.error('API request error:', error);
+    if (res.headersSent) {
+      res.destroy(error);
+      return;
+    }
+    const status = Number(error.statusCode) || 500;
+    return sendJSON(res, status, {
+      error: status === 413 ? error.message : 'Internal Server Error'
+    });
+  }
 };
