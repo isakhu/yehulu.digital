@@ -501,7 +501,7 @@ async function handleRequest(req, res) {
     return serveJsonFile(path.join(DATA_DIR, 'messages.json'), res, []);
   }
 
-  const msgMatch = pathname.match(/^\\/api\\/messages\\/([^/]+)$/);
+  const msgMatch = pathname.match(/^\/api\/messages\/([^/]+)$/);
   if (msgMatch) {
     const id = msgMatch[1];
     const msgFile = path.join(DATA_DIR, 'messages.json');
@@ -570,7 +570,7 @@ async function handleRequest(req, res) {
     return sendJSON(res, 201, result.course);
   }
 
-  const adminCourseMatch = pathname.match(/^\\/api\\/admin\\/courses\\/([^/]+)$/);
+  const adminCourseMatch = pathname.match(/^\/api\/admin\/courses\/([^/]+)$/);
   if (adminCourseMatch) {
     const coursesFile = path.join(DATA_DIR, 'courses.json');
     const courses = readJsonFile(coursesFile, []);
@@ -598,7 +598,7 @@ async function handleRequest(req, res) {
     return sendJSON(res, 200, courses.filter(course => course.status === 'PUBLISHED'));
   }
 
-  const publicCourseMatch = pathname.match(/^\\/api\\/courses\\/([^/]+)$/);
+  const publicCourseMatch = pathname.match(/^\/api\/courses\/([^/]+)$/);
   if (publicCourseMatch && (method === 'GET' || method === 'HEAD')) {
     const courses = readJsonFile(path.join(DATA_DIR, 'courses.json'), []);
     const course = courses.find(item => item.id === publicCourseMatch[1]);
