@@ -365,16 +365,28 @@
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
       }
-      body[data-yd-view="projects"] .yd-project-image-card {
-        opacity: 0;
-        transform: perspective(900px) translateY(28px) rotateX(5deg) scale(.96);
-        transition: opacity .75s ease, transform .85s cubic-bezier(.2,.75,.2,1);
-        transition-delay: var(--yd-project-delay, 0ms);
-        transform-origin: center bottom;
+            /* ══════════ STACKING CARDS DECK EFFECT ══════════ */
+      .yd-stacking-deck {
+        position: relative;
       }
-      body[data-yd-view="projects"] .yd-project-image-card.yd-project-revealed {
-        opacity: 1;
-        transform: perspective(900px) translateY(0) rotateX(0) scale(1);
+      .yd-stacking-card {
+        position: sticky !important;
+        top: var(--stack-top, 96px) !important;
+        z-index: var(--stack-z, 1);
+        margin-bottom: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.7), 0 20px 40px rgba(0, 0, 0, 0.9);
+        transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+        will-change: transform, top;
+        background-color: #0d0d0d !important;
+        overflow: hidden;
+      }
+      .yd-stacking-card:hover {
+        box-shadow: 0 -12px 35px rgba(182, 255, 0, 0.15), 0 25px 50px rgba(0, 0, 0, 0.95);
+      }
+      .yd-project-image-card {
+        opacity: 1 !important;
+        visibility: visible !important;
       }
       @media (prefers-reduced-motion: reduce) {
         body[data-yd-view="projects"] .yd-project-image-card,
@@ -1428,44 +1440,33 @@
         if (installButton) installButton.remove();
       });
 
-      var projectImageObserver = null;
-      function enhanceProjectsGallery() {
-        if (document.body.getAttribute('data-yd-view') !== 'projects') return;
-        var main = document.querySelector('#root main');
+            function enhanceProjectsGallery() {
+        // Apply stacking card effect across portfolio/gallery views & homepage work section
+        var main = document.querySelector('#root main') || document.querySelector('main');
         if (!main) return;
 
-        var projectGrid = Array.prototype.slice.call(main.querySelectorAll('.grid')).find(function(grid) {
+        // Target grids containing portfolio project cards (with images)
+        var projectGrids = Array.prototype.slice.call(main.querySelectorAll('.grid, #archive-items-grid')).filter(function(grid) {
           return Array.prototype.slice.call(grid.children).some(function(card) {
             return card.querySelector('img');
           });
         });
-        if (!projectGrid) return;
 
-        if (!projectImageObserver && 'IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          projectImageObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (!entry.isIntersecting) return;
-              entry.target.classList.add('yd-project-revealed');
-              projectImageObserver.unobserve(entry.target);
-            });
-          }, { threshold: 0.14, rootMargin: '0px 0px -5% 0px' });
-        }
+        projectGrids.forEach(function(grid) {
+          grid.classList.add('yd-stacking-deck');
+          var cards = Array.prototype.slice.call(grid.children).filter(function(el) {
+            return el.querySelector('img') || el.classList.contains('archive-card');
+          });
 
-        Array.prototype.slice.call(projectGrid.children).forEach(function(card, index) {
-          var image = card.querySelector('img');
-          if (!image) return;
-          var imagePath = image.getAttribute('src') || '';
-          if (!imagePath.trim()) return;
-          card.classList.add('yd-project-image-card');
-          card.style.setProperty('--yd-project-delay', (index % 8) * 65 + 'ms');
-          if (card.dataset.ydProjectReveal === 'ready') return;
-          card.dataset.ydProjectReveal = 'ready';
-
-          if (!projectImageObserver) {
-            card.classList.add('yd-project-revealed');
-          } else {
-            projectImageObserver.observe(card);
-          }
+          cards.forEach(function(card, index) {
+            card.classList.add('yd-stacking-card', 'yd-project-image-card');
+            
+            // Progressive stacking top offset: each card sticks slightly lower (20px steps)
+            // like a deck of playing cards sliding over one another
+            var stackTop = 85 + Math.min(index * 18, 160);
+            card.style.setProperty('--stack-top', stackTop + 'px');
+            card.style.setProperty('--stack-z', String(index + 10));
+          });
         });
       }
 
