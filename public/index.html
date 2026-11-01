@@ -1110,7 +1110,7 @@
             var sect = h.closest('section') || h.closest('div.border-b') || h.parentElement.parentElement;
             if (sect && !sect.id) sect.id = 'about';
           }
-          if (txt.includes('CORE DISCIPLINES') || txt.includes('WHAT WE DO')) {
+          if (txt.includes('CORE DISCIPLINES') || txt.includes('WHAT WE DO') || txt.includes('OUR SERVICES')) {
             var sSect = h.closest('section') || h.closest('div.space-y') || h.parentElement.parentElement;
             if (sSect && !sSect.id) sSect.id = 'services';
           }
@@ -1119,10 +1119,40 @@
             if (eSect && !eSect.id) eSect.id = 'estimate';
           }
           if (txt.includes('HAVE A PROJECT?') || txt.includes('START A PROJECT')) {
-            var cSect = h.closest('section') || h.closest('div.bg-\\[\\#B6FF00\\]') || h.parentElement;
+            var cSect = h.closest('section') || h.parentElement;
             if (cSect && !cSect.id) cSect.id = 'contact';
           }
         });
+
+        // Robustly locate the service cards by their actual titles. Do not depend on
+        // a marketing heading: if its copy changes, /services must still render.
+        var serviceTitleMatchers = [
+          'BRAND IDENTITY',
+          'VIDEO PRODUCTION',
+          'GRAPHIC DESIGN',
+          'SOCIAL MEDIA',
+          'DIGITAL EXPERIENCES'
+        ];
+        var serviceGrid = Array.prototype.slice.call(main.querySelectorAll('.grid')).find(function(grid) {
+          var titles = Array.prototype.slice.call(grid.querySelectorAll('h3')).map(function(node) {
+            return node.textContent.trim().toUpperCase();
+          });
+          return serviceTitleMatchers.filter(function(expected) {
+            return titles.some(function(actual) { return actual.includes(expected); });
+          }).length >= 4;
+        });
+
+        if (serviceGrid && hero) {
+          var serviceSection = serviceGrid;
+          while (serviceSection.parentElement && serviceSection.parentElement !== hero) {
+            serviceSection = serviceSection.parentElement;
+          }
+          if (serviceSection.parentElement === hero) {
+            serviceSection.id = 'services';
+          } else {
+            serviceGrid.id = 'services';
+          }
+        }
 
         injectFaqSection(main);
       }
