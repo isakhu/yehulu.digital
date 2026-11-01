@@ -384,8 +384,8 @@
         gap: clamp(12px, 1.5vw, 20px) !important;
       }
       body[data-yd-view="services"] #services .grid > div.yd-service-door-card {
-        --yd-door-face: #2d5278;
-        --yd-door-edge: #1c3857;
+        --yd-door-face: var(--bg-sub);
+        --yd-door-edge: var(--bg-card);
         position: relative !important;
         isolation: isolate;
         overflow: hidden !important;
@@ -394,36 +394,20 @@
         min-width: 0;
         min-height: 365px;
         padding: 0 !important;
-        border: 1px solid rgba(255,255,255,.18) !important;
+        border: 1px solid var(--border-main) !important;
         border-radius: 112px 112px 8px 8px !important;
-        background: linear-gradient(180deg, #161a1f 0%, #090b0d 100%) !important;
+        background: linear-gradient(180deg, var(--bg-sub) 0%, var(--bg-card) 100%) !important;
         box-shadow: 0 22px 54px rgba(0,0,0,.32), inset 0 0 0 1px rgba(255,255,255,.035);
         perspective: 1500px;
         transform: translateY(0);
         cursor: pointer;
-        transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-      }
-      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(2) {
-        --yd-door-face: #46423d;
-        --yd-door-edge: #292622;
-      }
-      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(3) {
-        --yd-door-face: #aeb9a0;
-        --yd-door-edge: #7b8971;
-      }
-      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(4) {
-        --yd-door-face: #bd6846;
-        --yd-door-edge: #87442d;
-      }
-      body[data-yd-view="services"] #services .grid > div.yd-service-door-card:nth-child(5) {
-        --yd-door-face: #a88d54;
-        --yd-door-edge: #6d5730;
+        transition: transform .45s cubic-bezier(.2,.75,.25,1), box-shadow .45s ease, border-color .35s ease;
       }
       body[data-yd-view="services"] #services .grid > div.yd-service-door-card:hover,
       body[data-yd-view="services"] #services .grid > div.yd-service-door-card:focus-visible {
         z-index: 8;
         transform: translateY(-6px);
-        border-color: rgba(255,255,255,.55) !important;
+        border-color: var(--border-highlight) !important;
         box-shadow: 0 28px 64px rgba(0,0,0,.46), 0 0 26px rgba(182,255,0,.1);
         outline: none;
       }
@@ -450,12 +434,12 @@
         text-shadow: 0 2px 12px rgba(0,0,0,.35);
         background-color: var(--yd-door-face);
         background-image:
-          radial-gradient(circle at calc(100% - 27px) 56%, #ead69a 0 3px, #9c783b 4px 5px, #4b3b24 6px, transparent 7px),
-          linear-gradient(90deg, rgba(255,255,255,.18), transparent 13%, transparent 82%, rgba(0,0,0,.22)),
-          linear-gradient(180deg, rgba(255,255,255,.08), transparent 42%, rgba(0,0,0,.13)),
-          repeating-linear-gradient(0deg, transparent 0 74px, rgba(255,255,255,.07) 75px, transparent 77px),
+          radial-gradient(circle at calc(100% - 27px) 56%, var(--brand-accent) 0 3px, color-mix(in srgb, var(--brand-accent) 55%, var(--bg-main)) 4px 5px, transparent 7px),
+          linear-gradient(90deg, rgba(255,255,255,.1), transparent 13%, transparent 82%, rgba(0,0,0,.18)),
+          linear-gradient(180deg, rgba(255,255,255,.06), transparent 42%, rgba(0,0,0,.1)),
+          repeating-linear-gradient(0deg, transparent 0 74px, var(--border-main) 75px, transparent 77px),
           linear-gradient(135deg, var(--yd-door-face), var(--yd-door-edge));
-        border: 1px solid rgba(255,255,255,.17);
+        border: 1px solid var(--border-main);
         box-shadow:
           inset 0 0 0 10px rgba(0,0,0,.065),
           inset 0 0 0 12px rgba(255,255,255,.1),
@@ -467,14 +451,14 @@
         transform-style: preserve-3d;
         backface-visibility: hidden;
         will-change: transform;
-        transition: transform .95s cubic-bezier(.18,.76,.16,1), filter .55s ease, opacity .55s ease;
+        transition: transform 1.05s cubic-bezier(.2,.75,.2,1), filter .65s ease, opacity .65s ease;
       }
       body[data-yd-view="services"] .yd-service-door-card::after {
         content: "";
         position: absolute;
         inset: 12px 10px 10px;
         z-index: 6;
-        border: 1px solid rgba(255,255,255,.23);
+        border: 1px solid var(--border-main);
         border-radius: inherit;
         pointer-events: none;
         opacity: .42;
@@ -491,8 +475,8 @@
         padding: 28px 18px 24px;
         border-radius: inherit;
         background:
-          radial-gradient(circle at 50% 0%, rgba(182,255,0,.08), transparent 48%),
-          linear-gradient(180deg, #151b20 0%, #080b0e 100%);
+          radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--brand-accent) 9%, transparent), transparent 48%),
+          linear-gradient(180deg, var(--bg-sub) 0%, var(--bg-card) 100%);
         opacity: 1 !important;
         transform: none !important;
         transition: background .35s ease;
@@ -507,22 +491,25 @@
       }
       body[data-yd-view="services"] .yd-service-door-card:hover::before,
       body[data-yd-view="services"] .yd-service-door-card:focus-visible::before,
-      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening::before {
+      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening::before,
+      body[data-yd-view="services"] .yd-service-door-card.yd-door-open::before {
         transform: perspective(1500px) rotateY(-106deg);
         filter: brightness(1.18);
         opacity: .38;
       }
       body[data-yd-view="services"] .yd-service-door-card:hover::after,
       body[data-yd-view="services"] .yd-service-door-card:focus-visible::after,
-      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening::after {
+      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening::after,
+      body[data-yd-view="services"] .yd-service-door-card.yd-door-open::after {
         opacity: .08;
       }
       body[data-yd-view="services"] .yd-service-door-card:hover .yd-service-door-content,
       body[data-yd-view="services"] .yd-service-door-card:focus-visible .yd-service-door-content,
-      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening .yd-service-door-content {
+      body[data-yd-view="services"] .yd-service-door-card.yd-door-opening .yd-service-door-content,
+      body[data-yd-view="services"] .yd-service-door-card.yd-door-open .yd-service-door-content {
         background:
-          radial-gradient(circle at 50% 0%, rgba(182,255,0,.13), transparent 52%),
-          linear-gradient(180deg, #182129 0%, #080b0e 100%);
+          radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 52%),
+          linear-gradient(180deg, var(--bg-sub) 0%, var(--bg-card) 100%);
       }
       @media (max-width: 1100px) {
         body[data-yd-view="services"] #services .grid {
@@ -557,8 +544,8 @@
         }
       }
       @media (hover: none) {
-        body[data-yd-view="services"] .yd-service-door-card::before {
-          transition-duration: .72s;
+        body[data-yd-view="services"] .yd-service-door-card {
+          cursor: pointer;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -1261,19 +1248,18 @@
           card.setAttribute('data-door-index', String(index + 1));
           card.setAttribute('tabindex', '0');
           card.setAttribute('role', 'button');
-          card.setAttribute('aria-label', 'Open ' + title + ' service details');
+          card.setAttribute('aria-label', 'View ' + title + ' service details');
           card.setAttribute('aria-haspopup', 'dialog');
 
           if (card.dataset.ydServiceDoor !== 'ready') {
             card.dataset.ydServiceDoor = 'ready';
 
-            // Keep the original React click action: the door swings and its existing package
-            // detail dialog opens with deliverables, investment, and the enquiry action.
+            // Desktop hover previews the room; tapping/clicking opens the existing service dialog.
             card.addEventListener('click', function() {
               card.classList.add('yd-door-opening');
               window.setTimeout(function() {
                 card.classList.remove('yd-door-opening');
-              }, 1100);
+              }, 760);
             }, true);
 
             card.addEventListener('keydown', function(event) {
@@ -1282,6 +1268,16 @@
                 card.click();
               }
             });
+
+            card.addEventListener('touchstart', function() {
+              card.classList.add('yd-door-open');
+            }, { passive: true });
+            card.addEventListener('touchend', function() {
+              window.setTimeout(function() { card.classList.remove('yd-door-open'); }, 850);
+            }, { passive: true });
+            card.addEventListener('touchcancel', function() {
+              card.classList.remove('yd-door-open');
+            }, { passive: true });
           }
         });
       }
