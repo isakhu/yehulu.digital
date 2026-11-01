@@ -361,7 +361,7 @@
 
       /* The homepage, services and estimator are separate full-screen views. */
       body[data-yd-view="home"] #root main > #home > *:not(:first-child),
-      body[data-yd-view="services"] #root main > #home > *:not(#services):not(:has(#services)):not(.fixed.inset-0),
+      /* DISABLED: services view */ body[data-yd-view="services-DISABLED"] #root main > #home > *:not(#services):not(:has(#services)):not(.fixed.inset-0),
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
       }
@@ -963,9 +963,7 @@
       <a href="/about" class="dock-item" data-target="about" aria-label="About" title="About">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="dock-tooltip">About</span>
       </a>
-      <a href="/services" class="dock-item" data-target="services" aria-label="Services" title="Services">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span class="dock-tooltip">Services</span>
-      </a>
+      <!-- Services dock item temporarily removed -->
       <a href="/gallery" class="dock-item" data-target="work" aria-label="Projects" title="Projects">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg><span class="dock-tooltip">Projects</span>
       </a>
@@ -1083,7 +1081,7 @@
         if (!main) return;
 
         var currentPath = window.location.pathname || '/';
-        var currentView = currentPath === '/services' ? 'services' :
+        var currentView = currentPath === '/services' ? 'home' :
           currentPath === '/gallery' ? 'projects' :
           currentPath === '/estimate' ? 'estimate' :
           (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
@@ -1180,9 +1178,7 @@
           }
         }
 
-        if (currentPath === '/services' && servicesSectionReady) {
-          document.body.setAttribute('data-yd-view', 'services');
-        }
+        /* services view assignment disabled */
 
         injectFaqSection(main);
       }
@@ -1316,7 +1312,7 @@
         var routes = {
           home: '/',
           about: '/about',
-          services: '/services',
+          // services: '/services', — temporarily disabled
           work: '/gallery',
           video: '/video',
           courses: '/courses',
@@ -1326,7 +1322,7 @@
         };
         var currentPath = window.location.pathname || '/';
         var activeTarget = currentPath === '/' || currentPath === '/index.html' ? 'home' :
-          currentPath === '/services' ? 'services' :
+          currentPath === '/services' ? 'home' :
           currentPath === '/estimate' ? 'estimate' :
           currentPath === '/about' ? 'about' :
           currentPath === '/gallery' ? 'work' :
@@ -1356,7 +1352,7 @@
       }
 
       function setupScrollSpy() {
-        var sectionIds = ['home', 'about', 'services', 'work', 'estimate', 'contact'];
+        var sectionIds = ['home', 'about', 'work', 'estimate', 'contact'];
         var observerOptions = {
           root: null,
           rootMargin: '-20% 0px -60% 0px',
@@ -1487,7 +1483,7 @@
         assignSectionIds();
         setupDockNavigation();
         setupYehuluInstallButton();
-        enhanceServiceDoorCards();
+        /* enhanceServiceDoorCards(); — disabled until services page is fixed */
         enhanceProjectsGallery();
         dismissLoader();
       });
@@ -1502,7 +1498,7 @@
           assignSectionIds();
           setupDockNavigation();
           setupYehuluInstallButton();
-          enhanceServiceDoorCards();
+          /* enhanceServiceDoorCards(); — disabled until services page is fixed */
           enhanceProjectsGallery();
           dismissLoader();
         }, 500);
