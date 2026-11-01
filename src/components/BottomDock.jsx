@@ -2,7 +2,8 @@ import React from 'react';
 
 /**
  * Fixed route-based navigation for Yehulu Digital.
- * Each icon opens one page; navigation never scrolls through the homepage.
+ * Each icon opens one page; Admin Login is available to client content managers.
+ * The estimator remains available by direct URL at /estimate.
  */
 const navItems = [
   {
@@ -30,8 +31,8 @@ const navItems = [
     icon: <><path d="m2 8 10-5 10 5-10 5-10-5Z" /><path d="M6 10v6c3.5 3 8.5 3 12 0v-6M22 8v6" /></>
   },
   {
-    id: 'estimate', label: 'Estimator', href: '/estimate',
-    icon: <><rect x="4" y="2" width="16" height="20" rx="2" /><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 16h.01M12 16h.01M16 16h.01" /></>
+    id: 'admin', label: 'Admin', href: '/admin/login',
+    icon: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" /></>
   },
   {
     id: 'contact', label: 'Contact', href: '/contact',
@@ -42,7 +43,7 @@ const navItems = [
 function getActivePage(pathname) {
   if (pathname === '/' || pathname === '/index.html') return 'home';
   if (pathname === '/services') return 'services';
-  if (pathname === '/estimate') return 'estimate';
+  if (pathname.startsWith('/admin')) return 'admin';
   if (pathname === '/about') return 'about';
   if (pathname === '/gallery') return 'work';
   if (pathname === '/video') return 'video';
