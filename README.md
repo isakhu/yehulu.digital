@@ -23,7 +23,7 @@ Official web platform for **Yehulu Digital** — a creative digital marketing ag
 ## 📂 Project Architecture
 
 ```
-mihreteab/
+yehulu.digital/
 ├── public/
 │   ├── index.html                                        # Modernized SPA entry point & floating dock
 │   ├── about.html                                        # Standalone motion About page
@@ -41,6 +41,7 @@ mihreteab/
 │   ├── gallery.json                                      # 37 curated project case studies
 │   ├── messages.json                                     # Inbound contact form submissions
 │   └── videos.json                                       # 4K commercial videos & reels
+├── lib/                                                  # Shared auth, account, data-store and course helpers
 ├── src/                                                  # Modular React components
 │   ├── components/
 │   │   ├── AboutSection.jsx
@@ -54,26 +55,47 @@ mihreteab/
 
 ---
 
-## 🔐 Client Admin Portal (Add Images & Videos Anytime)
+## 🔐 Client Admin Portal
 
-Your client has full administrative access to log in and upload new images and videos anytime:
+The admin portal supports gallery and video management, Telegram course publishing, incoming messages, pricing settings, and administrator accounts.
 
-- **Portal URL**: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
-- **Admin Email**: `admin@yehuludigital.com` (or `admin@yehulu.digital`)
-- **Default Password**: `YehuluAdmin2026!`
+- **Portal URL**: `/admin/login`
+- **Initial administrator email**: `admin@yehuludigital.com` (change with `ADMIN_EMAIL`).
+- **No default password is shipped with the repository.** Configure a private password hash and session secret before signing in.
 
-### Features Available to the Client:
-1. **Gallery Management (`/admin/gallery`)**:
-   - Upload new image assets directly from their phone or computer.
-   - Enter title, category (`BRAND IDENTITY`, `COMMERCIAL`, `SOCIAL MEDIA`), client partner, and description.
-   - Edit or delete existing projects anytime.
-2. **Video Portfolio Management (`/admin/videos`)**:
-   - Add commercial video reels, TikTok shorts, and YouTube links.
-   - Upload custom video thumbnails.
-3. **Inbound Messages (`/admin/messages`)**:
-   - View client leads and contact form inquiries.
+### Required environment variables
 
----
+Create a private `.env` file for local development or add these variables in Vercel Project Settings → Environment Variables:
+
+- `ADMIN_EMAIL`: initial administrator email.
+- `ADMIN_NAME`: initial administrator display name.
+- `ADMIN_PASSWORD_HASH`: a scrypt password hash (never commit the password or hash).
+- `SESSION_SECRET`: a random secret with at least 32 characters.
+- `BLOB_READ_WRITE_TOKEN`: connect a Vercel Blob store so uploads, messages, course records, settings, and administrator accounts persist across serverless invocations.
+
+Generate a password hash locally with Node.js. Replace the example password with a new password of at least 12 characters, and keep the resulting hash private:
+
+```bash
+node -e "const c=require('node:crypto');const p=process.argv[1];const s=c.randomBytes(16).toString('hex');console.log('scrypt$'+s+'$'+c.scryptSync(p,s,64).toString('hex'))" "replace-with-a-unique-password"
+```
+
+Generate a session secret:
+
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
+
+For local use, copy `.env.example` to `.env`, fill in the values, then run `npm start`. The local server loads `.env` automatically. Never commit `.env`.
+
+### Administrator account and data security
+
+- Passwords are stored as scrypt hashes, not plaintext.
+- Admin sessions are signed, expire after 8 hours, and are checked by both the local server and Vercel API.
+- Admin-only endpoints protect uploads, gallery/video/course changes, contact messages, pricing settings, and account management.
+- Administrator accounts and CMS records are stored in a private Vercel Blob store in production.
+- Public visitors can submit the contact form and view published portfolio/course content only.
+
+**Important:** the old demo password was present in earlier repository revisions. Treat it as compromised and do not reuse it. Rotate any password that may have been used with the old version.
 
 ## 🚀 Quick Start
 
@@ -108,24 +130,15 @@ To add additional photos or campaign graphics at any time:
 
 ---
 
-## ☁️ Deploying to Vercel (100% Free & Automatic)
+## ☁️ Deploying to Vercel
 
-This project is pre-configured with `vercel.json` and a serverless API engine (`api/index.js` with Vercel Blob support).
+1. Import `isakhu/yehulu.digital` into Vercel and deploy from the `main` branch.
+2. Create a **private Vercel Blob store** and connect it to the project. Vercel should provide `BLOB_READ_WRITE_TOKEN`.
+3. Add `ADMIN_EMAIL`, `ADMIN_NAME`, `ADMIN_PASSWORD_HASH`, and `SESSION_SECRET` as Vercel environment variables for the Production, Preview, and Development environments as appropriate.
+4. Redeploy after changing environment variables.
+5. Open `/admin/login` and sign in with the configured administrator email and the password used to generate `ADMIN_PASSWORD_HASH`.
 
-### 3-Step Vercel Setup:
-1. **Import Repository**:
-   - Go to [vercel.com](https://vercel.com) and click **"Add New..."** → **"Project"**.
-   - Select your repository: **`isakhu/yehulu.digital`**.
-   - Click **"Deploy"** (Vercel automatically detects the static assets, SPA routes, and serverless functions).
-2. **Enable Free Permanent Uploads (1-Click)**:
-   - In your newly created Vercel project, go to the **"Storage"** tab.
-   - Click **"Create Database"** → Select **"Blob"** → Click **"Create"**.
-   - Vercel automatically links the `BLOB_READ_WRITE_TOKEN` to your deployment.
-3. **Done!**:
-   - Your website is now live globally with high-speed CDN caching.
-   - Your client can log in at `https://your-domain.vercel.app/admin/login` and upload new photos, posters, and videos anytime. All uploads persist permanently on Vercel's global CDN!
-
----
+The API uses the private Blob store for mutable CMS data because Vercel Function filesystems are not a persistent database. Do not store passwords, session secrets, or Blob tokens in source files.
 
 ## 📄 License & Attribution
 
