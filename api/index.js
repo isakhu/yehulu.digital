@@ -554,7 +554,7 @@ module.exports = async (req, res) => {
     return sendJSON(res, 200, Array.isArray(messages) ? messages : []);
   }
 
-  const messageMatch = pathname.match(/^\\/api\\/messages\\/([^/]+)$/);
+  const messageMatch = pathname.match(/^\/api\/messages\/([^/]+)$/);
   if (messageMatch) {
     const messages = await readStoredJSON('messages.json', []);
     const index = messages.findIndex(message => message.id === messageMatch[1]);
@@ -620,7 +620,7 @@ module.exports = async (req, res) => {
     return sendJSON(res, 201, result.course);
   }
 
-  const adminCourseMatch = pathname.match(/^\\/api\\/admin\\/courses\\/([^/]+)$/);
+  const adminCourseMatch = pathname.match(/^\/api\/admin\/courses\/([^/]+)$/);
   if (adminCourseMatch) {
     const courses = await getCoursesData();
     const index = courses.findIndex(course => course.id === adminCourseMatch[1]);
@@ -647,7 +647,7 @@ module.exports = async (req, res) => {
     return sendJSON(res, 200, courses.filter(course => course.status === 'PUBLISHED'));
   }
 
-  const publicCourseMatch = pathname.match(/^\\/api\\/courses\\/([^/]+)$/);
+  const publicCourseMatch = pathname.match(/^\/api\/courses\/([^/]+)$/);
   if (publicCourseMatch && (method === 'GET' || method === 'HEAD')) {
     const courses = await getCoursesData();
     const course = courses.find(item => item.id === publicCourseMatch[1]);
