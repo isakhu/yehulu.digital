@@ -1087,7 +1087,7 @@
           currentPath === '/gallery' ? 'projects' :
           currentPath === '/estimate' ? 'estimate' :
           (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
-        if (currentView) document.body.setAttribute('data-yd-view', currentView);
+        if (currentView && currentView !== 'services') document.body.setAttribute('data-yd-view', currentView);
         else document.body.removeAttribute('data-yd-view');
         document.body.setAttribute('data-yd-admin', currentPath.indexOf('/admin') === 0 ? 'true' : 'false');
 
@@ -1166,6 +1166,7 @@
           }).length >= 4;
         });
 
+        var servicesSectionReady = false;
         if (serviceGrid && hero) {
           var serviceSection = serviceGrid;
           while (serviceSection.parentElement && serviceSection.parentElement !== hero) {
@@ -1173,9 +1174,14 @@
           }
           if (serviceSection.parentElement === hero) {
             serviceSection.id = 'services';
+            servicesSectionReady = true;
           } else {
             serviceGrid.id = 'services';
           }
+        }
+
+        if (currentPath === '/services' && servicesSectionReady) {
+          document.body.setAttribute('data-yd-view', 'services');
         }
 
         injectFaqSection(main);
@@ -1549,6 +1555,16 @@
       window.yehuluGallery = [];
       window.currentLightboxIndex = 0;
 
+      function safeGalleryImageUrl(value) {
+        try {
+          var url = new URL(String(value || ''), window.location.origin);
+          if (url.protocol === 'https:' || url.origin === window.location.origin) {
+            return url.href;
+          }
+        } catch (e) {}
+        return '';
+      }
+
       function updateLightboxView() {
         if (!window.yehuluGallery || !window.yehuluGallery.length) return;
         var item = window.yehuluGallery[window.currentLightboxIndex];
@@ -1847,5 +1863,6 @@
         }
       }, 500);
     </script>
+    <script type="module" src="/assets/mechanical-teardown.js?v=3"></script>
   </body>
 </html>
