@@ -376,9 +376,6 @@
         opacity: 1;
         transform: perspective(900px) translateY(0) rotateX(0) scale(1);
       }
-      body[data-yd-view="projects"] .yd-project-external-image {
-        display: none !important;
-      }
       @media (prefers-reduced-motion: reduce) {
         body[data-yd-view="projects"] .yd-project-image-card,
         body[data-yd-view="projects"] .yd-project-image-card img {
@@ -1456,12 +1453,7 @@
           var image = card.querySelector('img');
           if (!image) return;
           var imagePath = image.getAttribute('src') || '';
-          if (imagePath.indexOf('/uploads/projects/') !== 0) {
-            card.classList.add('yd-project-external-image');
-            return;
-          }
-
-          card.classList.remove('yd-project-external-image');
+          if (!imagePath.trim()) return;
           card.classList.add('yd-project-image-card');
           card.style.setProperty('--yd-project-delay', (index % 8) * 65 + 'ms');
           if (card.dataset.ydProjectReveal === 'ready') return;

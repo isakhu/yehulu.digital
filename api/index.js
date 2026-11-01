@@ -272,7 +272,10 @@ async function persistCourses(courses) {
 module.exports = async (req, res) => {
   const method = (req.method || 'GET').toUpperCase();
   const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = parsed.pathname;
+  const rewrittenPath = parsed.searchParams.get('__route');
+  const pathname = rewrittenPath && rewrittenPath.startsWith('/api/')
+    ? rewrittenPath
+    : parsed.pathname;
 
   // Global CORS headers
   // Frontend and API are same-origin; cross-origin access is intentionally disabled.
@@ -281,6 +284,10 @@ module.exports = async (req, res) => {
     res.writeHead(204);
     res.end();
     return;
+  }
+
+  if (parsed.searchParams.getAll('__route').length > 1) {
+    return sendJSON(res, 400, { error: 'Invalid API route.' });
   }
 
   let authenticatedUser = null;
