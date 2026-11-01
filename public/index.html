@@ -6,6 +6,12 @@
     <title>Yehulu Digital — Creative Digital Agency</title>
     <meta name="description" content="Yehulu Digital is a creative digital agency focused on branding, visual content, video production, social media campaigns, and digital product experiences." />
     <meta name="theme-color" content="#050505" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Yehulu Digital" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/assets/logopng-BhI97nKv.png" />
+    <link rel="icon" type="image/png" href="/assets/logopng-BhI97nKv.png" />
 
     <!-- Google Fonts: Bricolage Grotesque & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -235,68 +241,62 @@
         transform: rotate(20deg);
       }
 
-      /* ── FLOATING BOTTOM NAVIGATION DOCK ── */
+      /* ── FIXED BOTTOM APP NAVIGATION ── */
       #floating-dock {
         position: fixed;
-        bottom: 16px;
         left: 50%;
+        bottom: calc(12px + env(safe-area-inset-bottom));
         transform: translateX(-50%);
         z-index: 9990;
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(9, minmax(0, 1fr));
         align-items: center;
-        gap: 5px;
-        padding: 5px 7px;
+        gap: 2px;
+        width: min(680px, calc(100vw - 16px));
+        padding: 6px;
         background: var(--dock-bg);
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
         border: 1px solid var(--dock-border);
         border-radius: 999px;
         box-shadow: var(--dock-shadow);
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
-        max-width: calc(100vw - 28px);
       }
 
       .dock-item {
         position: relative;
+        min-width: 0;
+        width: auto;
+        height: 42px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
         border-radius: 999px;
         color: var(--text-muted);
         text-decoration: none;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: color .2s ease, background .2s ease, transform .2s ease;
         outline: none;
       }
-      .dock-item:hover {
+      .dock-item:hover,
+      .dock-item:focus-visible {
         color: var(--text-main);
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255,255,255,.08);
         transform: translateY(-2px);
       }
-      [data-theme="light"] .dock-item:hover {
-        background: rgba(0, 0, 0, 0.05);
+      [data-theme="light"] .dock-item:hover,
+      [data-theme="light"] .dock-item:focus-visible {
+        background: rgba(0,0,0,.05);
       }
-
       .dock-item svg {
-        width: 18px;
-        height: 18px;
+        width: 19px;
+        height: 19px;
         stroke-width: 2;
-        transition: transform 0.2s ease;
       }
-
-      /* Active Dock State */
       .dock-item.active {
         background: #B6FF00 !important;
-        color: #000000 !important;
-        transform: translateY(-1.5px) scale(1.04);
-        box-shadow: 0 0 16px rgba(182, 255, 0, 0.45);
+        color: #000 !important;
+        transform: translateY(-1px) scale(1.04);
+        box-shadow: 0 0 16px rgba(182,255,0,.35);
       }
-      .dock-item.active svg {
-        stroke-width: 2.3;
-      }
-
-      /* Dock Tooltip */
       .dock-tooltip {
         position: absolute;
         bottom: calc(100% + 8px);
@@ -307,16 +307,16 @@
         font-family: 'Courier New', monospace;
         font-size: 10px;
         font-weight: 800;
-        letter-spacing: 0.1em;
+        letter-spacing: .1em;
         text-transform: uppercase;
-        padding: 3px 8px;
+        padding: 4px 8px;
         border-radius: 5px;
         border: 1px solid var(--border-highlight);
         pointer-events: none;
         white-space: nowrap;
         opacity: 0;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-        transition: opacity 0.15s ease, transform 0.15s ease;
+        box-shadow: 0 6px 20px rgba(0,0,0,.35);
+        transition: opacity .15s ease, transform .15s ease;
       }
       .dock-tooltip::after {
         content: '';
@@ -333,23 +333,38 @@
         transform: translateX(-50%) translateY(0);
       }
 
+      /* Public navigation lives at the bottom; keep only the logo and controls in the top bar. */
+      #root header nav,
+      #root header a[href="/contact"],
+      #root header button[aria-label="Toggle menu"] {
+        display: none !important;
+      }
+      .social-media-hub { display: none !important; }
+      body:not([data-yd-admin="true"]) #root main { padding-bottom: 94px; }
+      body[data-yd-admin="true"] #floating-dock { display: none !important; }
+
+      /* The homepage, services and estimator are separate full-screen views. */
+      body[data-yd-view="home"] #root main > #home > *:not(:first-child),
+      body[data-yd-view="services"] #root main > #home > *:not(#services),
+      body[data-yd-view="estimate"] #root main > #home > *:not(#estimate) {
+        display: none !important;
+      }
+
       @media (max-width: 640px) {
         #floating-dock {
-          bottom: 10px;
-          padding: 4px 5px;
-          gap: 3px;
+          width: calc(100vw - 12px);
+          bottom: calc(7px + env(safe-area-inset-bottom));
+          gap: 1px;
+          padding: 4px;
         }
-        .dock-item {
-          width: 36px;
-          height: 36px;
-        }
-        .dock-item svg {
-          width: 16px;
-          height: 16px;
-        }
-        .dock-tooltip {
-          display: none;
-        }
+        .dock-item { height: 38px; }
+        .dock-item svg { width: 16px; height: 16px; }
+        .dock-tooltip { display: none; }
+      }
+      @media (max-width: 350px) {
+        #floating-dock { width: calc(100vw - 8px); padding: 3px; }
+        .dock-item { height: 34px; }
+        .dock-item svg { width: 15px; height: 15px; }
       }
 
       /* ── Back to Top Button ── */
@@ -714,71 +729,33 @@
     <!-- ══════════════════════════════════════════════════════ -->
     <!--  1. FLOATING BOTTOM NAVIGATION DOCK (FIXED VIEWPORT)   -->
     <!-- ══════════════════════════════════════════════════════ -->
-    <nav id="floating-dock" aria-label="Bottom Navigation">
-      <!-- Home -->
-      <a href="#home" class="dock-item active" data-target="home" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        <span class="dock-tooltip">Home</span>
+    <nav id="floating-dock" aria-label="Main navigation">
+      <a href="/" class="dock-item active" data-target="home" aria-label="Home" title="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span class="dock-tooltip">Home</span>
       </a>
-
-      <!-- About -->
-      <a href="#about" class="dock-item" data-target="about" aria-label="About">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="16" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-        </svg>
-        <span class="dock-tooltip">About</span>
+      <a href="/about" class="dock-item" data-target="about" aria-label="About" title="About">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="dock-tooltip">About</span>
       </a>
-
-      <!-- Services -->
-      <a href="#services" class="dock-item" data-target="services" aria-label="Services">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-          <polyline points="2 17 12 22 22 17"></polyline>
-          <polyline points="2 12 12 17 22 12"></polyline>
-        </svg>
-        <span class="dock-tooltip">Services</span>
+      <a href="/services" class="dock-item" data-target="services" aria-label="Services" title="Services">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span class="dock-tooltip">Services</span>
       </a>
-
-      <!-- Projects / Work -->
-      <a href="#work" class="dock-item" data-target="work" aria-label="Projects">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
-          <path d="M3 9h18"></path>
-          <path d="M9 21V9"></path>
-        </svg>
-        <span class="dock-tooltip">Projects</span>
+      <a href="/gallery" class="dock-item" data-target="work" aria-label="Projects" title="Projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg><span class="dock-tooltip">Projects</span>
       </a>
-
-      <!-- Estimator -->
-      <a href="#estimate" class="dock-item" data-target="estimate" aria-label="Estimator">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="1" x2="12" y2="23"></line>
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-        </svg>
-        <span class="dock-tooltip">Estimator</span>
+      <a href="/video" class="dock-item" data-target="video" aria-label="Videos" title="Videos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg><span class="dock-tooltip">Videos</span>
       </a>
-
-      <!-- Contact -->
-      <a href="#contact" class="dock-item" data-target="contact" aria-label="Contact">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m22 2-7 20-4-9-9-4Z"></path>
-          <path d="M22 2 11 13"></path>
-        </svg>
-        <span class="dock-tooltip">Contact</span>
+      <a href="/courses" class="dock-item" data-target="courses" aria-label="Courses" title="Courses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m2 8 10-5 10 5-10 5-10-5Z"></path><path d="M6 10v6c3.5 3 8.5 3 12 0v-6"></path><path d="M22 8v6"></path></svg><span class="dock-tooltip">Courses</span>
       </a>
-
-      <!-- Admin Portal (Add Images & Videos) -->
-      <a href="/admin/login" class="dock-item" data-target="admin" aria-label="Admin Portal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        <span class="dock-tooltip">Admin</span>
+      <a href="/estimate" class="dock-item" data-target="estimate" aria-label="Estimator" title="Estimator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><path d="M8 6h8"></path><path d="M8 11h.01M12 11h.01M16 11h.01M8 16h.01M12 16h.01M16 16h.01"></path></svg><span class="dock-tooltip">Estimator</span>
+      </a>
+      <a href="/contact" class="dock-item" data-target="contact" aria-label="Contact" title="Contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg><span class="dock-tooltip">Contact</span>
+      </a>
+      <a href="/admin/login" class="dock-item" data-target="admin" aria-label="Admin portal" title="Admin portal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span class="dock-tooltip">Admin</span>
       </a>
     </nav>
 
@@ -906,6 +883,14 @@
         var main = document.querySelector('main');
         if (!main) return;
 
+        var currentPath = window.location.pathname.replace(/\\/+/g, '/') || '/';
+        var currentView = currentPath === '/services' ? 'services' :
+          currentPath === '/estimate' ? 'estimate' :
+          (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
+        if (currentView) document.body.setAttribute('data-yd-view', currentView);
+        else document.body.removeAttribute('data-yd-view');
+        document.body.setAttribute('data-yd-admin', currentPath.indexOf('/admin') === 0 ? 'true' : 'false');
+
         var hero = main.firstElementChild;
         if (hero && !hero.id) hero.id = 'home';
 
@@ -991,35 +976,33 @@
         var dock = document.getElementById('floating-dock');
         if (!dock) return;
 
-        var items = dock.querySelectorAll('.dock-item');
-        items.forEach(function(item) {
-          item.addEventListener('click', function(e) {
-            var targetId = item.getAttribute('data-target');
-            var isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+        var routes = {
+          home: '/',
+          about: '/about',
+          services: '/services',
+          work: '/gallery',
+          video: '/video',
+          courses: '/courses',
+          estimate: '/estimate',
+          contact: '/contact',
+          admin: '/admin/login'
+        };
+        var currentPath = window.location.pathname || '/';
+        var activeTarget = currentPath === '/' || currentPath === '/index.html' ? 'home' :
+          currentPath === '/services' ? 'services' :
+          currentPath === '/estimate' ? 'estimate' :
+          currentPath === '/about' ? 'about' :
+          currentPath === '/gallery' ? 'work' :
+          currentPath === '/video' ? 'video' :
+          currentPath.indexOf('/courses') === 0 ? 'courses' :
+          currentPath === '/contact' ? 'contact' :
+          currentPath.indexOf('/admin') === 0 ? 'admin' : '';
 
-            if (targetId === 'admin') {
-              window.location.href = '/admin/login';
-              return;
-            }
-
-            if (isHomePage) {
-              e.preventDefault();
-              var targetEl = document.getElementById(targetId);
-              if (targetEl) {
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                setActiveDockItem(targetId);
-              }
-            } else {
-              if (targetId === 'home') {
-                window.location.href = '/';
-              } else {
-                window.location.href = '/#' + targetId;
-              }
-            }
-          });
+        dock.querySelectorAll('.dock-item').forEach(function(item) {
+          var target = item.getAttribute('data-target');
+          if (routes[target]) item.setAttribute('href', routes[target]);
+          item.classList.toggle('active', target === activeTarget);
         });
-
-        setupScrollSpy();
       }
 
       function setActiveDockItem(targetId) {
@@ -1074,11 +1057,56 @@
         }
       }
 
+      var deferredYehuluInstallPrompt = null;
+
+      function setupYehuluInstallButton() {
+        if (!deferredYehuluInstallPrompt) return;
+        var actions = document.querySelector('.topbar-actions');
+        if (!actions || document.getElementById('yd-install-app')) return;
+
+        var installButton = document.createElement('button');
+        installButton.type = 'button';
+        installButton.id = 'yd-install-app';
+        installButton.className = 'theme-toggle-btn';
+        installButton.setAttribute('aria-label', 'Install Yehulu Digital');
+        installButton.setAttribute('title', 'Install Yehulu Digital on this device');
+        installButton.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>';
+        installButton.addEventListener('click', async function() {
+          if (!deferredYehuluInstallPrompt) return;
+          deferredYehuluInstallPrompt.prompt();
+          try { await deferredYehuluInstallPrompt.userChoice; } catch (_) {}
+          deferredYehuluInstallPrompt = null;
+          installButton.remove();
+        });
+        actions.appendChild(installButton);
+      }
+
+      window.addEventListener('beforeinstallprompt', function(event) {
+        event.preventDefault();
+        deferredYehuluInstallPrompt = event;
+        setupYehuluInstallButton();
+      });
+
+      window.addEventListener('appinstalled', function() {
+        deferredYehuluInstallPrompt = null;
+        var installButton = document.getElementById('yd-install-app');
+        if (installButton) installButton.remove();
+      });
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function(error) {
+            console.warn('Yehulu offline support could not be registered:', error);
+          });
+        });
+      }
+
       var rootElement = document.getElementById('root');
       var observer = new MutationObserver(function() {
         injectTopbarActions();
         assignSectionIds();
         setupDockNavigation();
+        setupYehuluInstallButton();
         dismissLoader();
       });
 
@@ -1091,7 +1119,8 @@
           injectTopbarActions();
           assignSectionIds();
           setupDockNavigation();
-            dismissLoader();
+          setupYehuluInstallButton();
+          dismissLoader();
         }, 500);
       });
 
