@@ -355,7 +355,14 @@ module.exports = async (req, res) => {
       const ext = path.extname(file.filename || '').toLowerCase() || '.jpg';
       const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.mov']);
       if (!allowedExtensions.has(ext)) return sendJSON(res, 400, { error: 'Unsupported file type. Upload an image or supported video file.' });
-      if (file.data.length > 25 * 1024 * 1024) return sendJSON(res, 413, { error: 'The upload exceeds the 25 MB limit.' });
+      const uploadLimitBytes = process.env.VERCEL === '1' ? 4 * 1024 * 1024 : 25 * 1024 * 1024;
+      if (file.data.length > uploadLimitBytes) {
+        return sendJSON(res, 413, {
+          error: process.env.VERCEL === '1'
+            ? 'Hosted uploads are limited to 4 MB. Use an optimized image or a video link.'
+            : 'The upload exceeds the 25 MB limit.'
+        });
+      }
       const cleanBase = path.basename(file.filename || 'asset', ext)
         .replace(/[^a-zA-Z0-9_-]/g, '_')
         .toLowerCase();
