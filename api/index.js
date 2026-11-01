@@ -275,9 +275,7 @@ module.exports = async (req, res) => {
   const pathname = parsed.pathname;
 
   // Global CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Frontend and API are same-origin; cross-origin access is intentionally disabled.
 
   if (method === 'OPTIONS') {
     res.writeHead(204);
