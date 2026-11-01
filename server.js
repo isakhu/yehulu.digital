@@ -613,6 +613,12 @@ async function handleRequest(req, res) {
   // ══════════════════════════════════════════════
   //  7. STATIC FILE SERVING & SPA FALLBACK
   // ══════════════════════════════════════════════
+  // The About page now uses the shared app shell and route-based bottom navigation.
+  if (pathname === '/about' || pathname === '/about.html') {
+    const appIndex = path.join(PUBLIC_DIR, 'index.html');
+    if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);
+  }
+
   let decodedPath = pathname;
   try { decodedPath = decodeURIComponent(pathname); } catch (_) {}
   let relativePath = decodedPath === '/' ? 'index.html' : decodedPath.replace(/^\//, '');
