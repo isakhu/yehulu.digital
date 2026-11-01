@@ -71,7 +71,8 @@ Create a private `.env` file for local development or add these variables in Ver
 - `ADMIN_NAME`: initial administrator display name.
 - `ADMIN_PASSWORD_HASH`: a scrypt password hash (never commit the password or hash).
 - `SESSION_SECRET`: a random secret with at least 32 characters.
-- `BLOB_READ_WRITE_TOKEN`: connect a Vercel Blob store so uploads, messages, course records, settings, and administrator accounts persist across serverless invocations.
+- `BLOB_READ_WRITE_TOKEN`: token for the existing project-media Blob store used by image/video uploads. Keep this separate from private CMS records.
+- `CMS_BLOB_READ_WRITE_TOKEN`: token for a **separate private Vercel Blob store** used for administrator accounts, password hashes, contact messages, courses, and settings.
 
 Generate a password hash locally with Node.js. Replace the example password with a new password of at least 12 characters, and keep the resulting hash private:
 
@@ -133,12 +134,12 @@ To add additional photos or campaign graphics at any time:
 ## ☁️ Deploying to Vercel
 
 1. Import `isakhu/yehulu.digital` into Vercel and deploy from the `main` branch.
-2. Create a **private Vercel Blob store** and connect it to the project. Vercel should provide `BLOB_READ_WRITE_TOKEN`.
+2. Create a **private Vercel Blob store** for CMS records and expose its read-write token as `CMS_BLOB_READ_WRITE_TOKEN`. Keep any existing media Blob store token under `BLOB_READ_WRITE_TOKEN`; do not reuse a public media store for password hashes or customer messages.
 3. Add `ADMIN_EMAIL`, `ADMIN_NAME`, `ADMIN_PASSWORD_HASH`, and `SESSION_SECRET` as Vercel environment variables for the Production, Preview, and Development environments as appropriate.
 4. Redeploy after changing environment variables.
 5. Open `/admin/login` and sign in with the configured administrator email and the password used to generate `ADMIN_PASSWORD_HASH`.
 
-The API uses the private Blob store for mutable CMS data because Vercel Function filesystems are not a persistent database. Do not store passwords, session secrets, or Blob tokens in source files.
+The API uses the private Blob SDK for mutable CMS data because Vercel Function filesystems are not a persistent database. The CMS reader uses authenticated private-blob retrieval. Vercel's standard server-upload endpoint has a 4.5 MB request-body limit, so hosted uploads are capped at 4 MB; local uploads allow up to 25 MB. Do not store passwords, session secrets, or Blob tokens in source files.
 
 ## 📄 License & Attribution
 
