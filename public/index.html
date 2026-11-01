@@ -361,7 +361,7 @@
 
       /* The homepage, services and estimator are separate full-screen views. */
       body[data-yd-view="home"] #root main > #home > *:not(:first-child),
-      body[data-yd-view="services"] #root main > #home > *:not(#services):not(.fixed.inset-0),
+      body[data-yd-view="services"] #root main > #home > *:not(#services):not(:has(#services)):not(.fixed.inset-0),
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
       }
