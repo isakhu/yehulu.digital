@@ -98,6 +98,16 @@ For local use, copy `.env.example` to `.env`, fill in the values, then run `npm 
 
 **Important:** the old demo password was present in earlier repository revisions. Treat it as compromised and do not reuse it. Rotate any password that may have been used with the old version.
 
+## 📱 Mobile App & Navigation
+
+The public website uses a fixed bottom icon dock. Home, About, Services, Projects, Videos, Courses, Estimator, and Contact open as separate pages. Services and Estimator reuse the existing homepage components, so their current functionality is preserved without placing every homepage section on the Home page.
+
+Yehulu Digital is installable as a Progressive Web App (PWA):
+
+- **Android / Chrome:** open the site, use the browser's Install app option, or tap the install icon when it appears in the top bar.
+- **iPhone / iPad:** open the site in Safari, tap Share, then choose **Add to Home Screen**.
+- After the first successful visit, the app shell can open offline. API-backed data and new uploads still require an internet connection.
+
 ## 🚀 Quick Start
 
 No heavy dependencies or build steps required. Simply run:
