@@ -9,13 +9,13 @@ Official web platform for **Yehulu Digital** — a creative digital marketing ag
 
 ## 🌟 Modernization & Feature Highlights
 
-- **Floating Bottom Navigation Dock**: High-performance, viewport-fixed navigation dock with SVG iconography, active scroll-spy detection, smooth-scroll anchoring, and hover tooltips.
+- **Fixed Bottom Navigation**: Eight icon-only destinations open dedicated Home, About, Services, Projects, Videos, Courses, Estimator, and Contact pages. The active page stays highlighted; the dock remains fixed on desktop and mobile.
 - **Dynamic Theme Switcher**: Dual mode (Dark default `#050505` with `#B6FF00` accent, and Light `#f6f8f4`) with persistent `localStorage` preference and zero flash of unstyled content (zero-FOUC).
 - **Fullscreen Interactive Lightbox**: Click any portfolio asset across the home page or gallery to inspect full-resolution artwork with previous/next keyboard shortcuts (`←`/`→`), close on `ESC`, and swipe support.
 - **30+ Client Project Archive**: Complete portfolio showcasing 37 verified client deliverables across Brand Identity, Commercial Outdoor Advertising, Social Media, and Hospitality (featuring Rori Hotel Hawassa).
 - **Automated Gallery Sync Engine (`sync-gallery.js`)**: Drop any new image files into `public/uploads/projects/` and run `npm run sync` to instantly categorize and index them into `data/gallery.json`.
-- **Unified Social Media Hub**: Consolidated brand channels capsule (Instagram, TikTok, WhatsApp, YouTube) in both topbar and footer.
-- **Tight High-Density Studio Spacing**: Optimized vertical proportions and visual hierarchy inspired by premier design agencies.
+- **Contact-only Social Links**: Instagram, TikTok, Facebook, and YouTube links appear in the Contact page only; the Home page, shared header, and footer stay clear of social icons.
+- **Installable Mobile App (PWA)**: Home-screen installation support, app manifest, service worker, safe-area-aware navigation, and a simple offline shell.
 - **Zero-Dependency Local Server**: Built with native Node.js standard libraries for lightning-fast boot and zero external npm vulnerabilities.
 
 ---
