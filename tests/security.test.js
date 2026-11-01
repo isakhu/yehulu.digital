@@ -27,7 +27,18 @@ test('signed administrator sessions can be verified', () => {
 
   assert.equal(payload.sub, 'admin-test');
   assert.equal(payload.role, 'ADMIN');
+  assert.equal(payload.ver, 0);
   assert.ok(payload.exp > Math.floor(Date.now() / 1000));
+});
+
+test('session tokens carry a revocation version for administrator logout', () => {
+  const token = createSessionToken({
+    id: 'admin-versioned',
+    role: 'ADMIN',
+    tokenVersion: 4
+  });
+
+  assert.equal(verifySessionToken(token).ver, 4);
 });
 
 test('modified session tokens are rejected', () => {
