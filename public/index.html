@@ -345,8 +345,11 @@
 
       /* The homepage, services and estimator are separate full-screen views. */
       body[data-yd-view="home"] #root main > #home > *:not(:first-child),
-      body[data-yd-view="services"] #root main > #home > *:not(#services),
-      body[data-yd-view="estimate"] #root main > #home > *:not(#estimate) {
+      body[data-yd-view="services"] #root main > #home > *:not(#services):not(.fixed.inset-0),
+      body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
+        display: none !important;
+      }
+      body[data-yd-view="home"] #root footer {
         display: none !important;
       }
 
@@ -1031,7 +1034,7 @@
         var main = document.querySelector('main');
         if (!main) return;
 
-        var currentPath = window.location.pathname.replace(/\\/+/g, '/') || '/';
+        var currentPath = window.location.pathname || '/';
         var currentView = currentPath === '/services' ? 'services' :
           currentPath === '/estimate' ? 'estimate' :
           (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
@@ -1041,6 +1044,19 @@
 
         var hero = main.firstElementChild;
         if (hero && !hero.id) hero.id = 'home';
+
+        // Give the estimator's complete route-level wrapper its own ID.
+        if (currentPath === '/estimate' && hero) {
+          Array.prototype.slice.call(hero.children).forEach(function(child) {
+            if (
+              child.classList &&
+              child.classList.contains('min-h-screen') &&
+              child.textContent.toUpperCase().includes('ESTIMATE YOUR PROJECT')
+            ) {
+              child.id = 'yd-estimate-page';
+            }
+          });
+        }
 
         var headings = main.querySelectorAll('h1, h2, h3, span');
         headings.forEach(function(h) {
