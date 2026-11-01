@@ -9,13 +9,13 @@ Official web platform for **Yehulu Digital** — a creative digital marketing ag
 
 ## 🌟 Modernization & Feature Highlights
 
-- **Fixed Bottom Navigation**: Eight icon-only destinations open dedicated Home, About, Services, Projects, Videos, Courses, Estimator, and Contact pages. The active page stays highlighted; the dock remains fixed on desktop and mobile.
+- **Fixed Bottom Navigation**: Eight icon-only destinations open dedicated Home, About, Services, Projects, Videos, Courses, Admin Login, and Contact pages. The Estimator remains available at `/estimate` but is intentionally not in the dock. The active page stays highlighted; the dock remains fixed on desktop and mobile.
 - **Interactive Service Doors**: The five service cards open with a two-panel door animation on hover, focus, or tap, then reveal the existing service details and project enquiry action.
 - **Dynamic Theme Switcher**: Dual mode (Dark default `#050505` with `#B6FF00` accent, and Light `#f6f8f4`) with persistent `localStorage` preference and zero flash of unstyled content (zero-FOUC).
 - **Fullscreen Interactive Lightbox**: Click any portfolio asset across the home page or gallery to inspect full-resolution artwork with previous/next keyboard shortcuts (`←`/`→`), close on `ESC`, and swipe support.
 - **30+ Client Project Archive**: Complete portfolio showcasing 37 verified client deliverables across Brand Identity, Commercial Outdoor Advertising, Social Media, and Hospitality (featuring Rori Hotel Hawassa).
 - **Automated Gallery Sync Engine (`sync-gallery.js`)**: Drop any new image files into `public/uploads/projects/` and run `npm run sync` to instantly categorize and index them into `data/gallery.json`.
-- **Contact-only Social Links**: Instagram, TikTok, Facebook, and YouTube links appear in the Contact page only; the Home page, shared header, and footer stay clear of social icons.
+- **Contact-only Social Links**: Instagram, TikTok, Facebook, and YouTube links appear in the Contact page only; the Home page, shared header, and footer stay clear of social icons. All four Contact links remain visible even if contact settings cannot be loaded.
 - **Installable Mobile App (PWA)**: Home-screen installation support, app manifest, service worker, safe-area-aware navigation, and a simple offline shell.
 - **Zero-Dependency Local Server**: Built with native Node.js standard libraries for lightning-fast boot and zero external npm vulnerabilities.
 
@@ -60,7 +60,7 @@ yehulu.digital/
 
 The admin portal supports gallery and video management, Telegram course publishing, incoming messages, pricing settings, and administrator accounts.
 
-- **Portal URL**: `/admin/login`
+- **Portal URL**: `/admin/login` (also available from the Admin icon in the fixed bottom navigation).
 - **Initial administrator email**: `admin@yehuludigital.com` (change with `ADMIN_EMAIL`).
 - **No default password is shipped with the repository.** Configure a private password hash and session secret before signing in.
 
@@ -101,7 +101,7 @@ For local use, copy `.env.example` to `.env`, fill in the values, then run `npm 
 
 ## 📱 Mobile App & Navigation
 
-The public website uses a fixed bottom icon dock. Home, About, Services, Projects, Videos, Courses, Estimator, and Contact open as separate pages. Services and Estimator reuse the existing homepage components, so their current functionality is preserved without placing every homepage section on the Home page.
+The public website uses a fixed bottom icon dock. Home, About, Services, Projects, Videos, Courses, Admin Login, and Contact open as separate pages. The estimator remains available at `/estimate` for clients who have the link. Services and Estimator reuse the existing homepage components, so their current functionality is preserved without placing every homepage section on the Home page.
 
 Yehulu Digital is installable as a Progressive Web App (PWA):
 
