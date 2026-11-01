@@ -109,11 +109,17 @@
       @keyframes yd-loader-auto-dismiss {
         to { opacity: 0; visibility: hidden; pointer-events: none; }
       }
+      /* The loader has repeatedly trapped real visitors on the splash screen.
+         Remove it from rendering entirely; the React app and static navigation must
+         remain visible even if a third-party script or bundle fails. */
       #yeh-loader {
-        animation: yd-loader-auto-dismiss .45s ease 6s forwards;
+        display: none !important;
+        animation: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
       }
       @media (prefers-reduced-motion: reduce) {
-        #yeh-loader { animation-duration: .01ms; animation-delay: 3s; }
+        #yeh-loader { display: none !important; animation: none !important; }
       }
       .loader-logo {
         width: 120px;
