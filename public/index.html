@@ -105,6 +105,16 @@
         opacity: 0;
         pointer-events: none;
       }
+      /* Last-resort escape hatch: a broken animation script must never trap visitors. */
+      @keyframes yd-loader-auto-dismiss {
+        to { opacity: 0; visibility: hidden; pointer-events: none; }
+      }
+      #yeh-loader {
+        animation: yd-loader-auto-dismiss .45s ease 6s forwards;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #yeh-loader { animation-duration: .01ms; animation-delay: 3s; }
+      }
       .loader-logo {
         width: 120px;
         object-fit: contain;
@@ -1343,16 +1353,18 @@
       // ─────────────────────────────────────────────────
       var loader = document.getElementById('yeh-loader');
       function dismissLoader() {
-        if (loader && loader.style.display !== 'none') {
-          gsap.to(loader, {
-            opacity: 0,
-            duration: 0.4,
-            ease: 'power2.inOut',
-            onComplete: function() {
-              loader.style.display = 'none';
-            }
-          });
-        }
+        if (!loader || loader.dataset.ydDismissed === 'true') return;
+        loader.dataset.ydDismissed = 'true';
+
+        // Never make the entire website depend on GSAP loading successfully.
+        // The CSS class fades the overlay; the timeout removes it from hit-testing.
+        loader.classList.add('hidden');
+        window.setTimeout(function() {
+          if (loader) {
+            loader.style.display = 'none';
+            loader.setAttribute('aria-hidden', 'true');
+          }
+        }, 450);
       }
 
       var deferredYehuluInstallPrompt = null;
