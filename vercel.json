@@ -7,7 +7,7 @@
     },
     {
       "source": "/about",
-      "destination": "/about.html"
+      "destination": "/index.html"
     },
     {
       "source": "/admin",
