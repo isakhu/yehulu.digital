@@ -183,10 +183,7 @@ async function handleRequest(req, res) {
   const pathname = parsed.pathname;
   const method   = req.method.toUpperCase();
 
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // The website and API are same-origin; do not enable arbitrary cross-origin access.
 
   if (method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
@@ -218,7 +215,7 @@ async function handleRequest(req, res) {
         res.writeHead(200, {
           'Content-Type': contentType,
           'Cache-Control': 'public, max-age=31536000, immutable',
-          'Access-Control-Allow-Origin': '*'
+          'X-Content-Type-Options': 'nosniff'
         });
         if (method === 'HEAD') return res.end();
         if (result.stream) {
