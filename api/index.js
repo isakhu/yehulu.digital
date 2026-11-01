@@ -1,5 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const { getAuthenticatedUser } = require('../lib/accounts');
+const { handleAccountApi } = require('../lib/account-api');
+const { readJSON: readStoredJSON, writeJSON: writeStoredJSON } = require('../lib/data-store');
+const { buildCourseRecord } = require('../lib/courses');
 
 let putBlob = null;
 let getBlob = null;
@@ -16,35 +20,10 @@ const DATA_DIR = path.join(ROOT_DIR, 'data');
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 const UPLOADS_DIR = path.join(PUBLIC_DIR, 'uploads', 'projects');
 
-// Active in-memory session tokens
-const activeTokens = new Set(['yehulu-permanent-session-key']);
-
 // In-memory cache for Vercel serverless environment
 let cachedGallery = null;
 let cachedVideos = null;
-
-function getUsers() {
-  const userFile = path.join(DATA_DIR, 'users.json');
-  if (fs.existsSync(userFile)) {
-    try { return JSON.parse(fs.readFileSync(userFile, 'utf8')); } catch (_) {}
-  }
-  return [
-    {
-      id: 'admin-1',
-      name: 'Yehulu Admin',
-      email: 'admin@yehuludigital.com',
-      password: 'YehuluAdmin2026!',
-      role: 'ADMIN'
-    },
-    {
-      id: 'admin-2',
-      name: 'Yehulu Client',
-      email: 'admin@yehulu.digital',
-      password: 'YehuluAdmin2026!',
-      role: 'ADMIN'
-    }
-  ];
-}
+let cachedCourses = null;
 
 function sendJSON(res, status, body) {
   res.writeHead(status, {
@@ -259,6 +238,35 @@ async function persistVideos(videos) {
   }
 }
 
+function isPublicApiRequest(pathname, method) {
+  if (pathname === '/api/auth/login' && method === 'POST') return true;
+  if (pathname === '/api/auth/me' && (method === 'GET' || method === 'HEAD')) return true;
+  if (pathname === '/api/messages' && method === 'POST') return true;
+  if (method !== 'GET' && method !== 'HEAD') return false;
+
+  return pathname === '/api/gallery' ||
+    /^\/api\/gallery\/[^/]+$/.test(pathname) ||
+    pathname === '/api/videos' ||
+    /^\/api\/videos\/[^/]+$/.test(pathname) ||
+    pathname === '/api/contact-info' ||
+    pathname === '/api/estimator-config' ||
+    pathname === '/api/courses' ||
+    /^\/api\/courses\/[^/]+$/.test(pathname) ||
+    pathname === '/api/blob-proxy';
+}
+
+async function getCoursesData() {
+  if (cachedCourses !== null) return cachedCourses;
+  const data = await readStoredJSON('courses.json', []);
+  cachedCourses = Array.isArray(data) ? data : [];
+  return cachedCourses;
+}
+
+async function persistCourses(courses) {
+  cachedCourses = courses;
+  await writeStoredJSON('courses.json', courses);
+}
+
 module.exports = async (req, res) => {
   const method = (req.method || 'GET').toUpperCase();
   const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
@@ -275,52 +283,18 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // ── 1. AUTHENTICATION ──
-  if (pathname === '/api/auth/login' && method === 'POST') {
-    const body = await readBody(req);
-    const email = (body.email || '').trim().toLowerCase();
-    const password = (body.password || '').trim();
-
-    const users = getUsers();
-    const user = users.find(u => u.email.toLowerCase() === email && (u.password === password || password === 'YehuluAdmin2026!'));
-
-    if (user || email.includes('admin') || email.includes('yehulu')) {
-      const matched = user || users[0];
-      const token = `yehulu-token-${matched.id}-${Date.now()}`;
-      activeTokens.add(token);
-
-      return sendJSON(res, 200, {
-        token,
-        user: {
-          id: matched.id,
-          name: matched.name,
-          email: matched.email,
-          role: matched.role || 'ADMIN'
-        }
-      });
+  let authenticatedUser = null;
+  if (pathname.startsWith('/api/') && !isPublicApiRequest(pathname, method)) {
+    authenticatedUser = await getAuthenticatedUser(req);
+    if (!authenticatedUser) {
+      return sendJSON(res, 401, { error: 'Authentication required. Please sign in as an administrator.' });
     }
-    return sendJSON(res, 401, { error: 'Invalid email or password' });
   }
 
-  if (pathname === '/api/auth/me' && (method === 'GET' || method === 'HEAD')) {
-    const authHeader = req.headers['authorization'] || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-    if (token && (activeTokens.has(token) || token.startsWith('yehulu-token-'))) {
-      const users = getUsers();
-      const u = users[0];
-      return sendJSON(res, 200, { user: { id: u.id, name: u.name, email: u.email, role: u.role || 'ADMIN' } });
-    }
-    return sendJSON(res, 401, { error: 'Not authenticated' });
-  }
+  const accountResponse = await handleAccountApi(pathname, method, req, authenticatedUser);
+  if (accountResponse) return sendJSON(res, accountResponse.status, accountResponse.body);
 
-  if (pathname === '/api/auth/logout' && method === 'POST') {
-    return sendJSON(res, 200, { success: true });
-  }
-
-  if (pathname === '/api/admin/users' && (method === 'GET' || method === 'HEAD')) {
-    return sendJSON(res, 200, getUsers().map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role || 'ADMIN' })));
-  }
-
+  // ── Private media proxy (restricted to the projects/ asset namespace) ──
   // ── 2. SECURE BLOB PROXY (Supports Private Stores without 403 Forbidden) ──
   if (pathname === '/api/blob-proxy' && (method === 'GET' || method === 'HEAD')) {
     const targetPath = parsed.searchParams.get('pathname') || parsed.searchParams.get('url');
@@ -328,6 +302,9 @@ module.exports = async (req, res) => {
       return sendJSON(res, 400, { error: 'Missing pathname or url query parameter' });
     }
 
+    if (!/^projects\/[a-zA-Z0-9_-]+\.(?:jpe?g|png|webp|gif|mp4|webm|mov)$/i.test(targetPath)) {
+      return sendJSON(res, 400, { error: 'Only project media files can be requested.' });
+    }
     try {
       if (getBlob) {
         const result = await getBlob(targetPath, { access: 'private' });
@@ -376,6 +353,9 @@ module.exports = async (req, res) => {
 
       const file = files[0];
       const ext = path.extname(file.filename || '').toLowerCase() || '.jpg';
+      const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.mov']);
+      if (!allowedExtensions.has(ext)) return sendJSON(res, 400, { error: 'Unsupported file type. Upload an image or supported video file.' });
+      if (file.data.length > 25 * 1024 * 1024) return sendJSON(res, 413, { error: 'The upload exceeds the 25 MB limit.' });
       const cleanBase = path.basename(file.filename || 'asset', ext)
         .replace(/[^a-zA-Z0-9_-]/g, '_')
         .toLowerCase();
@@ -544,60 +524,137 @@ module.exports = async (req, res) => {
   }
 
   // ── 6. MESSAGES ──
-  if (pathname === '/api/messages') {
-    const msgFile = path.join(DATA_DIR, 'messages.json');
-    if (method === 'GET' || method === 'HEAD') {
-      if (fs.existsSync(msgFile)) {
-        try { return sendJSON(res, 200, JSON.parse(fs.readFileSync(msgFile, 'utf8'))); } catch (_) {}
-      }
-      return sendJSON(res, 200, []);
+  if (pathname === '/api/messages' && method === 'POST') {
+    const body = await readBody(req);
+    if (!body.name || !body.email || !body.message) {
+      return sendJSON(res, 400, { error: 'name, email and message are required' });
     }
-    if (method === 'POST') {
+
+    const messages = await readStoredJSON('messages.json', []);
+    const entry = {
+      id: Date.now().toString(),
+      name: String(body.name).trim().slice(0, 120),
+      email: String(body.email).trim().slice(0, 254),
+      phone: String(body.phone || '').trim().slice(0, 40),
+      company: String(body.company || '').trim().slice(0, 120),
+      service: String(body.service || '').trim().slice(0, 100),
+      message: String(body.message).trim().slice(0, 5000),
+      createdAt: new Date().toISOString(),
+      status: 'NEW',
+      read: false
+    };
+
+    messages.unshift(entry);
+    await writeStoredJSON('messages.json', messages);
+    return sendJSON(res, 201, { success: true, id: entry.id });
+  }
+
+  if (pathname === '/api/messages' && (method === 'GET' || method === 'HEAD')) {
+    const messages = await readStoredJSON('messages.json', []);
+    return sendJSON(res, 200, Array.isArray(messages) ? messages : []);
+  }
+
+  const messageMatch = pathname.match(/^\\/api\\/messages\\/([^/]+)$/);
+  if (messageMatch) {
+    const messages = await readStoredJSON('messages.json', []);
+    const index = messages.findIndex(message => message.id === messageMatch[1]);
+    if (index === -1) return sendJSON(res, 404, { error: 'Message not found' });
+
+    if (method === 'PATCH') {
       const body = await readBody(req);
-      let msgs = [];
-      if (fs.existsSync(msgFile)) {
-        try { msgs = JSON.parse(fs.readFileSync(msgFile, 'utf8')); } catch (_) {}
-      }
-      const entry = {
-        id: Date.now().toString(),
-        name: body.name || '',
-        email: body.email || '',
-        phone: body.phone || '',
-        company: body.company || '',
-        service: body.service || '',
-        message: body.message || '',
-        createdAt: new Date().toISOString(),
-        status: 'NEW'
-      };
-      msgs.unshift(entry);
-      try { fs.writeFileSync(msgFile, JSON.stringify(msgs, null, 2), 'utf8'); } catch (_) {}
-      return sendJSON(res, 200, { success: true, id: entry.id });
+      const updated = { ...messages[index] };
+      if (typeof body.status === 'string') updated.status = body.status.trim().toUpperCase().slice(0, 40);
+      if (typeof body.read === 'boolean') updated.read = body.read;
+      updated.updatedAt = new Date().toISOString();
+      messages[index] = updated;
+      await writeStoredJSON('messages.json', messages);
+      return sendJSON(res, 200, updated);
+    }
+
+    if (method === 'DELETE') {
+      messages.splice(index, 1);
+      await writeStoredJSON('messages.json', messages);
+      return sendJSON(res, 200, { success: true, deletedId: messageMatch[1] });
     }
   }
 
-  // ── 7. CONTACT & ESTIMATOR & COURSES ──
-  if (pathname === '/api/contact-info' && (method === 'GET' || method === 'HEAD')) {
-    const file = path.join(DATA_DIR, 'contact-info.json');
-    if (fs.existsSync(file)) {
-      try { return sendJSON(res, 200, JSON.parse(fs.readFileSync(file, 'utf8'))); } catch (_) {}
+  // ── 7. CONTACT & ESTIMATOR ──
+  if (pathname === '/api/contact-info') {
+    if (method === 'GET' || method === 'HEAD') {
+      return sendJSON(res, 200, await readStoredJSON('contact-info.json', {}));
     }
-    return sendJSON(res, 200, {});
+    if (method === 'PUT') {
+      const body = await readBody(req);
+      const existing = await readStoredJSON('contact-info.json', {});
+      const updated = { ...existing, ...body, updatedAt: new Date().toISOString() };
+      await writeStoredJSON('contact-info.json', updated);
+      return sendJSON(res, 200, updated);
+    }
   }
 
-  if (pathname === '/api/estimator-config' && (method === 'GET' || method === 'HEAD')) {
-    const file = path.join(DATA_DIR, 'estimator-config.json');
-    if (fs.existsSync(file)) {
-      try { return sendJSON(res, 200, JSON.parse(fs.readFileSync(file, 'utf8'))); } catch (_) {}
+  if (pathname === '/api/estimator-config') {
+    if (method === 'GET' || method === 'HEAD') {
+      return sendJSON(res, 200, await readStoredJSON('estimator-config.json', {}));
     }
-    return sendJSON(res, 200, {});
+    if (method === 'PUT') {
+      const body = await readBody(req);
+      const existing = await readStoredJSON('estimator-config.json', {});
+      const updated = { ...existing, ...body, updatedAt: new Date().toISOString() };
+      await writeStoredJSON('estimator-config.json', updated);
+      return sendJSON(res, 200, updated);
+    }
+  }
+
+  // ── 8. TELEGRAM COURSES CMS ──
+  if (pathname === '/api/admin/courses' && (method === 'GET' || method === 'HEAD')) {
+    return sendJSON(res, 200, await getCoursesData());
+  }
+
+  if (pathname === '/api/admin/courses' && method === 'POST') {
+    const body = await readBody(req);
+    const result = buildCourseRecord(body);
+    if (result.error) return sendJSON(res, 400, { error: result.error });
+    const courses = await getCoursesData();
+    courses.unshift(result.course);
+    await persistCourses(courses);
+    return sendJSON(res, 201, result.course);
+  }
+
+  const adminCourseMatch = pathname.match(/^\\/api\\/admin\\/courses\\/([^/]+)$/);
+  if (adminCourseMatch) {
+    const courses = await getCoursesData();
+    const index = courses.findIndex(course => course.id === adminCourseMatch[1]);
+    if (index === -1) return sendJSON(res, 404, { error: 'Course not found' });
+
+    if (method === 'PUT') {
+      const body = await readBody(req);
+      const result = buildCourseRecord(body, courses[index]);
+      if (result.error) return sendJSON(res, 400, { error: result.error });
+      courses[index] = result.course;
+      await persistCourses(courses);
+      return sendJSON(res, 200, result.course);
+    }
+
+    if (method === 'DELETE') {
+      courses.splice(index, 1);
+      await persistCourses(courses);
+      return sendJSON(res, 200, { success: true, deletedId: adminCourseMatch[1] });
+    }
   }
 
   if (pathname === '/api/courses' && (method === 'GET' || method === 'HEAD')) {
-    const file = path.join(DATA_DIR, 'courses.json');
-    if (fs.existsSync(file)) {
-      try { return sendJSON(res, 200, JSON.parse(fs.readFileSync(file, 'utf8'))); } catch (_) {}
+    const courses = await getCoursesData();
+    return sendJSON(res, 200, courses.filter(course => course.status === 'PUBLISHED'));
+  }
+
+  const publicCourseMatch = pathname.match(/^\\/api\\/courses\\/([^/]+)$/);
+  if (publicCourseMatch && (method === 'GET' || method === 'HEAD')) {
+    const courses = await getCoursesData();
+    const course = courses.find(item => item.id === publicCourseMatch[1]);
+    if (!course || (course.status !== 'PUBLISHED' && !await getAuthenticatedUser(req))) {
+      return sendJSON(res, 404, { error: 'Course not found' });
     }
-    return sendJSON(res, 200, []);
+    return sendJSON(res, 200, course);
   }
 
   return sendJSON(res, 404, { error: 'Endpoint not found' });
