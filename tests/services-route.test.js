@@ -52,8 +52,8 @@ test('the standalone page retains the brand navigation, theme and page grid', ()
 });
 
 test('Service Worker caches the dedicated page and uses the current cache version', () => {
-  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v12'"));
+  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v13'"));
   assert.ok(serviceWorker.includes("'/services.html'"));
   assert.ok(serviceWorker.includes('cachedServicesPage'));
-  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=12')"));
+  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=13')"));
 });
