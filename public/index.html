@@ -1688,7 +1688,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=12').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=13').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
@@ -1769,8 +1769,12 @@
       window.currentLightboxIndex = 0;
 
       function safeGalleryImageUrl(value) {
+        var imageValue = String(value || '');
+        if (imageValue.indexOf('/uploads/projects/') === 0) {
+          return 'https://cdn.jsdelivr.net/gh/isakhu/yehulu.digital@main/public/uploads/projects/' + encodeURIComponent(imageValue.slice('/uploads/projects/'.length));
+        }
         try {
-          var url = new URL(String(value || ''), window.location.origin);
+          var url = new URL(imageValue, window.location.origin);
           if (url.protocol === 'https:' || url.origin === window.location.origin) {
             return url.href;
           }
