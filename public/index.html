@@ -1066,7 +1066,7 @@
     </style>
 
     <!-- React bundle (Vite SPA) -->
-    <script type="module" crossorigin src="/assets/index-BSXl1opM.js"></script>
+    <script type="module" crossorigin src="/assets/index-BSXl1opM.js?v=3"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-Bs1w5tPm.css">
   </head>
 
@@ -1671,7 +1671,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=3').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
