@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="Explore Yehulu Digital's brand identity, video production, graphic design, social media and digital experience services.">
+  <title>Creative Services | Yehulu Digital</title>
+  <link rel="icon" type="image/png" href="/assets/logopng-BhI97nKv.png">
+  <link rel="apple-touch-icon" href="/assets/logopng-BhI97nKv.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('yehulu_theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      } catch (error) {}
+    })();
+  </script>
+  <style>
+    :root,[data-theme="dark"] {
+      color-scheme: dark;
+      --bg:#050505;--card:#0a0a0a;--sub:#111;--text:#fff;--muted:#a1a1aa;
+      --line:rgba(255,255,255,.1);--accent:#b6ff00;--accent-text:#050505;
+      --dock:rgba(10,10,10,.9);--panel:rgba(10,10,10,.96);
+    }
+    [data-theme="light"] {
+      color-scheme:light;
+      --bg:#f6f8f4;--card:#fff;--sub:#edf1e8;--text:#0c1109;--muted:#4b5545;
+      --line:rgba(0,0,0,.12);--accent:#8ec900;--accent-text:#050505;
+      --dock:rgba(255,255,255,.94);--panel:rgba(255,255,255,.98);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;min-height:100vh;background-color:var(--bg);color:var(--text);
+      font-family:"Plus Jakarta Sans",sans-serif;overflow-x:hidden;
+      background-image:
+        linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+        radial-gradient(ellipse 65% 50% at 50% 34%,rgba(100,180,0,.07),transparent 70%);
+      background-size:54px 45px,54px 45px,auto;background-attachment:fixed;
+      padding-bottom:112px;
+    }
+    [data-theme="light"] body{
+      background-image:linear-gradient(rgba(0,0,0,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.055) 1px,transparent 1px);
+      background-size:54px 45px;background-attachment:fixed;
+    }
+    a{color:inherit}
+    button{font:inherit}
+    .topbar{
+      width:min(1240px,calc(100% - 40px));margin:0 auto;padding:22px 0;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      border-bottom:1px solid var(--line);
+    }
+    .brand{display:inline-flex;align-items:center;gap:12px;text-decoration:none}
+    .brand img{width:42px;height:42px;object-fit:contain}
+    .brand-word{font-family:"Bricolage Grotesque",sans-serif;font-weight:900;letter-spacing:.11em;font-size:13px}
+    .brand-word span{display:block;color:var(--muted);font:700 9px "Plus Jakarta Sans",sans-serif;letter-spacing:.22em;margin-top:3px}
+    .theme-toggle{
+      width:42px;height:42px;border-radius:50%;border:1px solid var(--line);
+      background:var(--card);color:var(--text);display:grid;place-items:center;cursor:pointer;
+    }
+    .theme-toggle svg{width:19px;height:19px}
+    .page{width:min(1240px,calc(100% - 40px));margin:0 auto;padding:62px 0 36px}
+    .eyebrow{display:flex;align-items:center;gap:10px;color:var(--accent);font:800 11px "Courier New",monospace;letter-spacing:.25em;text-transform:uppercase}
+    .eyebrow:before{content:"";height:1px;width:30px;background:var(--accent)}
+    h1,h2,h3,p{margin-top:0}
+    h1{
+      max-width:880px;margin:18px 0 16px;font:900 clamp(42px,7vw,82px)/.94 "Bricolage Grotesque",sans-serif;
+      letter-spacing:-.055em;text-transform:uppercase;
+    }
+    h1 span{color:var(--accent)}
+    .intro-row{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:38px}
+    .intro{max-width:570px;color:var(--muted);font-size:15px;line-height:1.8;margin:0}
+    .side-note{max-width:210px;color:var(--muted);font:700 10px/1.7 "Courier New",monospace;letter-spacing:.13em;text-transform:uppercase;text-align:right}
+    .service-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px;align-items:stretch}
+    .door{
+      --door-bg:linear-gradient(160deg,#171b10,#090b08);
+      position:relative;isolation:isolate;min-width:0;min-height:430px;padding:0;
+      border:1px solid var(--line);border-radius:150px 150px 9px 9px;
+      background:var(--card);color:var(--text);overflow:hidden;cursor:pointer;text-align:left;
+      box-shadow:0 22px 54px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.025);
+      transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+    }
+    .door:hover,.door:focus-visible{transform:translateY(-7px);border-color:var(--accent);box-shadow:0 25px 55px rgba(0,0,0,.48),0 0 26px rgba(182,255,0,.1);outline:none}
+    .door:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .door-inner{
+      position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;
+      justify-content:space-between;min-height:430px;padding:34px 20px 24px;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(182,255,0,.085),transparent 42%),
+        linear-gradient(180deg,var(--sub),var(--card));
+    }
+    .door-top{width:100%;display:flex;justify-content:space-between;align-items:center}
+    .door-number{font:900 17px "Bricolage Grotesque",sans-serif;color:var(--accent)}
+    .door-icon{width:42px;height:42px;color:var(--muted);border:1px solid var(--line);border-radius:50%;padding:10px}
+    .door-copy{width:100%}
+    .door-title{font:900 clamp(17px,1.6vw,22px)/1.05 "Bricolage Grotesque",sans-serif;text-transform:uppercase;letter-spacing:-.02em;margin:0 0 12px}
+    .door-desc{font-size:11px;line-height:1.7;color:var(--muted);margin:0 0 20px}
+    .door-action{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font:800 9px "Courier New",monospace;letter-spacing:.13em;text-transform:uppercase;border-bottom:1px solid rgba(182,255,0,.4);padding-bottom:5px}
+    .door:before{
+      content:"OPEN SERVICE  ↗";position:absolute;inset:0;z-index:3;display:flex;align-items:end;justify-content:center;
+      padding:0 10px 38px;text-align:center;color:#fff;font:900 11px "Bricolage Grotesque",sans-serif;letter-spacing:.16em;
+      background:
+        radial-gradient(circle at calc(100% - 25px) 55%,var(--accent) 0 3px,rgba(182,255,0,.3) 4px 6px,transparent 8px),
+        linear-gradient(90deg,rgba(255,255,255,.09),transparent 18%,transparent 82%,rgba(0,0,0,.23)),
+        repeating-linear-gradient(0deg,transparent 0 72px,rgba(255,255,255,.12) 73px,transparent 75px),
+        linear-gradient(145deg,#242a17,#0b0d08);
+      border:1px solid rgba(255,255,255,.16);border-radius:inherit;
+      box-shadow:inset 0 0 0 10px rgba(0,0,0,.12),inset 0 0 0 12px rgba(255,255,255,.1),inset 0 -28px 45px rgba(0,0,0,.3);
+      transform-origin:left center;transform:perspective(1200px) rotateY(0deg);
+      transition:transform .85s cubic-bezier(.2,.75,.2,1),opacity .55s ease;
+      backface-visibility:hidden;
+    }
+    .door:after{content:"";position:absolute;inset:12px 10px 10px;z-index:4;border:1px solid rgba(255,255,255,.16);border-radius:inherit;pointer-events:none}
+    .door.is-opening:before{transform:perspective(1200px) rotateY(-105deg);opacity:.35}
+    .door.is-opening:after{opacity:.05}
+    .door.is-opening .door-inner{background:linear-gradient(180deg,var(--sub),var(--card))}
+    .process{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+      margin-top:34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;
+    }
+    .process-item{display:flex;gap:12px;align-items:flex-start}
+    .process-num{font:900 12px "Courier New",monospace;color:var(--accent)}
+    .process-item strong{display:block;font:800 11px "Courier New",monospace;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+    .process-item span{display:block;color:var(--muted);font-size:11px;line-height:1.6}
+    .cta{
+      margin-top:50px;padding:34px 38px;background:var(--accent);color:#050505;
+      display:flex;align-items:center;justify-content:space-between;gap:22px;
+    }
+    .cta-label{display:inline-block;background:#050505;color:var(--accent);font:800 9px "Courier New",monospace;letter-spacing:.18em;padding:6px 9px;margin-bottom:10px}
+    .cta h2{font:900 clamp(24px,3vw,38px)/1 "Bricolage Grotesque",sans-serif;margin:0;letter-spacing:-.03em;text-transform:uppercase}
+    .cta p{font-size:12px;line-height:1.6;margin:9px 0 0;max-width:500px}
+    .cta-link{flex:0 0 auto;display:inline-flex;align-items:center;gap:10px;padding:15px 19px;background:#050505;color:var(--accent);text-decoration:none;font:900 10px "Courier New",monospace;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,color .2s}
+    .cta-link:hover{background:#fff;color:#050505}
+    footer{width:min(1240px,calc(100% - 40px));margin:0 auto;padding:24px 0 12px;color:var(--muted);font:700 9px "Courier New",monospace;letter-spacing:.14em;text-transform:uppercase}
+    .dock{
+      position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:100;
+      width:min(680px,calc(100vw - 16px));display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px;
+      padding:7px;border:1px solid rgba(182,255,0,.25);border-radius:999px;background:var(--dock);
+      box-shadow:0 12px 32px rgba(0,0,0,.7);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    }
+    .dock a{
+      min-width:0;height:42px;display:grid;place-items:center;position:relative;border-radius:999px;
+      color:var(--muted);text-decoration:none;transition:background .2s,color .2s,transform .2s;
+    }
+    .dock a:hover{background:rgba(255,255,255,.1);color:var(--text);transform:translateY(-2px)}
+    .dock a.active{background:var(--accent);color:#050505;box-shadow:0 0 16px rgba(182,255,0,.25)}
+    .dock svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dock-label{
+      position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+      white-space:nowrap;padding:6px 8px;border:1px solid var(--line);border-radius:5px;
+      background:var(--panel);color:var(--text);font:800 9px "Courier New",monospace;letter-spacing:.1em;
+      opacity:0;pointer-events:none;transition:opacity .15s;
+    }
+    .dock a:hover .dock-label,.dock a:focus-visible .dock-label{opacity:1}
+    dialog{
+      width:min(620px,calc(100% - 28px));max-height:min(85vh,760px);padding:0;border:1px solid rgba(182,255,0,.35);
+      background:var(--panel);color:var(--text);box-shadow:0 30px 100px rgba(0,0,0,.7);
+    }
+    dialog::backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
+    .dialog-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 24px;border-bottom:1px solid var(--line)}
+    .dialog-kicker{font:800 10px "Courier New",monospace;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
+    .dialog-close{width:34px;height:34px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer;font-size:20px}
+    .dialog-body{padding:26px 28px 30px}
+    .dialog-body h2{font:900 clamp(28px,5vw,40px)/1 "Bricolage Grotesque",sans-serif;text-transform:uppercase;margin:0 0 14px;letter-spacing:-.03em}
+    .dialog-description{color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:23px}
+    .deliverables-label{font:800 10px "Courier New",monospace;color:var(--accent);letter-spacing:.17em;text-transform:uppercase;margin-bottom:12px}
+    .deliverables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 25px;padding:0;list-style:none}
+    .deliverables li{display:flex;align-items:flex-start;gap:9px;color:var(--text);font-size:11px;line-height:1.5}
+    .deliverables li:before{content:"↗";color:var(--accent);font-weight:900}
+    .dialog-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+    .meta-pill{padding:8px 10px;border:1px solid var(--line);color:var(--muted);font:800 9px "Courier New",monospace;letter-spacing:.08em;text-transform:uppercase}
+    .dialog-cta{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;background:var(--accent);color:#050505;text-decoration:none;font:900 10px "Courier New",monospace;letter-spacing:.12em;text-transform:uppercase}
+    @media(max-width:1050px){.service-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.door,.door-inner{min-height:390px}.door{border-radius:125px 125px 9px 9px}}
+    @media(max-width:700px){
+      .page{padding-top:44px}.intro-row{display:block}.side-note{display:none}
+      .service-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+      .door,.door-inner{min-height:365px}.door{border-radius:112px 112px 8px 8px}
+      .door-inner{padding:29px 15px 20px}.door-title{font-size:19px}.door-desc{font-size:10px}
+      .process{grid-template-columns:1fr;gap:16px}.cta{padding:26px 22px;display:block}.cta-link{margin-top:18px}
+    }
+    @media(max-width:430px){
+      .topbar,.page,footer{width:calc(100% - 28px)}
+      .service-grid{grid-template-columns:1fr 1fr}
+      .door,.door-inner{min-height:330px}.door-inner{padding:24px 12px 18px}
+      .door-title{font-size:17px}.door-desc{font-size:9px}
+      .dock{width:calc(100vw - 10px);padding:5px;gap:1px}
+      .dock a{height:39px}.dock svg{width:17px;height:17px}
+      .deliverables{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Yehulu Digital home">
+      <img src="/assets/logopng-BhI97nKv.png" alt="Yehulu Digital logo">
+      <span class="brand-word">YEHULU DIGITAL<span>CREATIVE STUDIO</span></span>
+    </a>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" title="Switch theme">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"></path></svg>
+    </button>
+  </header>
+
+  <main class="page">
+    <div class="eyebrow">What we do · Our services</div>
+    <h1>Creative work that moves <span>business.</span></h1>
+    <div class="intro-row">
+      <p class="intro">From the first impression to the final customer experience, we create the identity, content and digital tools that help ambitious businesses stand out and grow. Choose a service to explore what we can build together.</p>
+      <div class="side-note">Five creative disciplines<br>One focused partner<br>Built around your goals</div>
+    </div>
+
+    <section class="service-grid" aria-label="Yehulu Digital services">
+      <button class="door" type="button" data-service="branding" aria-haspopup="dialog">
+        <span class="door-inner">
+          <span class="door-top"><span class="door-number">01 / 05</span><svg class="door-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V7l8-4 8 4v13M4 11h16M8 20v-5h8v5"></path></svg></span>
+          <span class="door-copy"><span class="door-title">Brand identity</span><span class="door-desc">Build a recognizable brand with a clear voice and a consistent visual system.</span><span class="door-action">Explore service ↗</span></span>
+        </span>
+      </button>
+      <button class="door" type="button" data-service="video" aria-haspopup="dialog">
+        <span class="door-inner">
+          <span class="door-top"><span class="door-number">02 / 05</span><svg class="door-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="13" height="14" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>
+          <span class="door-copy"><span class="door-title">Video production</span><span class="door-desc">Tell your story through commercial films, reels and purposeful visual content.</span><span class="door-action">Explore service ↗</span></span>
+        </span>
+      </button>
+      <button class="door" type="button" data-service="design" aria-haspopup="dialog">
+        <span class="door-inner">
+          <span class="door-top"><span class="door-number">03 / 05</span><svg class="door-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16 9-9 4 4-9 9H4v-4ZM14 6l2-2 4 4-2 2"></path><path d="M4 22h16"></path></svg></span>
+          <span class="door-copy"><span class="door-title">Graphic design</span><span class="door-desc">Make every campaign, message and visual asset feel intentional and memorable.</span><span class="door-action">Explore service ↗</span></span>
+        </span>
+      </button>
+      <button class="door" type="button" data-service="social" aria-haspopup="dialog">
+        <span class="door-inner">
+          <span class="door-top"><span class="door-number">04 / 05</span><svg class="door-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.34 5.66L3 21l3.34-3.34A7.96 7.96 0 0 1 4 12Z"></path><path d="M8 12h8M12 8v8"></path></svg></span>
+          <span class="door-copy"><span class="door-title">Social media</span><span class="door-desc">Create useful content, build an active community and grow your digital presence.</span><span class="door-action">Explore service ↗</span></span>
+        </span>
+      </button>
+      <button class="door" type="button" data-service="digital" aria-haspopup="dialog">
+        <span class="door-inner">
+          <span class="door-top"><span class="door-number">05 / 05</span><svg class="door-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8m-4-4v4M7 8h10M7 12h6"></path></svg></span>
+          <span class="door-copy"><span class="door-title">Digital experiences</span><span class="door-desc">Turn complex ideas into clear websites, products and digital journeys.</span><span class="door-action">Explore service ↗</span></span>
+        </span>
+      </button>
+    </section>
+
+    <section class="process" aria-label="How we work">
+      <div class="process-item"><span class="process-num">01</span><div><strong>Understand</strong><span>We learn about your business, audience and goals before shaping the scope.</span></div></div>
+      <div class="process-item"><span class="process-num">02</span><div><strong>Create</strong><span>We develop the right creative direction and keep you involved through the process.</span></div></div>
+      <div class="process-item"><span class="process-num">03</span><div><strong>Deliver</strong><span>We refine the work, prepare your final assets and help you move forward.</span></div></div>
+    </section>
+
+    <section class="cta">
+      <div>
+        <span class="cta-label">LET'S BUILD SOMETHING USEFUL</span>
+        <h2>Have a project in mind?</h2>
+        <p>Tell us what you are trying to achieve. We will help you identify the right service and the next step.</p>
+      </div>
+      <a class="cta-link" href="/contact">Discuss your project ↗</a>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Yehulu Digital · Creative studio</footer>
+
+  <nav class="dock" aria-label="Main navigation">
+    <a href="/" aria-label="Home" title="Home"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span class="dock-label">Home</span></a>
+    <a href="/about" aria-label="About" title="About"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg><span class="dock-label">About</span></a>
+    <a href="/services" class="active" aria-label="Services" aria-current="page" title="Services"><svg viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg><span class="dock-label">Services</span></a>
+    <a href="/gallery" aria-label="Projects" title="Projects"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg><span class="dock-label">Projects</span></a>
+    <a href="/video" aria-label="Videos" title="Videos"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg><span class="dock-label">Videos</span></a>
+    <a href="/courses" aria-label="Courses" title="Courses"><svg viewBox="0 0 24 24"><path d="m2 8 10-5 10 5-10 5-10-5Z"></path><path d="M6 10v6c3.5 3 8.5 3 12 0v-6M22 8v6"></path></svg><span class="dock-label">Courses</span></a>
+    <a href="/admin/login" aria-label="Admin" title="Admin"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg><span class="dock-label">Admin</span></a>
+    <a href="/contact" aria-label="Contact" title="Contact"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg><span class="dock-label">Contact</span></a>
+  </nav>
+
+  <dialog id="service-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-head">
+      <span class="dialog-kicker" id="dialog-kicker">SERVICE DETAILS</span>
+      <button class="dialog-close" type="button" id="dialog-close" aria-label="Close service details">×</button>
+    </div>
+    <div class="dialog-body">
+      <h2 id="dialog-title"></h2>
+      <p class="dialog-description" id="dialog-description"></p>
+      <div class="deliverables-label">What we can deliver</div>
+      <ul class="deliverables" id="dialog-deliverables"></ul>
+      <div class="dialog-meta"><span class="meta-pill" id="dialog-timeline"></span><span class="meta-pill">Scope tailored to your brief</span></div>
+      <a class="dialog-cta" id="dialog-cta" href="/contact">Discuss this service ↗</a>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      var services = {
+        branding: {
+          number: "01", title: "Brand identity",
+          description: "We build clear, distinctive identity systems that help people recognize, understand and remember your business. From strategy and logo design to the rules that keep your brand consistent, every element works together.",
+          deliverables: ["Brand discovery and direction","Primary and secondary logo suite","Typography and colour system","Brand guidelines","Social and stationery applications","Packaging and merchandise direction"],
+          timeline: "Typical scope: 2–3 weeks"
+        },
+        video: {
+          number: "02", title: "Video production",
+          description: "We plan and produce purposeful video content for launches, campaigns and everyday digital communication — with a focus on strong storytelling, clean visuals and platform-ready edits.",
+          deliverables: ["Creative concept and storyboard","Commercial and brand films","Vertical reels and short-form edits","Product and event coverage","Motion graphics and titles","Audio editing and final exports"],
+          timeline: "Typical scope: 2–4 weeks"
+        },
+        design: {
+          number: "03", title: "Graphic design",
+          description: "We turn information and ideas into strong visual communication for digital and print. Each asset is designed to fit your brand, connect with its audience and make the message easy to understand.",
+          deliverables: ["Campaign key visuals","Social media design kits","Posters and promotional graphics","Presentation and pitch decks","Editorial and print layouts","Packaging and marketing collateral"],
+          timeline: "Timeline depends on the design scope"
+        },
+        social: {
+          number: "04", title: "Social media",
+          description: "We help businesses show up consistently online with planned content, platform-specific creative and a clear communication rhythm. The work is shaped around the audience you need to reach.",
+          deliverables: ["Content strategy and calendar","Post and story design","Short-form reels and captions","Campaign creative","Community response guidelines","Monthly performance summary"],
+          timeline: "Ongoing monthly collaboration"
+        },
+        digital: {
+          number: "05", title: "Digital experiences",
+          description: "We design and build useful digital experiences that make it easier for customers to understand your offer, take action and connect with your business — from campaign landing pages to complete web platforms.",
+          deliverables: ["Website and landing page design","User experience and interface design","Interactive prototypes","Responsive front-end development","Web application experiences","Quality checks and launch support"],
+          timeline: "Timeline depends on platform scope"
+        }
+      };
+
+      var dialog = document.getElementById("service-dialog");
+      var lastTrigger = null;
+      var cards = document.querySelectorAll("[data-service]");
+
+      function openService(key, trigger) {
+        var service = services[key];
+        if (!service || !dialog) return;
+        lastTrigger = trigger || document.activeElement;
+        document.querySelectorAll(".door.is-opening").forEach(function (door) {
+          door.classList.remove("is-opening");
+        });
+        if (trigger) trigger.classList.add("is-opening");
+
+        document.getElementById("dialog-kicker").textContent = "SERVICE " + service.number + " / 05";
+        document.getElementById("dialog-title").textContent = service.title;
+        document.getElementById("dialog-description").textContent = service.description;
+        document.getElementById("dialog-timeline").textContent = service.timeline;
+        document.getElementById("dialog-cta").href = "/contact?service=" + encodeURIComponent(service.title);
+        var list = document.getElementById("dialog-deliverables");
+        list.textContent = "";
+        service.deliverables.forEach(function (item) {
+          var li = document.createElement("li");
+          li.textContent = item;
+          list.appendChild(li);
+        });
+        if (typeof dialog.showModal === "function") dialog.showModal();
+        else dialog.setAttribute("open", "open");
+      }
+
+      cards.forEach(function (card) {
+        card.addEventListener("click", function () {
+          openService(card.getAttribute("data-service"), card);
+        });
+      });
+
+      function closeDialog() {
+        if (dialog.open && typeof dialog.close === "function") dialog.close();
+        else dialog.removeAttribute("open");
+      }
+      document.getElementById("dialog-close").addEventListener("click", closeDialog);
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog) closeDialog();
+      });
+      dialog.addEventListener("close", function () {
+        document.querySelectorAll(".door.is-opening").forEach(function (door) {
+          door.classList.remove("is-opening");
+        });
+        if (lastTrigger && typeof lastTrigger.focus === "function") lastTrigger.focus();
+      });
+
+      var toggle = document.getElementById("theme-toggle");
+      function updateThemeIcon() {
+        var light = document.documentElement.getAttribute("data-theme") === "light";
+        toggle.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+        toggle.innerHTML = light
+          ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>'
+          : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>';
+      }
+      toggle.addEventListener("click", function () {
+        var next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("yehulu_theme", next); } catch (error) {}
+        updateThemeIcon();
+      });
+      updateThemeIcon();
+      document.getElementById("year").textContent = new Date().getFullYear();
+    })();
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/sw.js?v=9").catch(function (error) {
+          console.warn("Yehulu service page offline cache could not be registered:", error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

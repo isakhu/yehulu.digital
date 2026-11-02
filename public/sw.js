@@ -1,10 +1,11 @@
 'use strict';
 
-const CACHE_NAME = 'yehulu-digital-shell-v8';
+const CACHE_NAME = 'yehulu-digital-shell-v9';
 const APP_SHELL = [
   '/',
   '/index.html',
   '/offline.html',
+  '/services.html',
   '/assets/index-BSXl1opM.js',
   '/assets/index-Bs1w5tPm.css',
   '/assets/logopng-BhI97nKv.png'
@@ -47,6 +48,12 @@ self.addEventListener('fetch', event => {
           return response;
         })
         .catch(async () => {
+          const cachedRequestedPage = await caches.match(request);
+          if (cachedRequestedPage) return cachedRequestedPage;
+          if (url.pathname === '/services') {
+            const cachedServicesPage = await caches.match('/services.html');
+            if (cachedServicesPage) return cachedServicesPage;
+          }
           const cachedPage = await caches.match('/index.html');
           return cachedPage || caches.match('/offline.html');
         })

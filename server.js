@@ -609,7 +609,13 @@ async function handleRequest(req, res) {
   // ══════════════════════════════════════════════
   //  7. STATIC FILE SERVING & SPA FALLBACK
   // ══════════════════════════════════════════════
-  // The About page now uses the shared app shell and route-based bottom navigation.
+  // Services is a standalone page so its cards do not depend on homepage DOM filtering.
+  if (pathname === '/services' || pathname === '/services.html') {
+    const servicesPage = path.join(PUBLIC_DIR, 'services.html');
+    if (fs.existsSync(servicesPage)) return serveStaticFile(servicesPage, res);
+  }
+
+  // The About page uses the shared app shell and route-based bottom navigation.
   if (pathname === '/about' || pathname === '/about.html') {
     const appIndex = path.join(PUBLIC_DIR, 'index.html');
     if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);
