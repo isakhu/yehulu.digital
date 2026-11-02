@@ -16,8 +16,8 @@ test('the Services URL is served by an independent HTML page', () => {
   const route = vercel.rewrites.find(item => item.source === '/services');
   assert.ok(route, 'Missing /services rewrite');
   assert.equal(route.destination, '/services.html');
-  assert.match(server, /pathname === '\\/services' \\|\\| pathname === '\\/services\\.html'/);
-  assert.match(server, /serveStaticFile\\(servicesPage, res\\)/);
+  assert.ok(server.includes("pathname === '/services' || pathname === '/services.html'"));
+  assert.ok(server.includes('serveStaticFile(servicesPage, res)'));
 });
 
 test('the dedicated Services page contains five distinct service doors', () => {
@@ -27,31 +27,33 @@ test('the dedicated Services page contains five distinct service doors', () => {
     assert.ok(servicePage.includes('data-service="' + keys[i] + '"'), 'Missing service door: ' + keys[i]);
     assert.ok(servicePage.includes('title: "' + titles[i] + '"'), 'Missing service detail: ' + titles[i]);
   }
-  assert.match(servicePage, /aria-label="Yehulu Digital services"/);
-  assert.match(servicePage, /grid-template-columns:repeat\\(5,minmax\\(0,1fr\\)\\)/);
+  assert.ok(servicePage.includes('aria-label="Yehulu Digital services"'));
+  assert.ok(servicePage.includes('grid-template-columns:repeat(5,minmax(0,1fr))'));
 });
 
 test('each service door opens an accessible detail dialog with deliverables', () => {
-  assert.match(servicePage, /<dialog id="service-dialog"/);
-  assert.match(servicePage, /card\\.addEventListener\\("click"/);
-  assert.match(servicePage, /dialog\\.showModal\\(\\)/);
-  assert.match(servicePage, /deliverables\\.forEach/);
-  assert.match(servicePage, /dialog\\.addEventListener\\("close"/);
-  assert.match(servicePage, /href = "\\/contact\\?service="/);
+  assert.ok(servicePage.includes('<dialog id="service-dialog"'));
+  assert.ok(servicePage.includes('card.addEventListener("click"'));
+  assert.ok(servicePage.includes('dialog.showModal()'));
+  assert.ok(servicePage.includes('deliverables.forEach'));
+  assert.ok(servicePage.includes('dialog.addEventListener("close"'));
+  assert.ok(servicePage.includes('href = "/contact?service="'));
+  assert.ok(servicePage.includes('pendingOpenTimer'));
+  assert.ok(servicePage.includes('}, 460);'));
 });
 
 test('the standalone page retains the brand navigation, theme and page grid', () => {
-  assert.match(servicePage, /href="\/"/);
-  assert.match(servicePage, /href="\/about"/);
-  assert.match(servicePage, /href="\/services" class="active"/);
-  assert.match(servicePage, /id="theme-toggle"/);
-  assert.match(servicePage, /background-size:54px 45px,54px 45px,auto/);
+  assert.ok(servicePage.includes('href="/"'));
+  assert.ok(servicePage.includes('href="/about"'));
+  assert.ok(servicePage.includes('href="/services" class="active"'));
+  assert.ok(servicePage.includes('id="theme-toggle"'));
+  assert.ok(servicePage.includes('background-size:54px 45px,54px 45px,auto'));
   assert.doesNotMatch(servicePage, /FREQUENTLY ASKED|COMMON QUESTIONS|faq-card/i);
 });
 
 test('Service Worker caches the dedicated page and uses the v9 cache', () => {
-  assert.match(serviceWorker, /CACHE_NAME = 'yehulu-digital-shell-v9'/);
-  assert.match(serviceWorker, /'\\/services\\.html'/);
-  assert.match(serviceWorker, /cachedServicesPage/);
-  assert.match(index, /register\\('\\/sw\\.js\\?v=9'\\)/);
+  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v9'"));
+  assert.ok(serviceWorker.includes("'/services.html'"));
+  assert.ok(serviceWorker.includes('cachedServicesPage'));
+  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=9')"));
 });

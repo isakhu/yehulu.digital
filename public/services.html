@@ -328,6 +328,7 @@
 
       var dialog = document.getElementById("service-dialog");
       var lastTrigger = null;
+      var pendingOpenTimer = null;
       var cards = document.querySelectorAll("[data-service]");
 
       function openService(key, trigger) {
@@ -351,8 +352,12 @@
           li.textContent = item;
           list.appendChild(li);
         });
-        if (typeof dialog.showModal === "function") dialog.showModal();
-        else dialog.setAttribute("open", "open");
+        if (pendingOpenTimer) window.clearTimeout(pendingOpenTimer);
+        pendingOpenTimer = window.setTimeout(function () {
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "open");
+          pendingOpenTimer = null;
+        }, 460);
       }
 
       cards.forEach(function (card) {
