@@ -46,11 +46,6 @@ export default function AboutSection() {
     <section className="bg-[#050505] text-white py-24 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#bcff00] selection:text-black">
       <div className="max-w-7xl mx-auto space-y-24">
 
-        <section
-          id="yd-mechanical-teardown"
-          data-mechanical-teardown
-          aria-label="Interactive Three.js mechanical teardown"
-        />
 
         {/* ---------------- 01. WHO WE ARE & BRAND SYSTEM ---------------- */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
