@@ -16,6 +16,7 @@ test('the Services URL is served by an independent HTML page', () => {
   const route = vercel.rewrites.find(item => item.source === '/services');
   assert.ok(route, 'Missing /services rewrite');
   assert.equal(route.destination, '/services.html');
+  assert.equal(vercel.rewrites.some(item => item.source === '/about'), true);
   assert.ok(server.includes("pathname === '/services' || pathname === '/services.html'"));
   assert.ok(server.includes('serveStaticFile(servicesPage, res)'));
 });
