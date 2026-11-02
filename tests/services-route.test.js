@@ -51,9 +51,9 @@ test('the standalone page retains the brand navigation, theme and page grid', ()
   assert.doesNotMatch(servicePage, /FREQUENTLY ASKED|COMMON QUESTIONS|faq-card/i);
 });
 
-test('Service Worker caches the dedicated page and uses the v9 cache', () => {
-  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v9'"));
+test('Service Worker caches the dedicated page and uses the current cache version', () => {
+  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v12'"));
   assert.ok(serviceWorker.includes("'/services.html'"));
   assert.ok(serviceWorker.includes('cachedServicesPage'));
-  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=9')"));
+  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=12')"));
 });
