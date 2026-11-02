@@ -20,16 +20,16 @@ test('the public project snapshot includes every committed gallery record', () =
   );
 });
 
-test('project records use CDN image URLs backed by the committed GitHub originals', () => {
-  const cdnPrefix = 'https://cdn.jsdelivr.net/gh/isakhu/yehulu.digital@main/public/uploads/projects/';
-  const cdnItems = fallbackGallery.filter(item => (item.imageUrl || '').startsWith(cdnPrefix));
-  assert.ok(cdnItems.length >= 30, 'expected all committed local images to use the public CDN');
-  for (const item of cdnItems) {
-    const filename = decodeURIComponent(item.imageUrl.slice(cdnPrefix.length));
+test('project records use same-origin image URLs backed by committed files', () => {
+  const localPrefix = '/uploads/projects/';
+  const localItems = fallbackGallery.filter(item => (item.imageUrl || '').startsWith(localPrefix));
+  assert.ok(localItems.length >= 30, 'expected checked-in project images to use same-origin URLs');
+  for (const item of localItems) {
+    const filename = decodeURIComponent(item.imageUrl.slice(localPrefix.length));
     const absolutePath = path.join(root, 'public', 'uploads', 'projects', filename);
-    assert.ok(fs.existsSync(absolutePath), 'missing CDN source image: ' + item.imageUrl);
+    assert.ok(fs.existsSync(absolutePath), 'missing same-origin project image: ' + item.imageUrl);
   }
-  assert.equal(sourceGallery.filter(item => (item.imageUrl || '').startsWith(cdnPrefix)).length, cdnItems.length);
+  assert.equal(sourceGallery.filter(item => (item.imageUrl || '').startsWith(localPrefix)).length, localItems.length);
 });
 
 test('committed project images are rendered only in the homepage Projects section and project archive', () => {
@@ -39,10 +39,15 @@ test('committed project images are rendered only in the homepage Projects sectio
   assert.ok(html.includes("fetch('/projects-fallback.json')"));
 });
 
-test('the homepage merges API projects with the committed project snapshot', () => {
+test('homepage and dedicated Projects page both merge API projects with the committed snapshot', () => {
   assert.ok(bundle.includes('fetch("/projects-fallback.json")'));
   assert.ok(bundle.includes('const merged=new Map()'));
   assert.ok(bundle.includes('d(projects.length?projects:ax)'));
+  const projectsPage = bundle.slice(bundle.indexOf('Ry=()=>'), bundle.indexOf('Oy=()=>'));
+  assert.ok(projectsPage.includes('fetch("/api/gallery")'));
+  assert.ok(projectsPage.includes('fetch("/projects-fallback.json")'));
+  assert.ok(projectsPage.includes('imageUrl:previous.imageUrl||item.imageUrl||""'));
+  assert.ok(projectsPage.includes('loading:"lazy"'));
 });
 
 test('homepage project cards fall back to the GitHub-hosted original when a local image fails', () => {
@@ -60,7 +65,7 @@ test('the expanded homepage archive and lightbox use the same project fallback',
 });
 
 test('the offline shell caches the project data snapshot', () => {
-  assert.ok(serviceWorker.includes('yehulu-digital-shell-v13'));
+  assert.ok(serviceWorker.includes('yehulu-digital-shell-v14'));
   assert.ok(serviceWorker.includes("'/projects-fallback.json'"));
-  assert.ok(html.includes("register('/sw.js?v=13')"));
+  assert.ok(html.includes("register('/sw.js?v=14')"));
 });
