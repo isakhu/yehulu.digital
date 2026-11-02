@@ -27,19 +27,15 @@ test('the homepage shows only its bold landing hero, not About or other content 
   assert.match(html, /text-transform: none !important;/);
 });
 
-test('About has its own route, navigation item, metadata, and component', () => {
-  assert.ok(router.includes('l.jsx(Ge,{path:"/about",element:l.jsx(Cy,{})})'));
-  assert.ok(html.includes('data-target="about"'));
-  assert.ok(html.includes("'/about': ['About Yehulu Digital | Our Studio'"));
-  assert.ok(vercel.rewrites.some(rule => rule.source === '/about' && rule.destination === '/index.html'));
-  assert.equal(vercel.redirects.some(rule => rule.source === '/about' && rule.destination === '/'), false);
-  assert.ok(server.includes("if (pathname === '/about' || pathname === '/about.html') {"));
-  assert.ok(server.includes("if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);"));
-  assert.ok(bundle.includes('children:"ABOUT YEHULU DIGITAL"'));
+test('About is not a separate public navigation item or homepage section', () => {
+  assert.equal(router.includes('path:"/about"'), false);
+  assert.equal(html.includes('data-target="about"'), false);
+  assert.equal(html.includes("'/about':"), false);
+  assert.ok(vercel.redirects.some(rule => rule.source === '/about' && rule.destination === '/' && rule.permanent === true));
+  assert.ok(server.includes("res.writeHead(301, { Location: '/' });"));
 });
 
 test('the top navigation links to independent pages rather than homepage sections', () => {
-  assert.ok(bundle.includes('{name:"ABOUT",path:"/about"}'));
   assert.ok(bundle.includes('{name:"SERVICES",path:"/services"}'));
   assert.ok(bundle.includes('{name:"PROJECTS",path:"/gallery"}'));
   assert.ok(bundle.includes('{name:"VIDEOS",path:"/video"}'));
@@ -50,8 +46,8 @@ test('the top navigation links to independent pages rather than homepage section
 });
 
 test('the public navigation has seven independent destinations and Admin stays in Contact', () => {
-  assert.ok(html.includes('grid-template-columns: repeat(7, minmax(0, 1fr))'));
-  for (const target of ['home', 'about', 'services', 'work', 'video', 'courses', 'contact']) {
+  assert.ok(html.includes('grid-template-columns: repeat(6, minmax(0, 1fr))'));
+  for (const target of ['home', 'services', 'work', 'video', 'courses', 'contact']) {
     assert.ok(html.includes('data-target="' + target + '"'), 'missing navigation item: ' + target);
   }
   assert.equal(html.includes('data-target="admin"'), false);
@@ -67,6 +63,22 @@ test('each other navigation route retains its own page component', () => {
   assert.ok(router.includes('l.jsx(Ge,{path:"/video",element:l.jsx(Oy,{})})'));
   assert.ok(router.includes('l.jsx(Ge,{path:"/courses",element:l.jsx(Fy,{})})'));
   assert.ok(router.includes('l.jsx(Ge,{path:"/contact",element:l.jsx(By,{})})'));
+});
+
+test('Projects page merges live API records with committed images and prefers repository-owned files', () => {
+  const projectsPage = bundle.slice(bundle.indexOf('Ry=()=>'), bundle.indexOf('Oy=()=>'));
+  assert.ok(projectsPage.includes('fetch("/api/gallery")'));
+  assert.ok(projectsPage.includes('fetch("/projects-fallback.json")'));
+  assert.ok(projectsPage.includes('imageUrl:previous.imageUrl||item.imageUrl||""'));
+  assert.ok(projectsPage.includes('loading:"lazy"'));
+  assert.ok(projectsPage.includes('decoding:"async"'));
+  const committed = JSON.parse(fs.readFileSync(path.join(root, 'data', 'gallery.json'), 'utf8'));
+  const localProjects = committed.filter(item => String(item.imageUrl || '').startsWith('/uploads/projects/'));
+  assert.ok(localProjects.length >= 30, 'expected the checked-in project images to use same-origin URLs');
+  for (const item of localProjects) {
+    const relative = decodeURIComponent(item.imageUrl.replace(/^\//, ''));
+    assert.ok(fs.existsSync(path.join(root, 'public', relative)), 'missing project image: ' + relative);
+  }
 });
 
 test('Courses page provides a direct Telegram contact for @mihretab01', () => {
@@ -104,9 +116,9 @@ test('home isolation filter matches the landing body view and other route views 
   assert.match(html, /currentPath === '\/estimate' \? 'estimate'/);
 });
 
-test('About is not included in the homepage component and legacy About HTML redirects to About', () => {
-  assert.equal(router.includes('path:"/about",element:l.jsx(ky,{})'), false);
-  assert.ok(vercel.redirects.some(rule => rule.source === '/about.html' && rule.destination === '/about'));
-  assert.ok(vercel.rewrites.some(rule => rule.source === '/about' && rule.destination === '/index.html'));
+test('legacy About URLs redirect to the focused Home page', () => {
+  assert.ok(vercel.redirects.some(rule => rule.source === '/about.html' && rule.destination === '/' && rule.permanent === true));
+  assert.ok(vercel.redirects.some(rule => rule.source === '/about' && rule.destination === '/' && rule.permanent === true));
+  assert.ok(server.includes("res.writeHead(301, { Location: '/' });"));
   assert.match(html, /body\[data-yd-view="landing"\] #root main > #home > \*:not\(:first-child\)/);
 });
