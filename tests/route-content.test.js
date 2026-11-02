@@ -31,8 +31,8 @@ test('About has its own route, navigation item, metadata, and component', () => 
   assert.ok(router.includes('l.jsx(Ge,{path:"/about",element:l.jsx(Cy,{})})'));
   assert.ok(html.includes('data-target="about"'));
   assert.ok(html.includes("'/about': ['About Yehulu Digital | Our Studio'"));
-  assert.ok(config.rewrites.some(rule => rule.source === '/about' && rule.destination === '/index.html'));
-  assert.equal(config.redirects.some(rule => rule.source === '/about' && rule.destination === '/'), false);
+  assert.ok(vercel.rewrites.some(rule => rule.source === '/about' && rule.destination === '/index.html'));
+  assert.equal(vercel.redirects.some(rule => rule.source === '/about' && rule.destination === '/'), false);
   assert.ok(server.includes("if (pathname === '/about' || pathname === '/about.html') {"));
   assert.ok(server.includes("if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);"));
   assert.ok(bundle.includes('children:"ABOUT YEHULU DIGITAL"'));
@@ -96,7 +96,9 @@ test('home isolation filter matches the landing body view and other route views 
   assert.match(html, /currentPath === '\/estimate' \? 'estimate'/);
 });
 
-test('the landing page is not accidentally filtered down to its first section', () => {
-  assert.doesNotMatch(html, /\(\(currentPath === '\/' \|\| currentPath === '\/index\.html'\) \? 'home'/);
-  assert.match(html, /Only routes with an explicit isolated view receive a data-yd-view filter/);
+test('About is not included in the homepage component and legacy About HTML redirects to About', () => {
+  assert.equal(router.includes('path:"/about",element:l.jsx(ky,{})'), false);
+  assert.ok(vercel.redirects.some(rule => rule.source === '/about.html' && rule.destination === '/about'));
+  assert.ok(vercel.rewrites.some(rule => rule.source === '/about' && rule.destination === '/index.html'));
+  assert.match(html, /body\[data-yd-view="landing"\] #root main > #home > \*:not\(:first-child\)/);
 });
