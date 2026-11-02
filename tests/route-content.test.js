@@ -24,6 +24,7 @@ test('the homepage renders the bold brand landing page hero', () => {
   assert.ok(bundle.includes('People Remember.'));
   assert.ok(bundle.includes('Strategy-led branding, websites, and digital systems for ambitious startups and modern businesses.'));
   assert.match(html, /body\[data-yd-view="landing"\] #root main > #home > section:first-of-type h1/);
+  assert.match(html, /body\[data-yd-view="landing"\] #root main > #home \{\s*padding-top: 0 !important;/);
   assert.match(html, /text-transform: none !important;/);
 });
 
