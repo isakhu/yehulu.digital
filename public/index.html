@@ -977,6 +977,92 @@
         max-height: 240px;
         padding: 0 18px 14px 18px;
       }
+    
+      /* ══════════════════════════════════════════════
+         BOLD CENTERED HOMEPAGE HERO  (matches reference image)
+         ══════════════════════════════════════════════ */
+
+      /* Make the hero section full-viewport and flex-centered */
+      #home > section:first-child,
+      #root main > #home > div:first-child > section:first-child,
+      #root main section.min-h-screen:first-of-type {
+        min-height: 100svh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 6rem 1.5rem 8rem !important;
+      }
+
+      /* Turn the 2-column grid into a single centered column */
+      #root main .grid.grid-cols-1.lg\:grid-cols-12:first-of-type,
+      .my-auto.grid.grid-cols-1.lg\:grid-cols-12 {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        max-width: 900px !important;
+        margin: 0 auto !important;
+        gap: 2.5rem !important;
+      }
+
+      /* Hide the logo/3D card side panel — we want just the text */
+      .my-auto.grid.grid-cols-1.lg\:grid-cols-12 > div.lg\:col-span-5,
+      #root main .lg\:col-span-5:has(.\[perspective\:1200px\]) {
+        display: none !important;
+      }
+
+      /* Make the text column full-width */
+      .my-auto.grid.grid-cols-1.lg\:grid-cols-12 > div.lg\:col-span-7,
+      .lg\:col-span-7 {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        max-width: 860px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 1.75rem !important;
+      }
+
+      /* Massive hero heading */
+      .lg\:col-span-7 h1,
+      #root main section h1.font-black.uppercase {
+        font-size: clamp(3.5rem, 9vw, 7.5rem) !important;
+        line-height: 0.92 !important;
+        font-weight: 900 !important;
+        letter-spacing: -0.02em !important;
+        text-align: center !important;
+        max-width: 820px !important;
+      }
+
+      /* Centered pill/badge above heading */
+      .lg\:col-span-7 > div.inline-flex,
+      #root main section .bg-\[\#B6FF00\]\/10.border {
+        margin: 0 auto !important;
+      }
+
+      /* Subtitle centered */
+      .lg\:col-span-7 > p {
+        text-align: center !important;
+        max-width: 560px !important;
+        font-size: 1.1rem !important;
+        line-height: 1.7 !important;
+        color: #a1a1aa !important;
+        margin: 0 auto !important;
+      }
+
+      /* CTA buttons row — centered */
+      .lg\:col-span-7 > div.flex.flex-wrap {
+        justify-content: center !important;
+        gap: 1rem !important;
+      }
+
+      /* Remove the blurry green orb (top-right) that doesn't fit centered layout */
+      #root main section .absolute.top-1\/4.right-10 {
+        display: none !important;
+      }
     </style>
 
     <!-- React bundle (Vite SPA) -->
@@ -1119,6 +1205,83 @@
 
         headerInner.appendChild(actions);
         updateThemeToggleIcons(getActiveTheme());
+      }
+
+      // ─────────────────────────────────────────────────
+      //  HERO PATCH — Bold centered layout like reference
+      // ─────────────────────────────────────────────────
+      function patchHeroSection() {
+        if (document.getElementById('yd-hero-patched')) return;
+        var h1 = document.querySelector('#root main h1');
+        if (!h1) return;
+
+        // Mark patched
+        var marker = document.createElement('span');
+        marker.id = 'yd-hero-patched';
+        marker.style.display = 'none';
+        document.body.appendChild(marker);
+
+        // New heading text matching reference image
+        h1.innerHTML = 'We Build Brands<br><span style="color:#B6FF00">People Remember.</span>';
+        Object.assign(h1.style, {
+          fontSize: 'clamp(3.2rem, 9vw, 7rem)',
+          fontWeight: '900',
+          lineHeight: '0.93',
+          letterSpacing: '-0.02em',
+          textAlign: 'center',
+          textTransform: 'none',
+          color: '#ffffff',
+          maxWidth: '820px',
+          margin: '0 auto'
+        });
+
+        // Badge eyebrow
+        var col = h1.closest('[class*="col-span-7"]') || h1.parentElement;
+        if (col) {
+          var badge = col.querySelector('.inline-flex.items-center');
+          if (badge) {
+            var lbl = badge.querySelector('span:last-child');
+            if (lbl) lbl.textContent = 'Brand Strategy & Digital Experiences';
+          }
+
+          // Subtitle
+          var sub = h1.nextElementSibling;
+          if (sub && sub.tagName === 'P') {
+            sub.textContent = 'Strategy-led branding, websites, and digital systems for ambitious startups and modern businesses.';
+            Object.assign(sub.style, {
+              textAlign: 'center',
+              maxWidth: '560px',
+              margin: '0 auto',
+              color: '#a1a1aa',
+              fontSize: '1.05rem',
+              lineHeight: '1.7'
+            });
+          }
+
+          // Center CTA buttons
+          var btnRow = col.querySelector('.flex.flex-wrap');
+          if (btnRow) btnRow.style.justifyContent = 'center';
+
+          // Rename buttons to match reference
+          var allBtns = col.querySelectorAll('a[href]');
+          allBtns.forEach(function(btn) {
+            var sp = btn.querySelector('span');
+            if (!sp) return;
+            var t = sp.textContent.trim().toUpperCase();
+            if (t.includes('PROJECT') || t.includes('CONTACT')) sp.textContent = 'Start A Project';
+            if (t.includes('WORK') || t.includes('GALLERY') || t.includes('VIEW')) sp.textContent = 'View Our Work';
+          });
+
+          // Hide the right-side 3D card column
+          var parent = col.parentElement;
+          if (parent) {
+            Array.prototype.forEach.call(parent.children, function(child) {
+              if (child !== col && child !== col.parentElement) {
+                child.style.display = 'none';
+              }
+            });
+          }
+        }
       }
 
       // ─────────────────────────────────────────────────
@@ -1517,6 +1680,7 @@
       var rootElement = document.getElementById('root');
       var observer = new MutationObserver(function() {
         injectTopbarActions();
+        patchHeroSection();
         assignSectionIds();
         setupDockNavigation();
         setupYehuluInstallButton();
@@ -1532,6 +1696,7 @@
       window.addEventListener('load', function() {
         setTimeout(function() {
           injectTopbarActions();
+          patchHeroSection();
           assignSectionIds();
           setupDockNavigation();
           setupYehuluInstallButton();
