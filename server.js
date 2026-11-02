@@ -615,15 +615,11 @@ async function handleRequest(req, res) {
     if (fs.existsSync(servicesPage)) return serveStaticFile(servicesPage, res);
   }
 
-  // About is a dedicated React route, separate from the homepage landing hero.
+  // Keep legacy About URLs on the focused homepage; no separate About section is shown.
   if (pathname === '/about' || pathname === '/about.html') {
-    if (pathname === '/about.html') {
-      res.writeHead(301, { Location: '/about' });
-      res.end();
-      return;
-    }
-    const appIndex = path.join(PUBLIC_DIR, 'index.html');
-    if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);
+    res.writeHead(301, { Location: '/' });
+    res.end();
+    return;
   }
 
   let decodedPath = pathname;
