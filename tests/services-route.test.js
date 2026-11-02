@@ -45,18 +45,17 @@ test('each service door opens an accessible detail dialog with deliverables', ()
 
 test('the standalone page retains the brand navigation, theme and page grid', () => {
   assert.ok(servicePage.includes('href="/"'));
-  assert.ok(servicePage.includes('href="/about"'));
   assert.ok(servicePage.includes('href="/services" class="active"'));
   assert.equal(servicePage.includes('href="/admin/login"'), false);
-  assert.ok(servicePage.includes('grid-template-columns:repeat(7,minmax(0,1fr))'));
+  assert.ok(servicePage.includes('grid-template-columns:repeat(6,minmax(0,1fr))'));
   assert.ok(servicePage.includes('id="theme-toggle"'));
   assert.ok(servicePage.includes('background-size:54px 45px,54px 45px,auto'));
   assert.doesNotMatch(servicePage, /FREQUENTLY ASKED|COMMON QUESTIONS|faq-card/i);
 });
 
 test('Service Worker caches the dedicated page and uses the current cache version', () => {
-  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v13'"));
+  assert.ok(serviceWorker.includes("CACHE_NAME = 'yehulu-digital-shell-v14'"));
   assert.ok(serviceWorker.includes("'/services.html'"));
   assert.ok(serviceWorker.includes('cachedServicesPage'));
-  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=13')"));
+  assert.ok(index.includes("navigator.serviceWorker.register('/sw.js?v=14')"));
 });
