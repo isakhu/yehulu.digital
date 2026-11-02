@@ -73,13 +73,49 @@
 
       *, *::before, *::after { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
-      body {
+            body {
         background-color: var(--bg-main);
         color: var(--text-main);
         font-family: 'Plus Jakarta Sans', sans-serif;
         transition: background-color 0.25s ease, color 0.25s ease;
         padding-bottom: 74px; /* Tight compact spacing for floating dock */
         cursor: auto !important; /* Native cursor preserved */
+        /* ══ Grid rectangle background pattern (like reference image) ══ */
+        background-image:
+          linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+        background-size: 64px 64px;
+      }
+
+      /* Light theme grid — slightly more visible */
+      [data-theme="light"] body {
+        background-image:
+          linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+        background-size: 64px 64px;
+      }
+
+      /* Subtle lime-green radial glow in the center for dark mode — matches the reference */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: radial-gradient(
+          ellipse 65% 50% at 50% 40%,
+          rgba(100, 180, 0, 0.07) 0%,
+          transparent 70%
+        );
+      }
+      [data-theme="light"] body::before {
+        display: none;
+      }
+
+      /* Ensure React root sits above the ::before glow overlay */
+      #root, #yeh-progress, #yeh-loader, nav#floating-dock {
+        position: relative;
+        z-index: 1;
       }
 
       ::selection {
