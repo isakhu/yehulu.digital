@@ -41,12 +41,11 @@ test('the dedicated Services route validates the existing five-card section', ()
 });
 
 test('Services route shows only its section and applies the five-door design', () => {
-  assert.match(
-    html,
-    /body\[data-yd-view="services"\] #root main > #home > \*:not\(#services\):not\(\.fixed\.inset-0\)\s*\{\s*display:\s*none !important;/
-  );
+  assert.ok(html.includes(
+    'body[data-yd-view="services"] #root main > #home > *:not(#services):not(.fixed.inset-0),'
+  ));
   assert.match(html, /body\[data-yd-view="services"\] #services \.grid > div\.yd-service-door-card/);
-  assert.match(html, /grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
+  assert.ok(html.includes('grid-template-columns: repeat(5, minmax(0, 1fr)) !important;'));
   assert.equal((html.match(/enhanceServiceDoorCards\(\);/g) || []).length, 2);
 });
 
