@@ -434,6 +434,160 @@
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
       }
+
+      /* Bold, centered home hero based on the approved client reference. */
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type {
+        min-height: min(860px, calc(100vh - 38px)) !important;
+        min-height: min(860px, calc(100svh - 38px)) !important;
+        justify-content: center !important;
+        padding: clamp(5.5rem, 12vh, 8rem) 1.5rem 6rem !important;
+        border-bottom: 0 !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:first-child {
+        left: 50% !important;
+        right: auto !important;
+        top: 12% !important;
+        transform: translateX(-50%) !important;
+        width: min(80vw, 640px) !important;
+        height: min(80vw, 640px) !important;
+        opacity: .7;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) {
+        display: flex !important;
+        width: 100% !important;
+        flex: 1 1 auto;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: auto !important;
+        padding: 0 !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child {
+        display: flex !important;
+        width: 100% !important;
+        max-width: 940px !important;
+        flex: 1 1 auto;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: clamp(1.25rem, 3vh, 1.8rem) !important;
+        margin: auto !important;
+        text-align: center !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > * {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:first-child {
+        gap: .65rem !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:first-child span:last-child {
+        color: #B6FF00 !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: .035em !important;
+        text-transform: none !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type h1 {
+        max-width: 900px !important;
+        color: #fff !important;
+        font-size: clamp(3rem, 7.3vw, 4.65rem) !important;
+        font-weight: 900 !important;
+        letter-spacing: -.065em !important;
+        line-height: .98 !important;
+        text-align: center !important;
+        text-transform: none !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type h1 span {
+        color: #fff !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type p {
+        max-width: 650px !important;
+        margin: 0 auto !important;
+        color: #dedede !important;
+        font-size: clamp(1rem, 1.65vw, 1.15rem) !important;
+        line-height: 1.5 !important;
+        text-align: center !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:last-child,
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:last-child {
+        display: none !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 16px !important;
+        padding-top: 4px !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a {
+        min-width: 168px;
+        justify-content: center !important;
+        border-radius: 5px !important;
+        padding: 15px 25px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a:first-child {
+        order: 2;
+        border: 1px solid rgba(255,255,255,.3) !important;
+        background: rgba(5,5,5,.55) !important;
+        color: #fff !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a:last-child {
+        order: 1;
+        border: 1px solid #B6FF00 !important;
+        background: #B6FF00 !important;
+        color: #050505 !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a:last-child:hover {
+        background: #fff !important;
+        border-color: #fff !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a svg {
+        width: 20px !important;
+        height: 20px !important;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a:last-child svg {
+        padding: 3px;
+        border-radius: 50%;
+        background: #050505;
+        color: #B6FF00;
+      }
+      body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a:first-child svg {
+        padding: 3px;
+        border-radius: 50%;
+        background: #fff;
+        color: #050505;
+      }
+      @media (max-width: 640px) {
+        body[data-yd-view="landing"] #root main > #home > section:first-of-type {
+          min-height: min(760px, calc(100svh - 54px)) !important;
+          padding: 5.25rem 1.1rem 5.5rem !important;
+        }
+        body[data-yd-view="landing"] #root main > #home > section:first-of-type h1 {
+          font-size: clamp(2.55rem, 11vw, 4rem) !important;
+          letter-spacing: -.055em !important;
+          line-height: 1.02 !important;
+        }
+        body[data-yd-view="landing"] #root main > #home > section:first-of-type p {
+          max-width: 34rem !important;
+          font-size: 1rem !important;
+        }
+        body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child {
+          width: 100% !important;
+          gap: 10px !important;
+        }
+        body[data-yd-view="landing"] #root main > #home > section:first-of-type > div:nth-child(2) > div:first-child > div:last-child a {
+          min-width: 0 !important;
+          flex: 1 1 145px;
+          padding: 13px 15px !important;
+        }
+      }
             /* ══════════ STACKING CARDS DECK EFFECT ══════════ */
       .yd-stacking-deck {
         position: relative;
@@ -1205,14 +1359,15 @@
         var currentPath = window.location.pathname || '/';
         // The public landing route is the About page, so it must render in full.
         // Only routes with an explicit isolated view receive a data-yd-view filter.
-        var currentView = currentPath === '/gallery' ? 'projects' :
+        var currentView = currentPath === '/' || currentPath === '/index.html' ? 'landing' :
+          currentPath === '/gallery' ? 'projects' :
           currentPath === '/estimate' ? 'estimate' : '';
         if (currentView) document.body.setAttribute('data-yd-view', currentView);
         else document.body.removeAttribute('data-yd-view');
         document.body.setAttribute('data-yd-admin', currentPath.indexOf('/admin') === 0 ? 'true' : 'false');
 
         var pageMeta = {
-          '/': ['About Yehulu Digital | Our Creative Studio', 'Meet Yehulu Digital, a creative studio building brands and digital experiences from Hawassa, Ethiopia.'],
+          '/': ['Yehulu Digital | We Build Brands People Remember', 'Strategy-led branding, websites, and digital systems for ambitious startups and modern businesses.'],
           '/services': ['Creative Services | Yehulu Digital', 'Explore brand identity, video production, graphic design, social media, and digital experience services.'],
           '/gallery': ['Selected Projects | Yehulu Digital', 'Explore selected branding, graphic design, social media, and commercial projects by Yehulu Digital.'],
           '/video': ['Video Production | Yehulu Digital', 'Watch commercial videos, short-form content, and creative campaigns produced by Yehulu Digital.'],
@@ -1530,7 +1685,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=10').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=11').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
