@@ -428,8 +428,7 @@
       body:not([data-yd-admin="true"]) #root main { padding-bottom: 94px; }
       body[data-yd-admin="true"] #floating-dock { display: none !important; }
 
-      /* The homepage, services and estimator are separate full-screen views. */
-      body[data-yd-view="landing"] #root main > #home > *:not(:first-child),
+      /* Keep the complete homepage story visible. Services and estimator remain focused, dedicated views. */
       body[data-yd-view="services"] #root main > #home > *:not(#services):not(.fixed.inset-0),
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
