@@ -32,6 +32,13 @@ test('project records use CDN image URLs backed by the committed GitHub original
   assert.equal(sourceGallery.filter(item => (item.imageUrl || '').startsWith(cdnPrefix)).length, cdnItems.length);
 });
 
+test('committed project images are rendered only in the homepage Projects section and project archive', () => {
+  assert.ok(bundle.includes('id:"work"'));
+  assert.ok(html.includes("var workSection = document.getElementById('work')"));
+  assert.ok(html.includes('workSection.appendChild(archiveWrapper)'));
+  assert.ok(html.includes("fetch('/projects-fallback.json')"));
+});
+
 test('the homepage merges API projects with the committed project snapshot', () => {
   assert.ok(bundle.includes('fetch("/projects-fallback.json")'));
   assert.ok(bundle.includes('const merged=new Map()'));
