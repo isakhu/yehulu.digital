@@ -84,7 +84,8 @@
         background-image:
           linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
-        background-size: 64px 64px;
+        background-size: 54px 45px;
+        background-attachment: fixed;
       }
 
       /* Light theme grid — slightly more visible */
@@ -92,7 +93,33 @@
         background-image:
           linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
           linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
-        background-size: 64px 64px;
+        background-size: 54px 45px;
+        background-attachment: fixed;
+      }
+
+      /* Keep the reference grid visible on every full-page route, including pages
+         whose React page wrapper has its own solid dark background. */
+      #root > .min-h-screen,
+      #root main > [class~="bg-[#050505]"],
+      #root main [class~="min-h-screen"][class~="bg-[#050505]"] {
+        background-image:
+          linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px),
+          radial-gradient(ellipse 65% 50% at 50% 40%, rgba(100,180,0,0.07) 0%, transparent 70%);
+        background-size: 54px 45px, 54px 45px, auto;
+        background-position: 0 0, 0 0, center center;
+        background-attachment: fixed, fixed, fixed;
+      }
+
+      [data-theme="light"] #root > .min-h-screen,
+      [data-theme="light"] #root main > [class~="bg-[#050505]"],
+      [data-theme="light"] #root main [class~="min-h-screen"][class~="bg-[#050505]"] {
+        background-image:
+          linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+        background-size: 54px 45px, 54px 45px;
+        background-position: 0 0, 0 0;
+        background-attachment: fixed, fixed;
       }
 
       /* Subtle lime-green radial glow in the center for dark mode — matches the reference */
@@ -1677,7 +1704,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=4').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=5').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
