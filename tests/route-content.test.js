@@ -69,6 +69,14 @@ test('each other navigation route retains its own page component', () => {
   assert.ok(router.includes('l.jsx(Ge,{path:"/contact",element:l.jsx(By,{})})'));
 });
 
+test('Courses page provides a direct Telegram contact for @mihretab01', () => {
+  const coursesPage = bundle.slice(bundle.indexOf('Fy=()=>'), bundle.indexOf('Dy=()=>'));
+  assert.ok(coursesPage.includes('href:"https://t.me/mihretab01"'));
+  assert.ok(coursesPage.includes('children:"@mihretab01"'));
+  assert.ok(coursesPage.includes('CONTACT COURSE SUPPORT'));
+  assert.ok(coursesPage.includes('aria-label":"Contact course support on Telegram at @mihretab01'));
+});
+
 test('Contact shows Hawassa location and Yzak Software developer credit', () => {
   assert.ok(bundle.includes('children:"Hawassa, Sidama, Ethiopia"'));
   assert.ok(bundle.includes('https://www.google.com/maps/search/?api=1&query=Hawassa%2C%20Sidama%2C%20Ethiopia'));
