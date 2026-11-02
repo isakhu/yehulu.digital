@@ -334,7 +334,7 @@
         transform: translateX(-50%);
         z-index: 9990;
         display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         align-items: center;
         gap: 2px;
         width: min(680px, calc(100vw - 16px));
@@ -1246,9 +1246,6 @@
       <a href="/courses" class="dock-item" data-target="courses" aria-label="Courses" title="Courses">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m2 8 10-5 10 5-10 5-10-5Z"></path><path d="M6 10v6c3.5 3 8.5 3 12 0v-6"></path><path d="M22 8v6"></path></svg><span class="dock-tooltip">Courses</span>
       </a>
-      <a href="/admin/login" class="dock-item" data-target="admin" aria-label="Admin Login" title="Admin Login">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg><span class="dock-tooltip">Admin</span>
-      </a>
       <a href="/contact" class="dock-item" data-target="contact" aria-label="Contact" title="Contact">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg><span class="dock-tooltip">Contact</span>
       </a>
@@ -1547,7 +1544,6 @@
           courses: '/courses',
           estimate: '/estimate',
           contact: '/contact',
-          admin: '/admin/login'
         };
         var currentPath = window.location.pathname || '/';
         var activeTarget = currentPath === '/' || currentPath === '/index.html' ? 'home' :
@@ -1556,8 +1552,7 @@
           currentPath === '/gallery' ? 'work' :
           currentPath === '/video' ? 'video' :
           currentPath.indexOf('/courses') === 0 ? 'courses' :
-          currentPath === '/contact' ? 'contact' :
-          currentPath.indexOf('/admin') === 0 ? 'admin' : '';
+          currentPath === '/contact' ? 'contact' : '';
 
         dock.querySelectorAll('.dock-item').forEach(function(item) {
           var target = item.getAttribute('data-target');
