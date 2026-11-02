@@ -65,6 +65,18 @@ test('Contact shows Hawassa location and Yzak Software developer credit', () => 
   assert.ok(bundle.includes('DEVELOPED BY YZAK SOFTWARE'));
 });
 
+test('Contact social links use icon-only buttons with accessible platform names', () => {
+  const socialBlock = bundle.slice(bundle.indexOf('children:"CONNECT ON SOCIAL"'), bundle.indexOf('children:"ADMIN PORTAL"'));
+  for (const platform of ['YouTube', 'Instagram', 'TikTok', 'Facebook']) {
+    assert.ok(socialBlock.includes('"aria-label":"' + platform + '"'));
+    assert.ok(socialBlock.includes('"title":"' + platform + '"'));
+  }
+  for (const visibleLabel of ['children:"YOUTUBE"', 'children:"INSTAGRAM"', 'children:"TIKTOK"', 'children:"FACEBOOK"']) {
+    assert.equal(socialBlock.includes(visibleLabel), false, 'social platform text should be icon-only');
+  }
+  assert.equal((socialBlock.match(/"aria-label":"/g) || []).length, 4);
+});
+
 test('home route receives only its dedicated hero styling and other routes keep their own view modes', () => {
   assert.doesNotMatch(html, /function patchHeroSection\(/);
   assert.doesNotMatch(html, /patchHeroSection\(\);/);
