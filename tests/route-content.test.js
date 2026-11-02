@@ -45,7 +45,7 @@ test('the top navigation links to independent pages rather than homepage section
   assert.ok(bundle.includes('l.jsx("a",{href:N.path'));
 });
 
-test('the public navigation has seven independent destinations and Admin stays in Contact', () => {
+test('the public navigation has six destinations and Admin stays in Contact', () => {
   assert.ok(html.includes('grid-template-columns: repeat(6, minmax(0, 1fr))'));
   for (const target of ['home', 'services', 'work', 'video', 'courses', 'contact']) {
     assert.ok(html.includes('data-target="' + target + '"'), 'missing navigation item: ' + target);
