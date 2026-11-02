@@ -24,8 +24,8 @@ test('all local project image paths referenced by the snapshot exist in public u
   const localItems = fallbackGallery.filter(item => (item.imageUrl || '').startsWith('/uploads/projects/'));
   assert.ok(localItems.length >= 30, 'expected the committed project images to be included');
   for (const item of localItems) {
-    const relativePath = decodeURIComponent(item.imageUrl.replace(/^\\//, ''));
-    const absolutePath = path.join(root, 'public', relativePath.replace(/^uploads\\//, 'uploads/'));
+    const relativePath = decodeURIComponent(item.imageUrl.slice(1));
+    const absolutePath = path.join(root, 'public', relativePath);
     assert.ok(fs.existsSync(absolutePath), 'missing project image: ' + item.imageUrl);
   }
 });
