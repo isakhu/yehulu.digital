@@ -14,11 +14,17 @@ const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'
 const routerStart = bundle.indexOf('qy=()=>');
 const router = bundle.slice(routerStart, routerStart + 2600);
 
-test('the homepage renders the About introduction as the single landing page', () => {
-  assert.ok(router.includes('l.jsx(Ge,{path:"/",element:l.jsx(Cy,{})})'));
+test('the homepage renders the bold brand landing page hero', () => {
+  assert.ok(router.includes('l.jsx(Ge,{path:"/",element:l.jsx(ky,{})}')));
   assert.equal(router.includes('path:"/about"'), false);
-  assert.ok(html.includes("'/': ['About Yehulu Digital | Our Creative Studio'"));
+  assert.ok(html.includes("'/': ['Yehulu Digital | We Build Brands People Remember'"));
   assert.equal(html.includes("'/about':"), false);
+  assert.ok(bundle.includes('Brand Strategy & Digital Experiences'));
+  assert.ok(bundle.includes('We Build Brands '));
+  assert.ok(bundle.includes('People Remember.'));
+  assert.ok(bundle.includes('Strategy-led branding, websites, and digital systems for ambitious startups and modern businesses.'));
+  assert.match(html, /body\[data-yd-view="landing"\] #root main > #home > section:first-of-type h1/);
+  assert.match(html, /text-transform: none !important;/);
 });
 
 test('About is removed from navigation and its old URL redirects home', () => {
@@ -47,12 +53,12 @@ test('each other navigation route retains its own page component', () => {
   assert.ok(router.includes('l.jsx(Ge,{path:"/contact",element:l.jsx(By,{})})'));
 });
 
-test('page headings and descriptions are not overwritten by the old global hero patch', () => {
+test('home route receives only its dedicated hero styling and other routes keep their own view modes', () => {
   assert.doesNotMatch(html, /function patchHeroSection\(/);
   assert.doesNotMatch(html, /patchHeroSection\(\);/);
-  assert.doesNotMatch(html, /We Build Brands<br><span style="color:#B6FF00">People Remember\./);
-  assert.match(html, /var currentView = currentPath === '\/gallery' \? 'projects' :/);
-  assert.doesNotMatch(html, /\? 'home' : '';/);
+  assert.match(html, /var currentView = currentPath === '\/' \|\| currentPath === '\/index\.html' \? 'landing' :/);
+  assert.match(html, /currentPath === '\/gallery' \? 'projects'/);
+  assert.match(html, /currentPath === '\/estimate' \? 'estimate'/);
 });
 
 test('the landing page is not accidentally filtered down to its first section', () => {
