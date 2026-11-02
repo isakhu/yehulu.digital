@@ -12,13 +12,12 @@ const server = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 
 const routerStart = bundle.indexOf('qy=()=>');
-const router = bundle.slice(routerStart, routerStart + 2600);
+const router = bundle.slice(routerStart, routerStart + 3400);
 
-test('the homepage renders the bold brand landing page hero', () => {
+test('the homepage shows only its bold landing hero, not About or other content sections', () => {
   assert.ok(router.includes('l.jsx(Ge,{path:"/",element:l.jsx(ky,{})})'));
-  assert.equal(router.includes('path:"/about"'), false);
   assert.ok(html.includes("'/': ['Yehulu Digital | We Build Brands People Remember'"));
-  assert.equal(html.includes("'/about':"), false);
+  assert.ok(html.includes('body[data-yd-view="landing"] #root main > #home > *:not(:first-child)'));
   assert.ok(bundle.includes('Brand Strategy & Digital Experiences'));
   assert.ok(bundle.includes('We Build Brands '));
   assert.ok(bundle.includes('People Remember.'));
@@ -28,20 +27,31 @@ test('the homepage renders the bold brand landing page hero', () => {
   assert.match(html, /text-transform: none !important;/);
 });
 
-test('About is removed from navigation and its old URL redirects home', () => {
-  assert.equal(html.includes('data-target="about"'), false);
-  assert.equal(html.includes('href="/about"'), false);
-  assert.equal(bundle.includes('name:"ABOUT",path:"/about"'), false);
-  assert.equal(bundle.includes('path:"/about",element:l.jsx(Cy,{})'), false);
-  assert.ok(vercel.redirects.some(rule => rule.source === '/about' && rule.destination === '/' && rule.permanent === true));
-  assert.ok(vercel.redirects.some(rule => rule.source === '/about.html' && rule.destination === '/' && rule.permanent === true));
+test('About has its own route, navigation item, metadata, and component', () => {
+  assert.ok(router.includes('l.jsx(Ge,{path:"/about",element:l.jsx(Cy,{})})'));
+  assert.ok(html.includes('data-target="about"'));
+  assert.ok(html.includes("'/about': ['About Yehulu Digital | Our Studio'"));
+  assert.ok(config.rewrites.some(rule => rule.source === '/about' && rule.destination === '/index.html'));
+  assert.equal(config.redirects.some(rule => rule.source === '/about' && rule.destination === '/'), false);
   assert.ok(server.includes("if (pathname === '/about' || pathname === '/about.html') {"));
-  assert.ok(server.includes("res.writeHead(301, { Location: '/' });"));
+  assert.ok(server.includes("if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);"));
+  assert.ok(bundle.includes('children:"ABOUT YEHULU DIGITAL"'));
 });
 
-test('the public navigation has six items and Admin is available only inside Contact', () => {
-  assert.ok(html.includes('grid-template-columns: repeat(6, minmax(0, 1fr))'));
-  for (const target of ['home', 'services', 'work', 'video', 'courses', 'contact']) {
+test('the top navigation links to independent pages rather than homepage sections', () => {
+  assert.ok(bundle.includes('{name:"ABOUT",path:"/about"}'));
+  assert.ok(bundle.includes('{name:"SERVICES",path:"/services"}'));
+  assert.ok(bundle.includes('{name:"PROJECTS",path:"/gallery"}'));
+  assert.ok(bundle.includes('{name:"VIDEOS",path:"/video"}'));
+  assert.ok(bundle.includes('{name:"COURSES",path:"/courses"}'));
+  assert.ok(bundle.includes('{name:"ESTIMATE",path:"/estimate"}'));
+  assert.ok(bundle.includes('l.jsxs("a",{href:N.path'));
+  assert.ok(bundle.includes('l.jsx("a",{href:N.path'));
+});
+
+test('the public navigation has seven independent destinations and Admin stays in Contact', () => {
+  assert.ok(html.includes('grid-template-columns: repeat(7, minmax(0, 1fr))'));
+  for (const target of ['home', 'about', 'services', 'work', 'video', 'courses', 'contact']) {
     assert.ok(html.includes('data-target="' + target + '"'), 'missing navigation item: ' + target);
   }
   assert.equal(html.includes('data-target="admin"'), false);
@@ -77,10 +87,11 @@ test('Contact social links use icon-only buttons with accessible platform names'
   assert.equal((socialBlock.match(/"aria-label":"/g) || []).length, 4);
 });
 
-test('home route receives only its dedicated hero styling and other routes keep their own view modes', () => {
+test('home isolation filter matches the landing body view and other route views remain independent', () => {
   assert.doesNotMatch(html, /function patchHeroSection\(/);
   assert.doesNotMatch(html, /patchHeroSection\(\);/);
   assert.match(html, /var currentView = currentPath === '\/' \|\| currentPath === '\/index\.html' \? 'landing' :/);
+  assert.match(html, /body\[data-yd-view="landing"\] #root main > #home > \*:not\(:first-child\)/);
   assert.match(html, /currentPath === '\/gallery' \? 'projects'/);
   assert.match(html, /currentPath === '\/estimate' \? 'estimate'/);
 });
