@@ -615,10 +615,11 @@ async function handleRequest(req, res) {
     if (fs.existsSync(servicesPage)) return serveStaticFile(servicesPage, res);
   }
 
-  // The About page uses the shared app shell and route-based bottom navigation.
+  // The homepage now contains the About introduction; keep old About URLs as redirects.
   if (pathname === '/about' || pathname === '/about.html') {
-    const appIndex = path.join(PUBLIC_DIR, 'index.html');
-    if (fs.existsSync(appIndex)) return serveStaticFile(appIndex, res);
+    res.writeHead(301, { Location: '/' });
+    res.end();
+    return;
   }
 
   let decodedPath = pathname;
