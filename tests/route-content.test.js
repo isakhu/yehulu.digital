@@ -39,11 +39,16 @@ test('About is removed from navigation and its old URL redirects home', () => {
   assert.ok(server.includes("res.writeHead(301, { Location: '/' });"));
 });
 
-test('the remaining public navigation has seven items and all distinct sections', () => {
-  assert.ok(html.includes('grid-template-columns: repeat(7, minmax(0, 1fr))'));
-  for (const target of ['home', 'services', 'work', 'video', 'courses', 'admin', 'contact']) {
+test('the public navigation has six items and Admin is available only inside Contact', () => {
+  assert.ok(html.includes('grid-template-columns: repeat(6, minmax(0, 1fr))'));
+  for (const target of ['home', 'services', 'work', 'video', 'courses', 'contact']) {
     assert.ok(html.includes('data-target="' + target + '"'), 'missing navigation item: ' + target);
   }
+  assert.equal(html.includes('data-target="admin"'), false);
+  assert.equal(html.includes('href="/admin/login"'), false);
+  assert.ok(bundle.includes('children:"ADMIN PORTAL"'));
+  assert.ok(bundle.includes('children:"ADMIN SIGN IN"'));
+  assert.ok(bundle.includes('to:"/admin/login"'));
 });
 
 test('each other navigation route retains its own page component', () => {
@@ -52,6 +57,12 @@ test('each other navigation route retains its own page component', () => {
   assert.ok(router.includes('l.jsx(Ge,{path:"/video",element:l.jsx(Oy,{})})'));
   assert.ok(router.includes('l.jsx(Ge,{path:"/courses",element:l.jsx(Fy,{})})'));
   assert.ok(router.includes('l.jsx(Ge,{path:"/contact",element:l.jsx(By,{})})'));
+});
+
+test('Contact shows Hawassa location and Yzak Software developer credit', () => {
+  assert.ok(bundle.includes('children:"Hawassa, Sidama, Ethiopia"'));
+  assert.ok(bundle.includes('https://www.google.com/maps/search/?api=1&query=Hawassa%2C%20Sidama%2C%20Ethiopia'));
+  assert.ok(bundle.includes('DEVELOPED BY YZAK SOFTWARE'));
 });
 
 test('home route receives only its dedicated hero styling and other routes keep their own view modes', () => {
