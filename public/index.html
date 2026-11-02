@@ -1688,7 +1688,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=11').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=12').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
@@ -1788,6 +1788,14 @@
         var catEl = document.getElementById('lightbox-category');
 
         if (imgEl) {
+          imgEl.dataset.githubFallback = '';
+          imgEl.onerror = function() {
+            var imagePath = String(item.imageUrl || '');
+            if (this.dataset.githubFallback === 'true' || imagePath.indexOf('/uploads/') !== 0) return;
+            this.dataset.githubFallback = 'true';
+            this.src = 'https://raw.githubusercontent.com/isakhu/yehulu.digital/main/public' +
+              imagePath.split('/').map(encodeURIComponent).join('/');
+          };
           imgEl.src = safeGalleryImageUrl(item.imageUrl);
           imgEl.alt = item.title || 'Project Preview';
         }
@@ -1856,18 +1864,43 @@
       }
 
       function initGalleryArchive() {
-        fetch('/api/gallery')
-          .then(function(res) { return res.json(); })
-          .then(function(data) {
-            if (!Array.isArray(data) || !data.length) return;
-            window.yehuluGallery = data;
-
-            injectExpandableArchive(data);
-            wireCardClicks();
+        Promise.all([
+          fetch('/api/gallery').then(function(res) {
+            if (!res.ok) throw new Error('Gallery API returned ' + res.status);
+            return res.json();
+          }).catch(function(err) {
+            console.warn('Gallery API unavailable; using committed project records:', err);
+            return [];
+          }),
+          fetch('/projects-fallback.json').then(function(res) {
+            if (!res.ok) throw new Error('Project snapshot returned ' + res.status);
+            return res.json();
+          }).catch(function(err) {
+            console.warn('Committed project snapshot unavailable:', err);
+            return [];
           })
-          .catch(function(err) {
-            console.warn('Failed to load gallery for lightbox:', err);
+        ]).then(function(results) {
+          var merged = new Map();
+          (Array.isArray(results[1]) ? results[1] : []).forEach(function(item) {
+            if (item && item.id) merged.set(item.id, item);
           });
+          (Array.isArray(results[0]) ? results[0] : []).forEach(function(item) {
+            if (!item || !item.id) return;
+            var previous = merged.get(item.id) || {};
+            merged.set(item.id, Object.assign({}, previous, item, {
+              imageUrl: item.imageUrl || previous.imageUrl || ''
+            }));
+          });
+          var data = Array.from(merged.values()).filter(function(item) {
+            return item.imageUrl;
+          });
+          if (!data.length) return;
+          window.yehuluGallery = data;
+          injectExpandableArchive(data);
+          wireCardClicks();
+        }).catch(function(err) {
+          console.warn('Failed to load project image archive:', err);
+        });
       }
 
       function injectExpandableArchive(items) {
@@ -1952,6 +1985,15 @@
           image.src = safeGalleryImageUrl(item.imageUrl);
           image.alt = title;
           image.loading = 'lazy';
+          image.addEventListener('error', function() {
+            if (image.dataset.githubFallback === 'true') return;
+            var imagePath = String(item.imageUrl || '');
+            if (imagePath.indexOf('/uploads/') === 0) {
+              image.dataset.githubFallback = 'true';
+              image.src = 'https://raw.githubusercontent.com/isakhu/yehulu.digital/main/public' +
+                imagePath.split('/').map(encodeURIComponent).join('/');
+            }
+          });
           imageBox.appendChild(image);
 
           var badge = document.createElement('span');
