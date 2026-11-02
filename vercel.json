@@ -6,10 +6,6 @@
       "destination": "/api/index.js?__route=/api/$1"
     },
     {
-      "source": "/about",
-      "destination": "/index.html"
-    },
-    {
       "source": "/admin",
       "destination": "/index.html"
     },
@@ -49,7 +45,12 @@
   "redirects": [
     {
       "source": "/about.html",
-      "destination": "/about",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/",
       "permanent": true
     }
   ]
