@@ -46,6 +46,8 @@ test('the standalone page retains the brand navigation, theme and page grid', ()
   assert.ok(servicePage.includes('href="/"'));
   assert.ok(servicePage.includes('href="/about"'));
   assert.ok(servicePage.includes('href="/services" class="active"'));
+  assert.equal(servicePage.includes('href="/admin/login"'), false);
+  assert.ok(servicePage.includes('grid-template-columns:repeat(7,minmax(0,1fr))'));
   assert.ok(servicePage.includes('id="theme-toggle"'));
   assert.ok(servicePage.includes('background-size:54px 45px,54px 45px,auto'));
   assert.doesNotMatch(servicePage, /FREQUENTLY ASKED|COMMON QUESTIONS|faq-card/i);
