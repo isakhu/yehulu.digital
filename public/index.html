@@ -113,9 +113,15 @@
       }
 
       /* Ensure React root sits above the ::before glow overlay */
-      #root, #yeh-progress, #yeh-loader, nav#floating-dock {
+      #root, #yeh-progress, #yeh-loader {
         position: relative;
         z-index: 1;
+      }
+
+      /* Keep the public navigation fixed to the viewport, never to the page flow. */
+      nav#floating-dock {
+        position: fixed;
+        z-index: 9990;
       }
 
       ::selection {
@@ -1671,7 +1677,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=3').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=4').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
