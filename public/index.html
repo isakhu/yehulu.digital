@@ -430,7 +430,7 @@
 
       /* The homepage, services and estimator are separate full-screen views. */
       body[data-yd-view="home"] #root main > #home > *:not(:first-child),
-      /* DISABLED: services view */ body[data-yd-view="services-DISABLED"] #root main > #home > *:not(#services):not(:has(#services)):not(.fixed.inset-0),
+      body[data-yd-view="services"] #root main > #home > *:not(#services):not(.fixed.inset-0),
       body[data-yd-view="estimate"] #root main > #home > *:not(#yd-estimate-page):not(.fixed.inset-0) {
         display: none !important;
       }
@@ -1130,7 +1130,9 @@
       <a href="/about" class="dock-item" data-target="about" aria-label="About" title="About">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="dock-tooltip">About</span>
       </a>
-      <!-- Services dock item temporarily removed -->
+      <a href="/services" class="dock-item" data-target="services" aria-label="Services" title="Services">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span class="dock-tooltip">Services</span>
+      </a>
       <a href="/gallery" class="dock-item" data-target="work" aria-label="Projects" title="Projects">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg><span class="dock-tooltip">Projects</span>
       </a>
@@ -1325,11 +1327,10 @@
         if (!main) return;
 
         var currentPath = window.location.pathname || '/';
-        var currentView = currentPath === '/services' ? 'home' :
-          currentPath === '/gallery' ? 'projects' :
+        var currentView = currentPath === '/gallery' ? 'projects' :
           currentPath === '/estimate' ? 'estimate' :
           (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
-        if (currentView && currentView !== 'services') document.body.setAttribute('data-yd-view', currentView);
+        if (currentView) document.body.setAttribute('data-yd-view', currentView);
         else document.body.removeAttribute('data-yd-view');
         document.body.setAttribute('data-yd-admin', currentPath.indexOf('/admin') === 0 ? 'true' : 'false');
 
@@ -1390,8 +1391,9 @@
           }
         });
 
-        // Robustly locate the service cards by their actual titles. Do not depend on
-        // a marketing heading: if its copy changes, /services must still render.
+        // The React home page already renders the complete service section with
+        // id="services". Validate the five real cards directly instead of guessing
+        // an ancestor from a nearby grid (which previously caused route hiding bugs).
         var serviceTitleMatchers = [
           'BRAND IDENTITY',
           'VIDEO PRODUCTION',
@@ -1399,30 +1401,32 @@
           'SOCIAL MEDIA',
           'DIGITAL EXPERIENCES'
         ];
-        var serviceGrid = Array.prototype.slice.call(main.querySelectorAll('.grid')).find(function(grid) {
-          var titles = Array.prototype.slice.call(grid.querySelectorAll('h3')).map(function(node) {
-            return node.textContent.trim().toUpperCase();
-          });
-          return serviceTitleMatchers.filter(function(expected) {
-            return titles.some(function(actual) { return actual.includes(expected); });
-          }).length >= 4;
+        var servicesSection = main.querySelector('#services');
+        var serviceCards = servicesSection
+          ? Array.prototype.slice.call(servicesSection.querySelectorAll('.grid > div'))
+          : [];
+        var serviceTitles = serviceCards.map(function(card) {
+          var heading = card.querySelector('h3');
+          return heading ? heading.textContent.trim().toUpperCase() : '';
         });
+        var servicesSectionReady = !!servicesSection &&
+          !!hero &&
+          servicesSection.parentElement === hero &&
+          serviceCards.length === serviceTitleMatchers.length &&
+          serviceTitleMatchers.every(function(expected) {
+            return serviceTitles.some(function(actual) { return actual.includes(expected); });
+          });
 
-        var servicesSectionReady = false;
-        if (serviceGrid && hero) {
-          var serviceSection = serviceGrid;
-          while (serviceSection.parentElement && serviceSection.parentElement !== hero) {
-            serviceSection = serviceSection.parentElement;
-          }
-          if (serviceSection.parentElement === hero) {
-            serviceSection.id = 'services';
-            servicesSectionReady = true;
+        // Only enter the isolated Services view after all five service cards exist.
+        // If the component ever changes, fail open instead of showing a blank page.
+        if (currentPath === '/services') {
+          if (servicesSectionReady) {
+            document.body.setAttribute('data-yd-view', 'services');
           } else {
-            serviceGrid.id = 'services';
+            document.body.removeAttribute('data-yd-view');
+            console.warn('Yehulu Services route could not verify all five service cards; showing the full page instead.');
           }
         }
-
-        /* services view assignment disabled */
 
         injectFaqSection(main);
       }
@@ -1556,7 +1560,7 @@
         var routes = {
           home: '/',
           about: '/about',
-          // services: '/services', — temporarily disabled
+          services: '/services',
           work: '/gallery',
           video: '/video',
           courses: '/courses',
@@ -1566,7 +1570,7 @@
         };
         var currentPath = window.location.pathname || '/';
         var activeTarget = currentPath === '/' || currentPath === '/index.html' ? 'home' :
-          currentPath === '/services' ? 'home' :
+          currentPath === '/services' ? 'services' :
           currentPath === '/estimate' ? 'estimate' :
           currentPath === '/about' ? 'about' :
           currentPath === '/gallery' ? 'work' :
@@ -1596,7 +1600,7 @@
       }
 
       function setupScrollSpy() {
-        var sectionIds = ['home', 'about', 'work', 'estimate', 'contact'];
+        var sectionIds = ['home', 'about', 'services', 'work', 'estimate', 'contact'];
         var observerOptions = {
           root: null,
           rootMargin: '-20% 0px -60% 0px',
@@ -1704,7 +1708,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=5').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=6').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
@@ -1717,7 +1721,7 @@
         assignSectionIds();
         setupDockNavigation();
         setupYehuluInstallButton();
-        /* enhanceServiceDoorCards(); — disabled until services page is fixed */
+        enhanceServiceDoorCards();
         enhanceProjectsGallery();
         dismissLoader();
       });
@@ -1733,7 +1737,7 @@
           assignSectionIds();
           setupDockNavigation();
           setupYehuluInstallButton();
-          /* enhanceServiceDoorCards(); — disabled until services page is fixed */
+          enhanceServiceDoorCards();
           enhanceProjectsGallery();
           dismissLoader();
         }, 500);
