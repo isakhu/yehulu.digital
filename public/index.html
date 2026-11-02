@@ -1099,7 +1099,7 @@
     </style>
 
     <!-- React bundle (Vite SPA) -->
-    <script type="module" crossorigin src="/assets/index-BSXl1opM.js?v=3"></script>
+    <script type="module" crossorigin src="/assets/index-BSXl1opM.js?v=4"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-Bs1w5tPm.css">
   </head>
 
@@ -1245,79 +1245,8 @@
       // ─────────────────────────────────────────────────
       //  HERO PATCH — Bold centered layout like reference
       // ─────────────────────────────────────────────────
-      function patchHeroSection() {
-        if (document.getElementById('yd-hero-patched')) return;
-        var h1 = document.querySelector('#root main h1');
-        if (!h1) return;
-
-        // Mark patched
-        var marker = document.createElement('span');
-        marker.id = 'yd-hero-patched';
-        marker.style.display = 'none';
-        document.body.appendChild(marker);
-
-        // New heading text matching reference image
-        h1.innerHTML = 'We Build Brands<br><span style="color:#B6FF00">People Remember.</span>';
-        Object.assign(h1.style, {
-          fontSize: 'clamp(3.2rem, 9vw, 7rem)',
-          fontWeight: '900',
-          lineHeight: '0.93',
-          letterSpacing: '-0.02em',
-          textAlign: 'center',
-          textTransform: 'none',
-          color: '#ffffff',
-          maxWidth: '820px',
-          margin: '0 auto'
-        });
-
-        // Badge eyebrow
-        var col = h1.closest('[class*="col-span-7"]') || h1.parentElement;
-        if (col) {
-          var badge = col.querySelector('.inline-flex.items-center');
-          if (badge) {
-            var lbl = badge.querySelector('span:last-child');
-            if (lbl) lbl.textContent = 'Brand Strategy & Digital Experiences';
-          }
-
-          // Subtitle
-          var sub = h1.nextElementSibling;
-          if (sub && sub.tagName === 'P') {
-            sub.textContent = 'Strategy-led branding, websites, and digital systems for ambitious startups and modern businesses.';
-            Object.assign(sub.style, {
-              textAlign: 'center',
-              maxWidth: '560px',
-              margin: '0 auto',
-              color: '#a1a1aa',
-              fontSize: '1.05rem',
-              lineHeight: '1.7'
-            });
-          }
-
-          // Center CTA buttons
-          var btnRow = col.querySelector('.flex.flex-wrap');
-          if (btnRow) btnRow.style.justifyContent = 'center';
-
-          // Rename buttons to match reference
-          var allBtns = col.querySelectorAll('a[href]');
-          allBtns.forEach(function(btn) {
-            var sp = btn.querySelector('span');
-            if (!sp) return;
-            var t = sp.textContent.trim().toUpperCase();
-            if (t.includes('PROJECT') || t.includes('CONTACT')) sp.textContent = 'Start A Project';
-            if (t.includes('WORK') || t.includes('GALLERY') || t.includes('VIEW')) sp.textContent = 'View Our Work';
-          });
-
-          // Hide the right-side 3D card column
-          var parent = col.parentElement;
-          if (parent) {
-            Array.prototype.forEach.call(parent.children, function(child) {
-              if (child !== col && child !== col.parentElement) {
-                child.style.display = 'none';
-              }
-            });
-          }
-        }
-      }
+      // The old global hero rewrite has been removed. It overwrote the first
+      // heading and paragraph on About, Projects, Services and other routes.
 
       // ─────────────────────────────────────────────────
       //  3. SECTION ASSIGNMENT & COMPACT SCROLL-SPY
@@ -1327,15 +1256,16 @@
         if (!main) return;
 
         var currentPath = window.location.pathname || '/';
+        // The public landing route is the About page, so it must render in full.
+        // Only routes with an explicit isolated view receive a data-yd-view filter.
         var currentView = currentPath === '/gallery' ? 'projects' :
-          currentPath === '/estimate' ? 'estimate' :
-          (currentPath === '/' || currentPath === '/index.html') ? 'home' : '';
+          currentPath === '/estimate' ? 'estimate' : '';
         if (currentView) document.body.setAttribute('data-yd-view', currentView);
         else document.body.removeAttribute('data-yd-view');
         document.body.setAttribute('data-yd-admin', currentPath.indexOf('/admin') === 0 ? 'true' : 'false');
 
         var pageMeta = {
-          '/': ['Yehulu Digital | We Create Brands', 'Creative digital agency in Hawassa, Ethiopia for brand identity, video production, graphic design, social media, and digital experiences.'],
+          '/': ['About Yehulu Digital | Our Creative Studio', 'Meet Yehulu Digital, a creative studio building brands and digital experiences from Hawassa, Ethiopia.'],
           '/about': ['About Yehulu Digital | Our Creative Studio', 'Meet Yehulu Digital, a creative studio building brands and digital experiences from Hawassa, Ethiopia.'],
           '/services': ['Creative Services | Yehulu Digital', 'Explore brand identity, video production, graphic design, social media, and digital experience services.'],
           '/gallery': ['Selected Projects | Yehulu Digital', 'Explore selected branding, graphic design, social media, and commercial projects by Yehulu Digital.'],
@@ -1708,7 +1638,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=6').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=7').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
@@ -1717,7 +1647,6 @@
       var rootElement = document.getElementById('root');
       var observer = new MutationObserver(function() {
         injectTopbarActions();
-        patchHeroSection();
         assignSectionIds();
         setupDockNavigation();
         setupYehuluInstallButton();
@@ -1733,8 +1662,7 @@
       window.addEventListener('load', function() {
         setTimeout(function() {
           injectTopbarActions();
-          patchHeroSection();
-          assignSectionIds();
+            assignSectionIds();
           setupDockNavigation();
           setupYehuluInstallButton();
           enhanceServiceDoorCards();

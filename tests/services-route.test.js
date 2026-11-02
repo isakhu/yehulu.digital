@@ -58,6 +58,6 @@ test('the active Services item and service-door interactions are restored', () =
 });
 
 test('the service route cache is refreshed after restoring the page', () => {
-  assert.match(html, /register\('\/sw\.js\?v=6'\)/);
-  assert.match(serviceWorker, /CACHE_NAME = 'yehulu-digital-shell-v6'/);
+  assert.match(html, /register\('\/sw\.js\?v=7'\)/);
+  assert.match(serviceWorker, /CACHE_NAME = 'yehulu-digital-shell-v7'/);
 });
