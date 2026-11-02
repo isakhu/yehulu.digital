@@ -334,7 +334,7 @@
         transform: translateX(-50%);
         z-index: 9990;
         display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         align-items: center;
         gap: 2px;
         width: min(680px, calc(100vw - 16px));
@@ -1234,9 +1234,6 @@
       <a href="/" class="dock-item active" data-target="home" aria-label="Home" title="Home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span class="dock-tooltip">Home</span>
       </a>
-      <a href="/about" class="dock-item" data-target="about" aria-label="About" title="About">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg><span class="dock-tooltip">About</span>
-      </a>
       <a href="/services" class="dock-item" data-target="services" aria-label="Services" title="Services">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span class="dock-tooltip">Services</span>
       </a>
@@ -1360,7 +1357,7 @@
         if (!main) return;
 
         var currentPath = window.location.pathname || '/';
-        // The homepage is a focused landing hero. About, Projects, Services, Videos,
+        // The homepage is a focused landing hero. Projects, Services, Videos,
         // Courses, and Contact are separate route-level pages with their own content.
         var currentView = currentPath === '/' || currentPath === '/index.html' ? 'landing' :
           currentPath === '/gallery' ? 'projects' :
@@ -1371,7 +1368,6 @@
 
         var pageMeta = {
           '/': ['Yehulu Digital | We Build Brands People Remember', 'Strategy-led branding, websites, and digital systems for ambitious startups and modern businesses.'],
-          '/about': ['About Yehulu Digital | Our Studio', 'Learn about Yehulu Digital, our creative approach, experience, and commitment to helping ambitious brands grow.'],
           '/services': ['Creative Services | Yehulu Digital', 'Explore brand identity, video production, graphic design, social media, and digital experience services.'],
           '/gallery': ['Selected Projects | Yehulu Digital', 'Explore selected branding, graphic design, social media, and commercial projects by Yehulu Digital.'],
           '/video': ['Video Production | Yehulu Digital', 'Watch commercial videos, short-form content, and creative campaigns produced by Yehulu Digital.'],
@@ -1542,7 +1538,6 @@
 
         var routes = {
           home: '/',
-          about: '/about',
           services: '/services',
           work: '/gallery',
           video: '/video',
@@ -1552,7 +1547,6 @@
         };
         var currentPath = window.location.pathname || '/';
         var activeTarget = currentPath === '/' || currentPath === '/index.html' ? 'home' :
-          currentPath === '/about' ? 'about' :
           currentPath === '/services' ? 'services' :
           currentPath === '/estimate' ? 'estimate' :
           currentPath === '/gallery' ? 'work' :
