@@ -15,7 +15,7 @@ const routerStart = bundle.indexOf('qy=()=>');
 const router = bundle.slice(routerStart, routerStart + 2600);
 
 test('the homepage renders the bold brand landing page hero', () => {
-  assert.ok(router.includes('l.jsx(Ge,{path:"/",element:l.jsx(ky,{})}')));
+  assert.ok(router.includes('l.jsx(Ge,{path:"/",element:l.jsx(ky,{})})'));
   assert.equal(router.includes('path:"/about"'), false);
   assert.ok(html.includes("'/': ['Yehulu Digital | We Build Brands People Remember'"));
   assert.equal(html.includes("'/about':"), false);
