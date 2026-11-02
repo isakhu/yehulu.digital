@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'yehulu-digital-shell-v11';
+const CACHE_NAME = 'yehulu-digital-shell-v12';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -8,7 +8,8 @@ const APP_SHELL = [
   '/services.html',
   '/assets/index-BSXl1opM.js',
   '/assets/index-Bs1w5tPm.css',
-  '/assets/logopng-BhI97nKv.png'
+  '/assets/logopng-BhI97nKv.png',
+  '/projects-fallback.json'
 ];
 
 self.addEventListener('install', event => {
