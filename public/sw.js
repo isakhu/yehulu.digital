@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'yehulu-digital-shell-v7';
+const CACHE_NAME = 'yehulu-digital-shell-v8';
 const APP_SHELL = [
   '/',
   '/index.html',

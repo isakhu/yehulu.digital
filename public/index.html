@@ -961,56 +961,6 @@
         border-color: var(--border-main) !important;
       }
 
-      /* ── Modern FAQ Section Component Styles (Tight & Clean) ── */
-      .faq-card {
-        border: 1px solid var(--border-main);
-        background: var(--bg-card);
-        transition: all 0.25s ease;
-      }
-      .faq-card:hover {
-        border-color: var(--border-highlight);
-      }
-      .faq-trigger {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 18px;
-        text-align: left;
-        background: transparent;
-        border: none;
-        color: var(--text-main);
-        font-weight: 700;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        cursor: pointer;
-      }
-      .faq-icon {
-        width: 16px;
-        height: 16px;
-        color: #B6FF00;
-        transition: transform 0.25s ease;
-        flex-shrink: 0;
-        margin-left: 8px;
-      }
-      .faq-card.open .faq-icon {
-        transform: rotate(45deg);
-      }
-      .faq-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.25s ease;
-        padding: 0 18px;
-        color: var(--text-muted);
-        font-size: 12px;
-        line-height: 1.6;
-      }
-      .faq-card.open .faq-content {
-        max-height: 240px;
-        padding: 0 18px 14px 18px;
-      }
-    
       /* ══════════════════════════════════════════════
          BOLD CENTERED HOMEPAGE HERO  (matches reference image)
          ══════════════════════════════════════════════ */
@@ -1358,58 +1308,6 @@
           }
         }
 
-        injectFaqSection(main);
-      }
-
-      // ─────────────────────────────────────────────────
-      //  4. INJECT COMPACT FAQ ACCORDION
-      // ─────────────────────────────────────────────────
-      function injectFaqSection(main) {
-        if (document.getElementById('yehulu-faq-section')) return;
-
-        var faqWrapper = document.createElement('section');
-        faqWrapper.id = 'yehulu-faq-section';
-        faqWrapper.className = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-6 border-t border-white/10';
-        faqWrapper.innerHTML = [
-          '<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">',
-          '  <div>',
-          '    <span class="text-xs font-mono font-bold tracking-[0.25em] text-[#B6FF00] uppercase block mb-1">COMMON QUESTIONS</span>',
-          '    <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white font-[\'Bricolage_Grotesque\']">FREQUENTLY ASKED</h2>',
-          '  </div>',
-          '  <p class="text-xs font-mono text-gray-400 uppercase tracking-widest max-w-xs">TRANSPARENT ANSWERS ON PROCESS, TIMELINES, AND IP OWNERSHIP.</p>',
-          '</div>',
-          '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">',
-          '  <div class="faq-card" onclick="toggleFaq(this)">',
-          '    <button class="faq-trigger"><span>What services does Yehulu Digital deliver?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
-          '    <div class="faq-content">We build full-spectrum digital assets: Brand Identity suites, 4K Commercial Video & Reels, Graphic Design collateral, performance Social Media marketing, and bespoke modern web applications.</div>',
-          '  </div>',
-          '  <div class="faq-card" onclick="toggleFaq(this)">',
-          '    <button class="faq-trigger"><span>What is the standard turnaround time?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
-          '    <div class="faq-content">Our 2-Week Brand Sprint delivers complete visual identity systems rapidly. Commercial video reels and digital products typically range from 2 to 4 weeks depending on the agreed scope.</div>',
-          '  </div>',
-          '  <div class="faq-card" onclick="toggleFaq(this)">',
-          '    <button class="faq-trigger"><span>Do I get 100% full source file ownership?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
-          '    <div class="faq-content">Yes. Upon project completion and final milestone sign-off, all editable source files (vector logos, raw 4K video exports, brand guidelines, and codebases) are transferred entirely to your company.</div>',
-          '  </div>',
-          '  <div class="faq-card" onclick="toggleFaq(this)">',
-          '    <button class="faq-trigger"><span>Can we collaborate if we are based abroad?</span><svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>',
-          '    <div class="faq-content">Yes. While headquartered in Ethiopia (Hawassa & Addis Ababa), our client scope is Global Digital. We communicate via Google Meet, WhatsApp, and Telegram across North America, Europe, and Africa.</div>',
-          '  </div>',
-          '</div>'
-        ].join('');
-
-        var contactSect = document.getElementById('contact');
-        if (contactSect) {
-          contactSect.parentNode.insertBefore(faqWrapper, contactSect);
-        } else {
-          main.appendChild(faqWrapper);
-        }
-      }
-
-      function toggleFaq(card) {
-        var isOpen = card.classList.contains('open');
-        document.querySelectorAll('.faq-card').forEach(function(c) { c.classList.remove('open'); });
-        if (!isOpen) card.classList.add('open');
       }
 
       // ─────────────────────────────────────────────────
@@ -1638,7 +1536,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=7').catch(function(error) {
+          navigator.serviceWorker.register('/sw.js?v=8').catch(function(error) {
             console.warn('Yehulu offline support could not be registered:', error);
           });
         });
