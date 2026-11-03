@@ -275,7 +275,7 @@ async function persistCourses(courses) {
 async function handleApiRequest(req, res) {
   const method = (req.method || 'GET').toUpperCase();
   const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = resolveApiPath(req.url, req.headers.host);
+  const pathname = resolveApiPath(req.url, req.headers.host, req.query);
 
   // Global CORS headers
   // Frontend and API are same-origin; cross-origin access is intentionally disabled.
