@@ -228,10 +228,10 @@
         gallery=Array.isArray(results[1])?results[1]:[];
       }
       async function openDashboard(user){
+        await loadData();
+        $('userLabel').textContent=(user&&user.username)||'Client account';
         $('loginView').classList.add('hidden');
         $('dashboardView').classList.remove('hidden');
-        $('userLabel').textContent=(user&&user.username)||'Client account';
-        await loadData();
         selectTab('overview');
       }
       function renderPanel(){
