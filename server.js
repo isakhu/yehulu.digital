@@ -3,6 +3,7 @@ require('./lib/load-env')();
 const http = require('http');
 const { getAuthenticatedUser } = require('./lib/accounts');
 const { handleAccountApi } = require('./lib/account-api');
+const { handlePasskeyApi } = require('./lib/passkey-api');
 const { handleIndustryApi } = require('./lib/industry-api');
 const { isPublicApiRequest, normalizeApiPath } = require('./lib/api-routing');
 const { buildCourseRecord } = require('./lib/courses');
@@ -175,6 +176,12 @@ async function handleRequest(req, res) {
   if (accountResponse) {
     Object.entries(accountResponse.headers || {}).forEach(([name, value]) => res.setHeader(name, value));
     return sendJSON(res, accountResponse.status, accountResponse.body);
+  }
+
+  const passkeyResponse = await handlePasskeyApi(pathname, method, req);
+  if (passkeyResponse) {
+    Object.entries(passkeyResponse.headers || {}).forEach(([name, value]) => res.setHeader(name, value));
+    return sendJSON(res, passkeyResponse.status, passkeyResponse.body);
   }
 
   const industryResponse = await handleIndustryApi(pathname, method, req);
@@ -605,6 +612,10 @@ async function handleRequest(req, res) {
   // ══════════════════════════════════════════════
   //  7. STATIC FILE SERVING & SPA FALLBACK
   // ══════════════════════════════════════════════
+  if (pathname === '/admin/login') {
+    return serveStaticFile(path.join(PUBLIC_DIR, 'admin-passkey.html'), res);
+  }
+
   // Services is a standalone page so its cards do not depend on homepage DOM filtering.
   if (pathname === '/services' || pathname === '/services.html') {
     const servicesPage = path.join(PUBLIC_DIR, 'services.html');
