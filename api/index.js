@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getAuthenticatedUser } = require('../lib/accounts');
 const { handleAccountApi } = require('../lib/account-api');
+const { handleIndustryApi } = require('../lib/industry-api');
 const { readRequestBuffer } = require('../lib/request-body');
 const { readJSON: readStoredJSON, writeJSON: writeStoredJSON } = require('../lib/data-store');
 const { buildCourseRecord } = require('../lib/courses');
@@ -322,6 +323,11 @@ async function handleApiRequest(req, res) {
     return sendJSON(res, accountResponse.status, accountResponse.body);
   }
 
+  const industryResponse = await handleIndustryApi(pathname, method, req);
+  if (industryResponse) {
+    return sendJSON(res, industryResponse.status, industryResponse.body);
+  }
+
   // ── Private media proxy (restricted to the projects/ asset namespace) ──
   // ── 2. SECURE BLOB PROXY (Supports Private Stores without 403 Forbidden) ──
   if (pathname === '/api/blob-proxy' && (method === 'GET' || method === 'HEAD')) {
@@ -461,9 +467,15 @@ async function handleApiRequest(req, res) {
       title: body.title || 'Untitled Project',
       slug: (body.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       category: body.category || 'COMMERCIAL',
-      client: body.client || 'Client Partner',
+      client: body.client || body.company || 'Client Partner',
       description: body.description || '',
       imageUrl: body.imageUrl || '',
+      industry: body.industry || '',
+      subIndustry: body.subIndustry || '',
+      company: body.company || body.client || 'Client Partner',
+      industryId: body.industryId || '',
+      subIndustryId: body.subIndustryId || '',
+      organizationId: body.organizationId || '',
       year: body.year || new Date().getFullYear().toString(),
       featured: body.featured !== undefined ? !!body.featured : true,
       displayOrder: parseInt(body.displayOrder) || 1,
