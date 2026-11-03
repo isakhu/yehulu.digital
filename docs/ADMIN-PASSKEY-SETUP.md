@@ -1,26 +1,35 @@
-# Yehulu Digital — Admin Passkey Setup
+# Yehulu Digital — Owner Admin Login
 
-The admin sign-in uses WebAuthn passkeys. The owner registers a device once, then signs in by swiping and completing the device's fingerprint, face, Windows Hello, or screen-lock verification prompt.
+The owner signs in from:
 
-## One-time first-device setup
+`https://yehulu-digital.vercel.app/admin/login`
 
-1. Open the Vercel project **yehulu-digital** and go to **Settings → Environment Variables**.
-2. Add `ADMIN_PASSKEY_SETUP_TOKEN` as a **Sensitive** variable for **Production** only.
-3. Use a high-entropy, one-time value generated for the owner. Do not commit it to GitHub or place it in frontend source code.
-4. Redeploy the latest production commit so the serverless function receives the new variable.
-5. Open the production URL in the owner's browser using the one-time fragment URL:
-   `https://yehulu-digital.vercel.app/admin/login#setup=<one-time-token>`
-6. Select **Verify and register this device**, then complete the browser's device-verification prompt.
+The login page asks for **one password only**. It does not require a username, email address, passkey, or registration.
 
-The setup token is sent only in the request body after the page reads it from the URL fragment. The API records completion in the private CMS Blob store. Once the first passkey is saved, the setup token is no longer accepted.
+## Vercel environment
 
-## After enrollment
+In the Vercel project **yehulu-digital**, keep these variables configured:
 
-- The owner signs in from `/admin/login` by swiping and verifying with the registered passkey.
-- Password-based admin sign-in returns HTTP 410 once a passkey exists.
-- The existing admin API session remains protected and continues to use the signed admin session token.
-- Keep the private CMS Blob store connected; passkey credentials and challenges are stored there.
-- The production relying-party ID and origin default to `yehulu-digital.vercel.app`. Use the canonical production domain, not a temporary Vercel preview hostname.
-- The one-time setup variable can be deleted from Vercel after enrollment.
+- `ADMIN_PASSWORD_HASH`: the owner's scrypt password hash, stored as a **Sensitive** environment variable. Generate it with `npm run admin:secrets` and copy only the `ADMIN_PASSWORD_HASH` output into Vercel. Never commit the password or its hash to Git.
+- Alternatively, `ADMIN_PASSWORD` can hold the password directly when stored as a **Sensitive** variable. If both are set, `ADMIN_PASSWORD` takes precedence.
+- `SESSION_SECRET`: a random secret with at least 32 characters, also stored as **Sensitive**.
+- `CMS_BLOB_STORE_ID`: keep the connected private CMS store so project and video records persist.
+- `BLOB_READ_WRITE_TOKEN`: keep the media Blob token connected when the project uses Blob uploads.
 
-If a passkey is lost, do not make registration public. Recover access through a controlled owner-only device re-enrollment process.
+After changing environment variables, redeploy the project so the deployment receives the new values.
+
+## Owner content management
+
+After signing in, use the existing dashboard:
+
+- **Gallery Items**: create, edit, and delete projects; upload image files or paste an image URL; set the project title, category, description, and display order.
+- **Video Portfolio**: create, edit, and delete video entries; upload a video or paste a video URL (for example, a YouTube link); add a thumbnail and details.
+- Existing public project and video pages continue to read from the same CMS APIs.
+
+Vercel-hosted direct uploads currently have a 4 MB file limit. For larger videos, use a hosted video link.
+
+## Security
+
+The server validates the password and issues the existing signed administrator session token. Login attempts are rate-limited. The dashboard APIs remain protected and the public website layout is unchanged.
+
+The requested six-digit password is easy to guess. Change it to a unique password as soon as the owner is comfortable doing so, then update the sensitive password environment variable.
