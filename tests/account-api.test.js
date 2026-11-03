@@ -14,6 +14,43 @@ accounts.saveUsers = async nextUsers => {
 
 const { handleAccountApi } = require('../lib/account-api');
 
+test('configured scrypt hash overrides an old saved admin password', async () => {
+  const originalSecret = process.env.SESSION_SECRET;
+  const originalPassword = process.env.ADMIN_PASSWORD;
+  const originalHash = process.env.ADMIN_PASSWORD_HASH;
+  process.env.SESSION_SECRET = 'test-only-hash-password-secret-with-32-characters';
+  delete process.env.ADMIN_PASSWORD;
+  process.env.ADMIN_PASSWORD_HASH = hashPassword('123456');
+
+  const user = {
+    id: 'admin-hash-override-test',
+    name: 'Test Owner',
+    email: 'owner@example.com',
+    passwordHash: hashPassword('old-saved-password'),
+    role: 'ADMIN',
+    tokenVersion: 0
+  };
+  users = [user];
+
+  try {
+    const success = await handleAccountApi('/api/auth/login', 'POST', {
+      headers: {},
+      body: { password: '123456' }
+    }, null);
+    assert.equal(success.status, 200);
+    assert.equal(verifySessionToken(success.body.token).sub, user.id);
+  } finally {
+    if (originalSecret === undefined) delete process.env.SESSION_SECRET;
+    else process.env.SESSION_SECRET = originalSecret;
+    if (originalPassword === undefined) delete process.env.ADMIN_PASSWORD;
+    else process.env.ADMIN_PASSWORD = originalPassword;
+    if (originalHash === undefined) delete process.env.ADMIN_PASSWORD_HASH;
+    else process.env.ADMIN_PASSWORD_HASH = originalHash;
+    users = [];
+  }
+});
+
+
 test('owner can sign in with the configured password only', async () => {
   const originalSecret = process.env.SESSION_SECRET;
   const originalPassword = process.env.ADMIN_PASSWORD;

@@ -10,7 +10,8 @@ The login page asks for **one password only**. It does not require a username, e
 
 In the Vercel project **yehulu-digital**, keep these variables configured:
 
-- `ADMIN_PASSWORD`: the owner's password. Store it as a **Sensitive** environment variable; never commit it to Git.
+- `ADMIN_PASSWORD_HASH`: the owner's scrypt password hash, stored as a **Sensitive** environment variable. Generate it with `npm run admin:secrets` and copy only the `ADMIN_PASSWORD_HASH` output into Vercel. Never commit the password or its hash to Git.
+- Alternatively, `ADMIN_PASSWORD` can hold the password directly when stored as a **Sensitive** variable. If both are set, `ADMIN_PASSWORD` takes precedence.
 - `SESSION_SECRET`: a random secret with at least 32 characters, also stored as **Sensitive**.
 - `CMS_BLOB_STORE_ID`: keep the connected private CMS store so project and video records persist.
 - `BLOB_READ_WRITE_TOKEN`: keep the media Blob token connected when the project uses Blob uploads.
@@ -31,4 +32,4 @@ Vercel-hosted direct uploads currently have a 4 MB file limit. For larger videos
 
 The server validates the password and issues the existing signed administrator session token. Login attempts are rate-limited. The dashboard APIs remain protected and the public website layout is unchanged.
 
-The requested six-digit password is easy to guess. Change it to a unique password as soon as the owner is comfortable doing so.
+The requested six-digit password is easy to guess. Change it to a unique password as soon as the owner is comfortable doing so, then update the sensitive password environment variable.
