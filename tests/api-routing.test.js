@@ -52,3 +52,19 @@ test('Vercel sends all API requests through one shared handler', () => {
     assert.equal(fs.existsSync(path.join(__dirname, '..', 'api', 'auth', file)), false);
   }
 });
+
+
+test('resolves Vercel rewrites from the parsed request query', () => {
+  assert.equal(
+    resolveApiPath('/api/index.js', 'yehulu-digital.vercel.app', { __route: '/api/auth/login' }),
+    '/api/auth/login'
+  );
+  assert.equal(
+    resolveApiPath('/api/index.js', 'yehulu-digital.vercel.app', { __route: ['/api/auth/me'] }),
+    '/api/auth/me'
+  );
+  assert.equal(
+    resolveApiPath('/api/index.js', 'yehulu-digital.vercel.app', { __route: ['/api/auth/login', '/api/admin/users'] }),
+    '/api/index.js'
+  );
+});
