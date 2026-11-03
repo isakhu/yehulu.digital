@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b07">
+  <title>Client Portal | Yehulu Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#080b07;--panel:#10150e;--panel2:#151c12;--line:rgba(255,255,255,.09);--text:#f5f7f2;--muted:#9da596;--accent:#b6ff00;--danger:#ff6969;--radius:18px}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,Arial,sans-serif;min-height:100vh;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+    .mono{font-family:"DM Mono",monospace}
+    .eyebrow{font:500 10px "DM Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+    .muted{color:var(--muted)}
+    .btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:11px 15px;border-radius:10px;font-size:12px;font-weight:800;transition:.18s}
+    .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+    .btn.primary{background:var(--accent);color:#080b07;border-color:var(--accent)}
+    .btn.primary:hover{background:#d3ff67}
+    .btn.danger{color:#ff8585;border-color:rgba(255,105,105,.3)}
+    .btn.small{padding:7px 10px;font-size:10px}
+    .field{display:grid;gap:7px;min-width:0}
+    .field label{font:500 10px "DM Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#b3bba9}
+    .field input,.field textarea,.field select,.social-row input,.social-row select{width:100%;background:#090d08;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px 13px;outline:none;min-width:0}
+    .field textarea{resize:vertical;min-height:92px}
+    .field input:focus,.field textarea:focus,.field select:focus,.social-row input:focus,.social-row select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(182,255,0,.09)}
+    .field input::placeholder,.field textarea::placeholder{color:#66705e}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+    .full{grid-column:1/-1}
+    .panel{background:linear-gradient(145deg,rgba(20,27,16,.97),rgba(12,16,10,.97));border:1px solid var(--line);border-radius:var(--radius);padding:22px;min-width:0}
+    .panel h2,.panel h3{margin:0;font-size:18px;letter-spacing:-.04em}
+    .panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+    .panel-head p{color:var(--muted);font-size:12px;line-height:1.7;margin:6px 0 0}
+    .stack{display:grid;gap:16px}
+    .card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .record{border:1px solid var(--line);background:rgba(8,12,7,.55);border-radius:14px;padding:17px;min-width:0}
+    .record h3{font-size:15px;letter-spacing:-.03em;margin:0 0 5px}
+    .record p{font-size:11px;color:var(--muted);line-height:1.7;margin:0}
+    .tag{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(182,255,0,.2);background:rgba(182,255,0,.07);color:#d1f98a;padding:5px 8px;border-radius:99px;font:10px "DM Mono",monospace;margin:5px 5px 0 0}
+    .record-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+    .empty{padding:26px 18px;border:1px dashed rgba(255,255,255,.15);border-radius:13px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7}
+    .help{font-size:11px;color:var(--muted);line-height:1.6}
+    .divider{height:1px;background:var(--line);margin:18px 0}
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .login-card{width:min(100%,440px);background:rgba(15,20,12,.97);border:1px solid rgba(182,255,0,.18);border-radius:22px;padding:32px;box-shadow:0 30px 100px rgba(0,0,0,.45)}
+    .brandmark{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+    .brand-icon{width:42px;height:42px;border:1px solid rgba(182,255,0,.4);border-radius:13px;display:grid;place-items:center;color:var(--accent);font-weight:900;letter-spacing:-.1em}
+    .brand-name{font-weight:900;letter-spacing:-.04em;font-size:14px}
+    .brand-sub{color:var(--muted);font:9px "DM Mono",monospace;letter-spacing:.14em;margin-top:3px}
+    .login-card h1{font-size:28px;line-height:1.1;letter-spacing:-.06em;margin:12px 0}
+    .login-card>p{font-size:12px;line-height:1.7;color:var(--muted);margin:0 0 24px}
+    .login-form{display:grid;gap:15px}
+    .login-error{color:#ff9797;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2);padding:11px 12px;border-radius:9px;font-size:11px}
+    .login-foot{margin-top:24px;border-top:1px solid var(--line);padding-top:18px;text-align:center;font-size:10px;color:#7f8976}
+    .shell{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:rgba(9,13,8,.94);padding:22px 15px;display:flex;flex-direction:column;z-index:5}
+    .sidebar .brandmark{padding:0 8px 22px;border-bottom:1px solid var(--line);margin-bottom:22px}
+    .side-label{font:10px "DM Mono",monospace;color:#73806a;letter-spacing:.16em;text-transform:uppercase;padding:0 11px;margin:13px 0 8px}
+    .side-nav{display:grid;gap:5px}
+    .nav-btn{display:flex;align-items:center;gap:11px;text-align:left;padding:12px 11px;border:1px solid transparent;border-radius:10px;background:transparent;color:#aab2a2;font-size:11px;font-weight:800}
+    .nav-btn:hover{background:rgba(255,255,255,.04);color:white}
+    .nav-btn.active{background:rgba(182,255,0,.1);border-color:rgba(182,255,0,.2);color:var(--accent)}
+    .nav-ico{width:20px;text-align:center;font-size:15px}
+    .sidebar-bottom{margin-top:auto;padding:14px 10px;border-top:1px solid var(--line);font-size:10px;color:#76806f;line-height:1.8}
+    .main{min-width:0;padding:30px clamp(16px,3vw,42px) 50px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}
+    .topbar h1{font-size:clamp(22px,3vw,31px);letter-spacing:-.06em;margin:5px 0 0}
+    .top-actions{display:flex;align-items:center;gap:9px}
+    .user-chip{border:1px solid var(--line);background:var(--panel);padding:9px 12px;border-radius:99px;font-size:10px;color:#d4dbc9}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:17px}
+    .stat{border:1px solid var(--line);background:rgba(17,22,14,.85);border-radius:14px;padding:17px}
+    .stat .number{display:block;font-size:27px;font-weight:900;letter-spacing:-.06em;margin-top:8px}
+    .stat .caption{font:10px "DM Mono",monospace;letter-spacing:.09em;color:#84907c;text-transform:uppercase}
+    .welcome{display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(110deg,rgba(182,255,0,.13),rgba(182,255,0,.02));border:1px solid rgba(182,255,0,.2);border-radius:17px;padding:20px 23px;margin-bottom:17px}
+    .welcome h2{margin:5px 0;font-size:19px;letter-spacing:-.04em}
+    .welcome p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+    .social-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .social-list a{display:inline-flex;text-decoration:none;color:#d7f6a5;border:1px solid rgba(182,255,0,.18);border-radius:7px;padding:6px 8px;font-size:10px}
+    .social-list a:hover{border-color:var(--accent)}
+    .social-editor{display:grid;gap:8px}
+    .social-row{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px}
+    .social-row select,.social-row input{padding:10px;font-size:11px}
+    .upload-zone{position:relative;border:1px dashed rgba(182,255,0,.35);border-radius:12px;background:rgba(182,255,0,.035);padding:19px;text-align:center}
+    .upload-zone input{max-width:100%;font-size:11px}
+    .preview{width:100%;max-height:260px;object-fit:contain;background:#070a06;border-radius:10px;margin-top:12px}
+    .project-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .project-card{overflow:hidden;border:1px solid var(--line);background:#0b1009;border-radius:13px;min-width:0}
+    .project-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#141a11}
+    .project-card-body{padding:12px}
+    .project-card h4{font-size:12px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .project-card p{font-size:10px;line-height:1.6;color:var(--muted);margin:0}
+    .toast{position:fixed;right:20px;bottom:20px;z-index:30;padding:13px 16px;background:#1d2817;border:1px solid rgba(182,255,0,.4);color:#efffda;border-radius:10px;font-size:11px;box-shadow:0 10px 40px rgba(0,0,0,.4);max-width:min(90vw,360px)}
+    .mobile-menu{display:none}
+    @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{position:fixed;inset:0 auto 0 0;width:255px;transform:translateX(-105%);transition:.22s;box-shadow:20px 0 50px rgba(0,0,0,.4)}.sidebar.open{transform:translateX(0)}.mobile-menu{display:inline-flex}.main{padding:20px 15px 40px}.project-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.form-grid,.card-grid,.stats{grid-template-columns:1fr}.panel{padding:17px}.topbar{align-items:flex-start}.top-actions{gap:5px}.user-chip{display:none}.welcome{align-items:flex-start;flex-direction:column}.social-row{grid-template-columns:1fr}.project-list{grid-template-columns:1fr 1fr}.login-card{padding:24px}.main{padding-top:15px}}
+  </style>
+</head>
+<body>
+  <section id="loginView" class="login-wrap">
+    <div class="login-card">
+      <div class="brandmark">
+        <div class="brand-icon">Y.</div>
+        <div><div class="brand-name">YEHULU DIGITAL</div><div class="brand-sub">CLIENT CONTENT PORTAL</div></div>
+      </div>
+      <div class="eyebrow">Secure workspace / 01</div>
+      <h1>Manage your brand portfolio.</h1>
+      <p>Sign in to organize industries, sub-industries, client organizations, social profiles, and portfolio visuals.</p>
+      <form id="loginForm" class="login-form">
+        <div class="field"><label for="username">Username</label><input id="username" name="username" autocomplete="username" placeholder="Enter your username" required></div>
+        <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+        <div id="loginError" class="login-error hidden" role="alert"></div>
+        <button class="btn primary" id="loginButton" type="submit">Sign in to your workspace ↗</button>
+      </form>
+      <div class="login-foot">Authorized access only · Yehulu Digital</div>
+    </div>
+  </section>
+
+  <section id="dashboardView" class="shell hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="brandmark">
+        <div class="brand-icon">Y.</div>
+        <div><div class="brand-name">YEHULU DIGITAL</div><div class="brand-sub">CLIENT CONTENT PORTAL</div></div>
+      </div>
+      <div class="side-label">Workspace</div>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-tab="overview"><span class="nav-ico">◫</span>Overview</button>
+        <button class="nav-btn" data-tab="industries"><span class="nav-ico">▦</span>Industries</button>
+        <button class="nav-btn" data-tab="organizations"><span class="nav-ico">◇</span>Organizations</button>
+        <button class="nav-btn" data-tab="portfolio"><span class="nav-ico">▧</span>Portfolio images</button>
+      </nav>
+      <div class="sidebar-bottom">CONTENT MANAGEMENT<br><span class="eyebrow">YEHULU / CMS 01</span></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <button id="mobileMenu" class="btn small mobile-menu" type="button">☰ Menu</button>
+          <div class="eyebrow" style="margin-top:8px">Client management workspace</div>
+          <h1 id="pageTitle">Overview</h1>
+        </div>
+        <div class="top-actions"><span class="user-chip" id="userLabel">Signed in</span><button id="logoutButton" class="btn small" type="button">Sign out</button></div>
+      </header>
+      <div id="panel" class="stack" aria-live="polite"></div>
+    </main>
+  </section>
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script>
+    (function(){
+      'use strict';
+      var TOKEN_KEY='admin_token';
+      var industries=[];
+      var gallery=[];
+      var currentTab='overview';
+      var editingOrganization=null;
+      var toastTimer=null;
+      var $=function(id){return document.getElementById(id);};
+      var escapeHTML=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});};
+      var token=function(){return localStorage.getItem(TOKEN_KEY)||'';};
+      function notify(message){var el=$('toast');el.textContent=message;el.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.add('hidden');},3200);}
+      async function api(url,options){
+        options=options||{};
+        var headers=new Headers(options.headers||{});
+        if(token())headers.set('Authorization','Bearer '+token());
+        if(options.body && !(options.body instanceof FormData) && !headers.has('Content-Type'))headers.set('Content-Type','application/json');
+        var response=await fetch(url,Object.assign({},options,{headers:headers,credentials:'include'}));
+        var payload={};
+        if(response.status!==204){try{payload=await response.json();}catch(_){payload={};}}
+        if(response.status===401){signOut(false);throw new Error(payload.error||'Your session has expired. Please sign in again.');}
+        if(!response.ok)throw new Error(payload.error||'The request could not be completed.');
+        return payload;
+      }
+      function signOut(showMessage){
+        localStorage.removeItem(TOKEN_KEY);
+        $('dashboardView').classList.add('hidden');
+        $('loginView').classList.remove('hidden');
+        $('password').value='';
+        if(showMessage)notify('You have signed out.');
+      }
+      function showLoginError(message){
+        $('loginError').textContent=message;
+        $('loginError').classList.remove('hidden');
+      }
+      function setBusy(button,busy,label){
+        if(!button)return;
+        button.disabled=busy;
+        button.textContent=busy?'Please wait…':label;
+        button.style.opacity=busy?'.65':'1';
+      }
+      $('loginForm').addEventListener('submit',async function(event){
+        event.preventDefault();
+        var button=$('loginButton');
+        setBusy(button,true,'Sign in to your workspace ↗');
+        $('loginError').classList.add('hidden');
+        try{
+          var response=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:$('username').value.trim(),password:$('password').value})});
+          var payload=await response.json().catch(function(){return {};});
+          if(!response.ok)throw new Error(payload.error||'Unable to sign in.');
+          if(!payload.token)throw new Error('The server did not return a valid session.');
+          localStorage.setItem(TOKEN_KEY,payload.token);
+          await openDashboard(payload.user);
+        }catch(error){showLoginError(error.message||'Sign in failed.');}
+        finally{setBusy(button,false,'Sign in to your workspace ↗');}
+      });
+      $('logoutButton').addEventListener('click',async function(){
+        try{await api('/api/auth/logout',{method:'POST'});}catch(_){}
+        signOut(true);
+      });
+      $('mobileMenu').addEventListener('click',function(){$('sidebar').classList.toggle('open');});
+      document.querySelectorAll('.nav-btn').forEach(function(button){
+        button.addEventListener('click',function(){selectTab(button.dataset.tab);$('sidebar').classList.remove('open');});
+      });
+      function selectTab(tab){
+        currentTab=tab;
+        editingOrganization=null;
+        document.querySelectorAll('.nav-btn').forEach(function(button){button.classList.toggle('active',button.dataset.tab===tab);});
+        var titles={overview:'Overview',industries:'Industry structure',organizations:'Organizations & social links',portfolio:'Portfolio image manager'};
+        $('pageTitle').textContent=titles[tab]||'Workspace';
+        renderPanel();
+      }
+      async function loadData(){
+        var results=await Promise.all([api('/api/industries'),api('/api/gallery')]);
+        industries=Array.isArray(results[0])?results[0]:[];
+        gallery=Array.isArray(results[1])?results[1]:[];
+      }
+      async function openDashboard(user){
+        $('loginView').classList.add('hidden');
+        $('dashboardView').classList.remove('hidden');
+        $('userLabel').textContent=(user&&user.username)||'Client account';
+        await loadData();
+        selectTab('overview');
+      }
+      function renderPanel(){
+        if(currentTab==='overview')renderOverview();
+        else if(currentTab==='industries')renderIndustries();
+        else if(currentTab==='organizations')renderOrganizations();
+        else renderPortfolio();
+      }
+      function renderOverview(){
+        var organizationCount=industries.reduce(function(total,item){return total+(item.organizations||[]).length;},0);
+        var subCount=industries.reduce(function(total,item){return total+(item.subIndustries||[]).length;},0);
+        $('panel').innerHTML=
+          '<div class="welcome"><div><div class="eyebrow">Your creative library</div><h2>One organized place for every client.</h2><p>Create an industry first, add its sub-industries, register organizations, then attach social profiles and campaign visuals.</p></div><button class="btn primary" data-go="industries">Create an industry ↗</button></div>'+
+          '<div class="stats"><div class="stat"><span class="caption">Industries</span><strong class="number">'+industries.length+'</strong></div><div class="stat"><span class="caption">Sub-industries</span><strong class="number">'+subCount+'</strong></div><div class="stat"><span class="caption">Organizations</span><strong class="number">'+organizationCount+'</strong></div></div>'+
+          '<div class="card-grid"><article class="panel"><div class="eyebrow">Step 01</div><h2 style="margin-top:8px">Build your industry list</h2><p class="muted">Examples: Hospitality & Tourism, Healthcare, Retail, Education, and Corporate Services.</p><div class="record-actions"><button class="btn primary" data-go="industries">Manage industries</button></div></article><article class="panel"><div class="eyebrow">Step 02</div><h2 style="margin-top:8px">Add organizations</h2><p class="muted">Create the companies under each industry and add their website, Instagram, Facebook, TikTok, YouTube, and other links.</p><div class="record-actions"><button class="btn" data-go="organizations">Manage organizations</button></div></article><article class="panel"><div class="eyebrow">Step 03</div><h2 style="margin-top:8px">Upload portfolio images</h2><p class="muted">Assign each graphic to its industry, sub-industry, and organization so the public portfolio stays categorized.</p><div class="record-actions"><button class="btn" data-go="portfolio">Add portfolio images</button></div></article></div>'+
+          '<div class="panel"><div class="panel-head"><div><h2>Recently added visuals</h2><p>Images saved to the Yehulu Digital portfolio.</p></div><button class="btn small" data-go="portfolio">Open image manager</button></div>'+renderProjectCards(gallery.slice(0,6),false)+'</div>';
+        bindGoButtons();
+      }
+      function bindGoButtons(){document.querySelectorAll('[data-go]').forEach(function(button){button.addEventListener('click',function(){selectTab(button.dataset.go);});});}
+      function renderIndustries(){
+        var cards=industries.map(function(item){
+          var sub=(item.subIndustries||[]).map(function(subItem){return '<span class="tag">'+escapeHTML(subItem.name)+' <button type="button" aria-label="Remove '+escapeHTML(subItem.name)+'" class="remove-sub" data-industry="'+escapeHTML(item.id)+'" data-sub="'+escapeHTML(subItem.id)+'">×</button></span>';}).join('');
+          var orgCount=(item.organizations||[]).length;
+          return '<article class="record"><div class="eyebrow">Industry</div><h3 style="margin-top:8px">'+escapeHTML(item.name)+'</h3><p>'+escapeHTML(item.description||'No description added.')+'</p><div style="margin-top:11px"><span class="tag">'+(item.subIndustries||[]).length+' sub-industries</span><span class="tag">'+orgCount+' organizations</span></div><div class="divider"></div><div class="eyebrow">Sub-industries</div><div style="margin:8px 0 12px">'+(sub||'<span class="help">No sub-industries yet.</span>')+'</div><form class="sub-form" data-industry="'+escapeHTML(item.id)+'" style="display:flex;gap:8px"><input name="name" placeholder="Add a sub-industry" maxlength="100" required style="flex:1;min-width:0;background:#090d08;border:1px solid var(--line);border-radius:9px;padding:10px;color:white;font-size:11px"><button class="btn small" type="submit">Add</button></form><div class="record-actions"><button type="button" class="btn small danger delete-industry" data-id="'+escapeHTML(item.id)+'" '+(orgCount|| (item.subIndustries||[]).length?'disabled title="Remove organizations and sub-industries first"':'')+'>Delete industry</button></div></article>';
+        }).join('');
+        $('panel').innerHTML=
+          '<div class="panel"><div class="panel-head"><div><h2>Create an industry</h2><p>Start with the broad business sector. Add specific sub-industries inside each one.</p></div><span class="tag">STEP 01</span></div><form id="industryForm" class="form-grid"><div class="field"><label>Industry name</label><input name="name" placeholder="e.g. Hospitality & Tourism" maxlength="100" required></div><div class="field"><label>Short description</label><input name="description" placeholder="What type of organizations belong here?" maxlength="500"></div><div class="full"><button class="btn primary" type="submit">＋ Create industry</button></div></form></div>'+
+          '<div class="panel"><div class="panel-head"><div><h2>Your industries</h2><p>Keep the taxonomy consistent across all client organizations and portfolio visuals.</p></div><span class="tag">'+industries.length+' TOTAL</span></div>'+(cards?'<div class="card-grid">'+cards+'</div>':'<div class="empty">No industries have been created yet. Add your first industry above.</div>')+'</div>';
+        $('industryForm').addEventListener('submit',async function(event){
+          event.preventDefault();var form=event.currentTarget;var data=new FormData(form);
+          try{await api('/api/industries',{method:'POST',body:JSON.stringify({name:data.get('name'),description:data.get('description')})});await refreshData();notify('Industry created.');renderIndustries();}
+          catch(error){notify(error.message);}
+        });
+        document.querySelectorAll('.sub-form').forEach(function(form){form.addEventListener('submit',async function(event){
+          event.preventDefault();var input=form.querySelector('input[name="name"]');
+          try{await api('/api/industries/'+encodeURIComponent(form.dataset.industry)+'/sub-industries',{method:'POST',body:JSON.stringify({name:input.value})});await refreshData();notify('Sub-industry added.');renderIndustries();}
+          catch(error){notify(error.message);}
+        });});
+        document.querySelectorAll('.remove-sub').forEach(function(button){button.addEventListener('click',async function(){
+          if(!confirm('Remove this sub-industry?'))return;
+          try{await api('/api/industries/'+encodeURIComponent(button.dataset.industry)+'/sub-industries/'+encodeURIComponent(button.dataset.sub),{method:'DELETE'});await refreshData();renderIndustries();notify('Sub-industry removed.');}
+          catch(error){notify(error.message);}
+        });});
+        document.querySelectorAll('.delete-industry').forEach(function(button){button.addEventListener('click',async function(){
+          if(button.disabled||!confirm('Delete this empty industry?'))return;
+          try{await api('/api/industries/'+encodeURIComponent(button.dataset.id),{method:'DELETE'});await refreshData();renderIndustries();notify('Industry deleted.');}
+          catch(error){notify(error.message);}
+        });});
+      }
+      function platformOptions(selected){
+        var list=['Instagram','Facebook','TikTok','YouTube','Telegram','LinkedIn','X','Website','Other'];
+        return list.map(function(item){return '<option value="'+item+'" '+(item===selected?'selected':'')+'>'+item+'</option>';}).join('');
+      }
+      function addSocialRow(platform,url){
+        var row=document.createElement('div');row.className='social-row';
+        row.innerHTML='<select aria-label="Social platform">'+platformOptions(platform||'Instagram')+'</select><input type="url" aria-label="Social profile URL" placeholder="https://…" value="'+escapeHTML(url||'')+'"><button type="button" class="btn small danger remove-social" aria-label="Remove social link">×</button>';
+        row.querySelector('.remove-social').addEventListener('click',function(){row.remove();});
+        $('socialEditor').appendChild(row);
+      }
+      function renderOrganizations(){
+        var industryOptions=industries.map(function(item){return '<option value="'+escapeHTML(item.id)+'">'+escapeHTML(item.name)+'</option>';}).join('');
+        var list=industries.map(function(item){
+          var organizations=(item.organizations||[]).map(function(org){
+            var sub=(item.subIndustries||[]).find(function(s){return s.id===org.subIndustryId;});
+            var social=(org.socialLinks||[]).map(function(link){return '<a href="'+escapeHTML(link.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(link.platform)+' ↗</a>';}).join('');
+            return '<article class="record"><div class="eyebrow">'+escapeHTML(item.name)+'</div><h3 style="margin-top:8px">'+escapeHTML(org.name)+'</h3><p>'+escapeHTML(org.description||'')+'</p>'+(sub?'<span class="tag">'+escapeHTML(sub.name)+'</span>':'')+(org.website?'<p style="margin-top:10px"><a class="muted" href="'+escapeHTML(org.website)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(org.website)+'</a></p>':'')+'<div class="social-list">'+(social||'<span class="help">No social profiles added.</span>')+'</div><div class="record-actions"><button class="btn small edit-org" type="button" data-industry="'+escapeHTML(item.id)+'" data-org="'+escapeHTML(org.id)+'">Edit organization</button></div></article>';
+          }).join('');
+          return organizations?'<div class="stack"><div class="panel-head" style="margin:4px 0 0"><div><h2>'+escapeHTML(item.name)+'</h2><p>'+(item.organizations||[]).length+' organizations</p></div></div><div class="card-grid">'+organizations+'</div></div>':'';
+        }).join('');
+        $('panel').innerHTML=
+          '<div class="panel"><div class="panel-head"><div><h2>'+(editingOrganization?'Update organization':'Add an organization')+'</h2><p>Choose its industry and sub-industry, then enter the company profile and social media links.</p></div><span class="tag">STEP 02</span></div>'+(industries.length?'<form id="orgForm" class="form-grid"><div class="field"><label>Industry</label><select name="industryId" id="orgIndustry" required>'+industryOptions+'</select></div><div class="field"><label>Sub-industry</label><select name="subIndustryId" id="orgSubIndustry"><option value="">Select a sub-industry (optional)</option></select></div><div class="field"><label>Organization / company name</label><input name="name" maxlength="120" placeholder="e.g. Rori Hotel" required></div><div class="field"><label>Website</label><input name="website" type="url" placeholder="https://example.com"></div><div class="field full"><label>Short description</label><textarea name="description" maxlength="500" placeholder="What does this organization do?"></textarea></div><div class="field full"><label>Social media profiles</label><div id="socialEditor" class="social-editor"></div><div><button id="addSocial" type="button" class="btn small">＋ Add social profile</button></div><p class="help">Add the public profile URL for each platform. You can add multiple profiles.</p></div><div class="full" style="display:flex;gap:9px;flex-wrap:wrap"><button id="orgSave" class="btn primary" type="submit">'+(editingOrganization?'Save organization changes':'Create organization')+'</button><button id="orgCancel" class="btn '+(editingOrganization?'':'hidden')+'" type="button">Cancel edit</button></div></form>':'<div class="empty">Create an industry first. Organizations are always grouped under an industry.</div>')+'</div>'+
+          '<div class="panel"><div class="panel-head"><div><h2>Organization directory</h2><p>Organizations are grouped by their parent industry.</p></div></div>'+(list||'<div class="empty">No organizations added yet.</div>')+'</div>';
+        if(!industries.length)return;
+        $('orgIndustry').addEventListener('change',function(){populateOrgSubIndustries(this.value,'');});
+        $('addSocial').addEventListener('click',function(){addSocialRow('Instagram','');});
+        $('orgCancel').addEventListener('click',function(){editingOrganization=null;renderOrganizations();});
+        $('orgForm').addEventListener('submit',async function(event){
+          event.preventDefault();var form=event.currentTarget;var data=new FormData(form);
+          var socialLinks=Array.from(document.querySelectorAll('#socialEditor .social-row')).map(function(row){return {platform:row.querySelector('select').value,url:row.querySelector('input').value.trim()};}).filter(function(item){return item.url;});
+          var industryId=data.get('industryId');
+          var payload={name:data.get('name'),description:data.get('description'),website:data.get('website'),subIndustryId:data.get('subIndustryId'),socialLinks:socialLinks};
+          try{
+            if(editingOrganization){await api('/api/industries/'+encodeURIComponent(editingOrganization.industryId)+'/organizations/'+encodeURIComponent(editingOrganization.id),{method:'PUT',body:JSON.stringify(payload)});}
+            else{await api('/api/industries/'+encodeURIComponent(industryId)+'/organizations',{method:'POST',body:JSON.stringify(payload)});}
+            editingOrganization=null;await refreshData();notify('Organization saved.');renderOrganizations();
+          }catch(error){notify(error.message);}
+        });
+        document.querySelectorAll('.edit-org').forEach(function(button){button.addEventListener('click',function(){editOrganization(button.dataset.industry,button.dataset.org);});});
+        populateOrgSubIndustries(industries[0].id,'');
+        if(editingOrganization){
+          $('orgIndustry').value=editingOrganization.industryId;
+          var org=editingOrganization.org;
+          populateOrgSubIndustries(editingOrganization.industryId,org.subIndustryId||'');
+          $('orgForm').elements.name.value=org.name||'';
+          $('orgForm').elements.website.value=org.website||'';
+          $('orgForm').elements.description.value=org.description||'';
+          $('socialEditor').innerHTML='';
+          (org.socialLinks||[]).forEach(function(link){addSocialRow(link.platform,link.url);});
+          if(!(org.socialLinks||[]).length)addSocialRow('Instagram','');
+        }else{addSocialRow('Instagram','');}
+      }
+      function populateOrgSubIndustries(industryId,selected){
+        var item=industries.find(function(entry){return entry.id===industryId;});
+        var options=(item&&item.subIndustries||[]).map(function(sub){return '<option value="'+escapeHTML(sub.id)+'" '+(sub.id===selected?'selected':'')+'>'+escapeHTML(sub.name)+'</option>';}).join('');
+        $('orgSubIndustry').innerHTML='<option value="">Select a sub-industry (optional)</option>'+options;
+      }
+      function editOrganization(industryId,orgId){
+        var industry=industries.find(function(item){return item.id===industryId;});
+        var org=industry&&(industry.organizations||[]).find(function(item){return item.id===orgId;});
+        if(!industry||!org)return;
+        editingOrganization={industryId:industryId,id:orgId,org:org};
+        selectTab('organizations');
+      }
+      function renderPortfolio(){
+        var industryOptions=industries.map(function(item){return '<option value="'+escapeHTML(item.id)+'">'+escapeHTML(item.name)+'</option>';}).join('');
+        $('panel').innerHTML=
+          '<div class="panel"><div class="panel-head"><div><h2>Add a portfolio image</h2><p>Upload a graphic or photograph and connect it to the correct industry, sub-industry, and organization.</p></div><span class="tag">STEP 03</span></div>'+(industries.length?'<form id="projectForm" class="form-grid"><div class="field"><label>Project / graphic title</label><input name="title" maxlength="140" placeholder="e.g. Rori Hotel — Seasonal Campaign" required></div><div class="field"><label>Content type</label><select name="category"><option>SOCIAL MEDIA</option><option>COMMERCIAL</option><option>BRAND IDENTITY</option><option>PHOTOGRAPHY</option><option>GRAPHIC DESIGN</option></select></div><div class="field"><label>Industry</label><select id="projectIndustry" name="industryId" required>'+industryOptions+'</select></div><div class="field"><label>Sub-industry</label><select id="projectSubIndustry" name="subIndustryId"><option value="">Select a sub-industry (optional)</option></select></div><div class="field"><label>Organization</label><select id="projectOrganization" name="organizationId" required><option value="">Choose organization</option></select></div><div class="field"><label>Year</label><input name="year" type="number" min="2000" max="2100" value="'+new Date().getFullYear()+'"></div><div class="field full"><label>Description</label><textarea name="description" maxlength="800" placeholder="Describe the work and what it was created for."></textarea></div><div class="field full"><label>Project image</label><div class="upload-zone"><input id="projectImage" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required><p class="help">JPG, PNG, WEBP, or GIF · Maximum upload size: 4 MB on the hosted site.</p><img id="imagePreview" class="preview hidden" alt="Selected project preview"></div></div><div class="full"><label style="display:flex;align-items:center;gap:9px;font-size:11px;color:#bac4b0"><input type="checkbox" name="featured" checked style="accent-color:var(--accent)"> Feature this image in the public portfolio</label></div><div class="full"><button id="projectSave" class="btn primary" type="submit">Upload and publish image ↗</button></div></form>':'<div class="empty">Create an industry and at least one organization before uploading portfolio images.</div>')+'</div>'+
+          '<div class="panel"><div class="panel-head"><div><h2>Portfolio library</h2><p>Recent uploaded work. Images are saved to the existing public gallery API.</p></div><span class="tag">'+gallery.length+' ITEMS</span></div>'+renderProjectCards(gallery.slice(0,18),true)+'</div>';
+        if(!industries.length)return;
+        $('projectIndustry').addEventListener('change',function(){populateProjectChoices(this.value,'','');});
+        $('projectImage').addEventListener('change',function(){
+          var file=this.files&&this.files[0];var preview=$('imagePreview');
+          if(!file){preview.classList.add('hidden');return;}
+          if(file.size>4*1024*1024){this.value='';preview.classList.add('hidden');notify('Choose an image smaller than 4 MB.');return;}
+          preview.src=URL.createObjectURL(file);preview.classList.remove('hidden');
+        });
+        populateProjectChoices(industries[0].id,'','');
+        $('projectForm').addEventListener('submit',async function(event){
+          event.preventDefault();
+          var form=event.currentTarget;var data=new FormData(form);var file=$('projectImage').files[0];
+          if(!file){notify('Choose a project image first.');return;}
+          if(file.size>4*1024*1024){notify('Image must be smaller than 4 MB.');return;}
+          var button=$('projectSave');setBusy(button,true,'Upload and publish image ↗');
+          try{
+            var uploadData=new FormData();uploadData.append('file',file,file.name);
+            var uploaded=await api('/api/upload',{method:'POST',body:uploadData});
+            var industry=industries.find(function(item){return item.id===data.get('industryId');});
+            var sub=industry&&(industry.subIndustries||[]).find(function(item){return item.id===data.get('subIndustryId');});
+            var organization=industry&&(industry.organizations||[]).find(function(item){return item.id===data.get('organizationId');});
+            if(!industry||!organization)throw new Error('Select a valid industry and organization.');
+            var project={
+              title:data.get('title'),category:data.get('category'),description:data.get('description'),
+              imageUrl:uploaded.url,year:data.get('year'),featured:data.get('featured')==='on',
+              industry:industry.name,subIndustry:sub?sub.name:'',company:organization.name,client:organization.name,
+              industryId:industry.id,subIndustryId:sub?sub.id:'',organizationId:organization.id
+            };
+            await api('/api/gallery',{method:'POST',body:JSON.stringify(project)});
+            await refreshData();notify('Image uploaded and added to the portfolio.');renderPortfolio();
+          }catch(error){notify(error.message);}
+          finally{setBusy(button,false,'Upload and publish image ↗');}
+        });
+      }
+      function populateProjectChoices(industryId,subIndustryId,organizationId){
+        var industry=industries.find(function(item){return item.id===industryId;});
+        var subs=industry&&industry.subIndustries||[];
+        var orgs=industry&&industry.organizations||[];
+        $('projectSubIndustry').innerHTML='<option value="">Select a sub-industry (optional)</option>'+subs.map(function(sub){return '<option value="'+escapeHTML(sub.id)+'" '+(sub.id===subIndustryId?'selected':'')+'>'+escapeHTML(sub.name)+'</option>';}).join('');
+        $('projectOrganization').innerHTML='<option value="">Choose organization</option>'+orgs.map(function(org){return '<option value="'+escapeHTML(org.id)+'" '+(org.id===organizationId?'selected':'')+'>'+escapeHTML(org.name)+'</option>';}).join('');
+      }
+      function renderProjectCards(items,allowDelete){
+        if(!items.length)return '<div class="empty">No portfolio images have been added yet.</div>';
+        return '<div class="project-list">'+items.map(function(item){
+          var remove=allowDelete?'<button type="button" class="btn small danger remove-project" data-id="'+escapeHTML(item.id)+'">Remove</button>':'';
+          return '<article class="project-card"><img src="'+escapeHTML(item.imageUrl||'')+'" alt="'+escapeHTML(item.title||'Portfolio image')+'" loading="lazy"><div class="project-card-body"><h4>'+escapeHTML(item.title||'Untitled project')+'</h4><p>'+escapeHTML(item.company||item.client||'')+'<br>'+escapeHTML(item.industry||'')+' · '+escapeHTML(item.subIndustry||'')+'</p>'+(allowDelete?'<div style="margin-top:10px">'+remove+'</div>':'')+'</div></article>';
+        }).join('')+'</div>';
+      }
+      function bindProjectDelete(){
+        document.querySelectorAll('.remove-project').forEach(function(button){button.addEventListener('click',async function(){
+          if(!confirm('Remove this image from the public portfolio?'))return;
+          try{await api('/api/gallery/'+encodeURIComponent(button.dataset.id),{method:'DELETE'});await refreshData();renderPortfolio();notify('Portfolio item removed.');}
+          catch(error){notify(error.message);}
+        });});
+      }
+      async function refreshData(){
+        var results=await Promise.all([api('/api/industries'),api('/api/gallery')]);
+        industries=Array.isArray(results[0])?results[0]:[];
+        gallery=Array.isArray(results[1])?results[1]:[];
+      }
+      // Bind deletion after all views are rendered.
+      var originalRenderPanel=renderPanel;
+      renderPanel=function(){originalRenderPanel();bindProjectDelete();};
+      // Restore a previous valid session, or show the login form.
+      (async function(){
+        if(!token())return;
+        try{
+          var result=await api('/api/auth/me');
+          await openDashboard(result.user);
+        }catch(_){signOut(false);}
+      })();
+    })();
+  </script>
+</body>
+</html>
