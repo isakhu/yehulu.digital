@@ -1096,41 +1096,38 @@
         font-weight: 800;
       }
 
-      /* ── PROJECT IMAGE TEXT CONTRAST: actual gallery card structure ── */
-      /* The Projects page is /gallery. Its cards are tagged by
-         enhanceProjectsGallery(); the image wrapper receives yd-project-media. */
+      /* ── PROJECT IMAGE COLOR + TEXT LEGIBILITY (dark and light themes) ── */
+      /* Keep original artwork untouched. Text gets contrast from shadow, not a
+         dark overlay or image filter, so thumbnails look like the source files. */
       body[data-yd-view="projects"] #root main .yd-project-media,
       #root main .yd-project-image-card .yd-project-media {
         position: relative !important;
         isolation: isolate;
         overflow: hidden;
-        background: #080808;
+        background: transparent !important;
       }
-      body[data-yd-view="projects"] #root main .yd-project-media::after,
       #root main .yd-project-image-card .yd-project-media::after {
-        content: "";
-        position: absolute;
-        inset: 22% 0 0;
-        z-index: 1;
-        pointer-events: none;
-        background: linear-gradient(
-          180deg,
-          rgba(0,0,0,0) 0%,
-          rgba(0,0,0,.28) 30%,
-          rgba(0,0,0,.76) 76%,
-          rgba(0,0,0,.92) 100%
-        );
+        content: none !important;
+        display: none !important;
       }
-      #root main .yd-project-image-card .yd-project-media > img {
-        display: block;
+      #root main .yd-project-image-card .yd-project-media > img,
+      body[data-yd-view="projects"] #root main .yd-project-media > img {
+        display: block !important;
         position: relative;
         z-index: 0;
+        opacity: 1 !important;
+        filter: none !important;
+        mix-blend-mode: normal !important;
+        visibility: visible !important;
       }
       #root main .yd-project-image-card .yd-project-media :is(h1,h2,h3,h4,p,span,small,a) {
         position: relative;
         z-index: 2;
         color: #fff !important;
-        text-shadow: 0 1px 3px rgba(0,0,0,.95), 0 2px 12px rgba(0,0,0,.8);
+        text-shadow:
+          0 1px 2px rgba(0,0,0,1),
+          0 2px 8px rgba(0,0,0,.95),
+          0 0 18px rgba(0,0,0,.8);
       }
       #root main .yd-project-image-card .yd-project-media :is(button,[role="button"]) {
         position: relative;
@@ -1139,6 +1136,13 @@
       #root main .yd-project-image-card .yd-project-media .text-\\[\\#B6FF00\\],
       #root main .yd-project-image-card .yd-project-media .text-\\[\\#b6ff00\\] {
         color: #B6FF00 !important;
+      }
+      [data-theme="light"] #root main .yd-project-image-card .yd-project-media :is(h1,h2,h3,h4,p,span,small,a) {
+        color: #fff !important;
+        text-shadow:
+          0 1px 2px rgba(0,0,0,1),
+          0 2px 8px rgba(0,0,0,.95),
+          0 0 18px rgba(0,0,0,.8);
       }
 
       /* ── Light Mode Color Adaptations ── */
