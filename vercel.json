@@ -10,6 +10,10 @@
       "destination": "/client-portal.html"
     },
     {
+      "source": "/admin/login",
+      "destination": "/admin-passkey.html"
+    },
+    {
       "source": "/admin",
       "destination": "/index.html"
     },
