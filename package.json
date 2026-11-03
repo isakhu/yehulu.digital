@@ -7,7 +7,7 @@
     "start": "node server.js",
     "sync": "node sync-gallery.js",
     "test": "node --test",
-    "check": "node --check server.js && node --check api/index.js && node --check lib/api-routing.js && node --check lib/auth.js && node --check lib/accounts.js && node --check lib/account-api.js && node --check lib/passkey-api.js && node --check lib/industry-api.js && node --check scripts/generate-admin-secrets.js && node --check lib/courses.js && node --check lib/data-store.js && node --check lib/load-env.js && node --test",
+    "check": "node --check server.js && node --check api/index.js && node --check lib/api-routing.js && node --check lib/auth.js && node --check lib/accounts.js && node --check lib/account-api.js && node --check lib/passkey-api.js && node --check lib/industry-api.js && node --check scripts/generate-admin-secrets.js && node --check public/assets/index-BSXl1opM.js && node --check lib/courses.js && node --check lib/data-store.js && node --check lib/load-env.js && node --test",
     "admin:secrets": "node scripts/generate-admin-secrets.js"
   },
   "keywords": [
