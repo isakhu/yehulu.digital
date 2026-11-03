@@ -14,6 +14,7 @@ Official web platform for **Yehulu Digital** — a creative digital marketing ag
 - **Dynamic Theme Switcher**: Dual mode (Dark default `#050505` with `#B6FF00` accent, and Light `#f6f8f4`) with persistent `localStorage` preference and zero flash of unstyled content (zero-FOUC).
 - **Fullscreen Interactive Lightbox**: Click any portfolio asset across the home page or gallery to inspect full-resolution artwork with previous/next keyboard shortcuts (`←`/`→`), close on `ESC`, and swipe support.
 - **30+ Client Project Archive**: Complete portfolio showcasing 37 verified client deliverables across Brand Identity, Commercial Outdoor Advertising, Social Media, and Hospitality (featuring Rori Hotel Hawassa).
+- **Industry-to-Organization Project Taxonomy**: Projects are classified in the exact hierarchy `Projects → Industry → Organization` (for example, `Projects → Hotel → Rori Hotel`). The archive keeps its existing deliverable-type filters and uses two linked filters for industry and organization. All 37 current project records and the offline fallback snapshot carry matching industry, sub-industry, and organization IDs.
 - **Automated Gallery Sync Engine (`sync-gallery.js`)**: Drop any new image files into `public/uploads/projects/` and run `npm run sync` to instantly categorize and index them into `data/gallery.json`.
 - **Contact-only Social Links**: Instagram, TikTok, Facebook, and YouTube links appear in the Contact page only; the Home page, shared header, and footer stay clear of social icons. All four Contact links remain visible even if contact settings cannot be loaded.
 - **Installable Mobile App (PWA)**: Home-screen installation support, app manifest, service worker, safe-area-aware navigation, and a simple offline shell.
@@ -39,6 +40,7 @@ yehulu.digital/
 │   ├── contact-info.json                                 # Official contact numbers, socials & address
 │   ├── courses.json                                      # Digital academy courses
 │   ├── estimator-config.json                             # Interactive project cost calculator
+│   ├── industries.json                                    # Industry, sub-industry & organization hierarchy
 │   ├── gallery.json                                      # 37 curated project case studies
 │   ├── messages.json                                     # Inbound contact form submissions
 │   └── videos.json                                       # 4K commercial videos & reels
