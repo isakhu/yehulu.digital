@@ -1,0 +1,201 @@
+[
+  {
+    "id": "industry-hotel",
+    "name": "Hotel",
+    "slug": "hotel",
+    "description": "Hotel accommodation, dining, events and guest experiences.",
+    "subIndustries": [
+      {
+        "id": "sub-hotels-guest-rooms",
+        "name": "Hotels, Guest Rooms & Accommodation"
+      },
+      {
+        "id": "sub-hotel-restaurants-dining",
+        "name": "Hotel Restaurants, Dining & Lounge"
+      },
+      {
+        "id": "sub-hotel-events-culture",
+        "name": "Hotel Events, Culture & Guest Experiences"
+      },
+      {
+        "id": "sub-hotel-brand-identity",
+        "name": "Hotel Branding & Identity"
+      },
+      {
+        "id": "sub-hotel-marketing-social",
+        "name": "Hotel Marketing & Social Media"
+      }
+    ],
+    "organizations": [
+      {
+        "id": "org-rori-hotel",
+        "name": "Rori Hotel",
+        "description": "Rori Hotel — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      }
+    ],
+    "createdAt": "2026-11-03T20:28:02.422Z",
+    "updatedAt": "2026-11-03T20:28:02.422Z"
+  },
+  {
+    "id": "industry-hospital",
+    "name": "Hospital",
+    "slug": "hospital",
+    "description": "Hospitals, medical centers and healthcare communications.",
+    "subIndustries": [
+      {
+        "id": "sub-hospitals-medical-centers",
+        "name": "Hospitals & Medical Centers"
+      }
+    ],
+    "organizations": [
+      {
+        "id": "org-panacea-hospital",
+        "name": "Panacea Hospital",
+        "description": "Panacea Hospital — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      }
+    ],
+    "createdAt": "2026-11-03T20:28:02.422Z",
+    "updatedAt": "2026-11-03T20:28:02.422Z"
+  },
+  {
+    "id": "industry-advertising-marketing",
+    "name": "Advertising & Marketing",
+    "slug": "advertising-marketing",
+    "description": "Digital campaigns, brand activation and outdoor advertising.",
+    "subIndustries": [
+      {
+        "id": "sub-digital-marketing-social",
+        "name": "Digital Marketing & Social Media Campaigns"
+      },
+      {
+        "id": "sub-outdoor-advertising-print",
+        "name": "Outdoor Advertising & Large-Format Printing"
+      }
+    ],
+    "organizations": [
+      {
+        "id": "org-social-growth-partner",
+        "name": "Social Growth Partner",
+        "description": "Social Growth Partner — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      },
+      {
+        "id": "org-digital-campaign-partner",
+        "name": "Digital Campaign Partner",
+        "description": "Digital Campaign Partner — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      },
+      {
+        "id": "org-brand-activation-partner",
+        "name": "Brand Activation Partner",
+        "description": "Brand Activation Partner — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      },
+      {
+        "id": "org-commercial-client",
+        "name": "Commercial Client",
+        "description": "Commercial Client — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      },
+      {
+        "id": "org-outdoor-commercial-advertising",
+        "name": "Outdoor Commercial Advertising",
+        "description": "Outdoor Commercial Advertising — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      }
+    ],
+    "createdAt": "2026-11-03T20:28:02.422Z",
+    "updatedAt": "2026-11-03T20:28:02.422Z"
+  },
+  {
+    "id": "industry-retail-ecommerce",
+    "name": "Retail & E-commerce",
+    "slug": "retail-e-commerce",
+    "description": "Retail brands, storefronts and commercial retail campaigns.",
+    "subIndustries": [
+      {
+        "id": "sub-retail-storefront-advertising",
+        "name": "Retail Stores & Storefront Advertising"
+      }
+    ],
+    "organizations": [
+      {
+        "id": "org-retail-brand-partner",
+        "name": "Retail Brand Partner",
+        "description": "Retail Brand Partner — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      }
+    ],
+    "createdAt": "2026-11-03T20:28:02.422Z",
+    "updatedAt": "2026-11-03T20:28:02.422Z"
+  },
+  {
+    "id": "industry-corporate-professional",
+    "name": "Corporate & Professional Services",
+    "slug": "corporate-professional-services",
+    "description": "Corporate organizations and professional brand identity projects.",
+    "subIndustries": [
+      {
+        "id": "sub-corporate-branding-identity",
+        "name": "Corporate Branding & Visual Identity"
+      }
+    ],
+    "organizations": [
+      {
+        "id": "org-corporate-client",
+        "name": "Corporate Client",
+        "description": "Corporate Client — organization represented in the Yehulu Digital project portfolio.",
+        "website": "",
+        "logoUrl": "",
+        "subIndustryId": "",
+        "socialLinks": [],
+        "createdAt": "2026-11-03T20:28:02.422Z",
+        "updatedAt": "2026-11-03T20:28:02.422Z"
+      }
+    ],
+    "createdAt": "2026-11-03T20:28:02.422Z",
+    "updatedAt": "2026-11-03T20:28:02.422Z"
+  }
+]
