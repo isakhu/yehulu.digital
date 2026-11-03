@@ -361,7 +361,6 @@ Please change the parent <Route path="${H}"> to <Route path="${H==="/"?"*":`${H}
 Ry=()=>{
 const [items,setItems]=p.useState([]),
 [loading,setLoading]=p.useState(!0),
-[category,setCategory]=p.useState("ALL"),
 [industry,setIndustry]=p.useState(""),
 [organization,setOrganization]=p.useState(""),
 [selected,setSelected]=p.useState(null);
@@ -392,16 +391,14 @@ if(active)setItems(projects);
 })().catch(error=>console.warn("Gallery data could not be loaded.",error)).finally(()=>{if(active)setLoading(!1)});
 return()=>{active=false}
 },[]);
-const categories=["ALL","BRAND IDENTITY","GRAPHIC DESIGN","SOCIAL MEDIA","DIGITAL EXPERIENCES"];
 const industries=Array.from(new Set(items.map(item=>item.industry).filter(Boolean))).sort();
 const organizations=Array.from(new Set(items.filter(item=>!industry||item.industry===industry).map(item=>item.company||item.client).filter(Boolean))).sort();
 const visible=items.filter(item=>
-(!category||category==="ALL"||String(item.category||"").toUpperCase()===category)&&
 (!industry||item.industry===industry)&&
 (!organization||(item.company||item.client)===organization)
 );
 const pathLabel=organization?organization:industry?industry:"ALL INDUSTRIES";
-const reset=()=>{setCategory("ALL");setIndustry("");setOrganization("")};
+const reset=()=>{setIndustry("");setOrganization("")};
 return l.jsxs("div",{className:"bg-[#050505] text-white min-h-screen pt-28 pb-24",children:[
 l.jsxs("div",{className:"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",children:[
 l.jsxs("div",{className:"flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/10 pb-12 gap-8",children:[
@@ -438,13 +435,6 @@ organization?l.jsxs(l.Fragment,{children:[" / ",organization]}):null
 ]}),
 l.jsx("button",{type:"button",onClick:reset,className:"text-[10px] font-black text-[#B6FF00] uppercase tracking-widest underline underline-offset-4",children:"RESET PROJECT FILTERS"})
 ]})
-]}),
-l.jsxs("div",{className:"flex flex-wrap items-center gap-3 mb-10 border-b border-white/10 pb-6",children:[
-l.jsxs("div",{className:"flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-500 mr-2",children:[l.jsx(cy,{className:"w-4 h-4 text-[#B6FF00]"}),l.jsx("span",{children:"FILTER BY TYPE:"})]}),
-categories.map(value=>{
-const active=category===value;
-return l.jsx("button",{onClick:()=>setCategory(value),className:"text-xs font-extrabold uppercase tracking-widest px-4 py-2 border transition-all "+(active?"bg-[#B6FF00] text-black border-[#B6FF00]":"bg-zinc-950 text-gray-400 border-white/10 hover:border-white/30 hover:text-white"),children:value},value)
-})
 ]}),
 loading?l.jsx("div",{className:"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6",children:[1,2,3,4,5,6,7,8].map(value=>l.jsx("div",{className:"bg-zinc-900 aspect-[4/5] animate-pulse border border-white/5"},value))}):
 visible.length===0?l.jsxs("div",{className:"bg-[#0a0a0a] border border-white/10 p-16 text-center space-y-4 my-12",children:[
