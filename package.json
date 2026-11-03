@@ -18,6 +18,10 @@
   "author": "Yehulu Digital",
   "license": "ISC",
   "dependencies": {
-    "@vercel/blob": "^2.8.2"
+    "@vercel/blob": "^2.8.2",
+    "@simplewebauthn/server": "^13.3.3"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
