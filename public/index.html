@@ -2115,6 +2115,12 @@
           cardTitle.textContent = title;
           cardBody.appendChild(cardTitle);
 
+          var taxonomyMeta = document.createElement('p');
+          taxonomyMeta.className = 'text-[9px] leading-relaxed uppercase tracking-wider mt-2';
+          taxonomyMeta.style.color = 'var(--text-muted)';
+          taxonomyMeta.textContent = String(item.industry || 'Other Industries') + ' / ' + String(item.subIndustry || 'General Commercial Design');
+          cardBody.appendChild(taxonomyMeta);
+
           var footer = document.createElement('div');
           footer.className = 'archive-card-footer';
           var client = document.createElement('span');
