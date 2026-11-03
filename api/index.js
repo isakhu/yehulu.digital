@@ -389,7 +389,8 @@ async function handleApiRequest(req, res) {
     }
     try {
       if (getBlob) {
-        const result = await getBlob(targetPath, { access: 'private' });
+        const blobAccess = process.env.BLOB_READ_WRITE_TOKEN ? { token: process.env.BLOB_READ_WRITE_TOKEN } : process.env.BLOB_STORE_ID ? { storeId: process.env.BLOB_STORE_ID } : {};
+        const result = await getBlob(targetPath, { access: 'private', ...blobAccess });
         if (!result) return sendJSON(res, 404, { error: 'Blob not found' });
 
         const contentType = result.blob?.contentType || 'image/jpeg';
@@ -451,12 +452,18 @@ async function handleApiRequest(req, res) {
       const filename = `${Date.now()}-${cleanBase}${ext}`;
       const blobPath = `projects/${filename}`;
 
-      // A) Vercel Blob Storage is configured
-      if (putBlob && process.env.BLOB_READ_WRITE_TOKEN) {
+      // A) Vercel Blob Storage is configured through a token or the connected store ID.
+      const blobStoreOptions = process.env.BLOB_READ_WRITE_TOKEN
+        ? { token: process.env.BLOB_READ_WRITE_TOKEN }
+        : process.env.BLOB_STORE_ID
+          ? { storeId: process.env.BLOB_STORE_ID }
+          : null;
+      if (putBlob && blobStoreOptions) {
         try {
           // Try standard Public store upload
           const blob = await putBlob(blobPath, file.data, {
             access: 'public',
+            ...blobStoreOptions,
             contentType: file.contentType || 'image/jpeg'
           });
           console.log(`[VERCEL BLOB - PUBLIC] Uploaded: ${blob.url}`);
@@ -470,6 +477,7 @@ async function handleApiRequest(req, res) {
           // Fallback to Private store upload
           const blob = await putBlob(blobPath, file.data, {
             access: 'private',
+            ...blobStoreOptions,
             contentType: file.contentType || 'image/jpeg'
           });
           console.log(`[VERCEL BLOB - PRIVATE] Uploaded: ${blob.url}`);

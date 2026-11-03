@@ -34,10 +34,32 @@ test('public authentication endpoints are never mistaken for protected admin rou
   assert.equal(isPublicApiRequest('/api/auth/passkey/register/options', 'GET'), false);
 });
 
-test('admin mutation endpoints remain protected', () => {
+test('content editor mutations are public without a login', () => {
+  assert.equal(isPublicApiRequest('/api/industries', 'GET'), true);
+  assert.equal(isPublicApiRequest('/api/industries/industry-hotel', 'GET'), true);
+  assert.equal(isPublicApiRequest('/api/upload', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/gallery', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/gallery/project-1', 'PUT'), true);
+  assert.equal(isPublicApiRequest('/api/gallery/project-1', 'DELETE'), true);
+  assert.equal(isPublicApiRequest('/api/videos', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/videos/video-1', 'PUT'), true);
+  assert.equal(isPublicApiRequest('/api/videos/video-1', 'DELETE'), true);
+  assert.equal(isPublicApiRequest('/api/admin/courses', 'GET'), true);
+  assert.equal(isPublicApiRequest('/api/admin/courses', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/admin/courses/course-1', 'PUT'), true);
+  assert.equal(isPublicApiRequest('/api/admin/courses/course-1', 'DELETE'), true);
+  assert.equal(isPublicApiRequest('/api/contact-info', 'PUT'), true);
+  assert.equal(isPublicApiRequest('/api/estimator-config', 'PUT'), true);
+});
+
+test('private messages and user-account endpoints stay protected', () => {
+  assert.equal(isPublicApiRequest('/api/messages', 'GET'), false);
+  assert.equal(isPublicApiRequest('/api/messages/1', 'PATCH'), false);
+  assert.equal(isPublicApiRequest('/api/messages/1', 'DELETE'), false);
+  assert.equal(isPublicApiRequest('/api/admin/users', 'GET'), false);
+  assert.equal(isPublicApiRequest('/api/admin/users', 'POST'), false);
+  assert.equal(isPublicApiRequest('/api/admin/profile', 'PUT'), false);
   assert.equal(isPublicApiRequest('/api/industries', 'POST'), false);
-  assert.equal(isPublicApiRequest('/api/gallery', 'POST'), false);
-  assert.equal(isPublicApiRequest('/api/admin/courses', 'DELETE'), false);
 });
 
 test('existing public read endpoints remain public', () => {

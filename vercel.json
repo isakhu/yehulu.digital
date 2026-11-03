@@ -10,10 +10,6 @@
       "destination": "/client-portal.html"
     },
     {
-      "source": "/admin/login",
-      "destination": "/admin-passkey.html"
-    },
-    {
       "source": "/admin",
       "destination": "/index.html"
     },
@@ -51,6 +47,11 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/admin/login",
+      "destination": "/admin",
+      "permanent": false
+    },
     {
       "source": "/about.html",
       "destination": "/",

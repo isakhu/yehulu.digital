@@ -52,9 +52,10 @@ test('the public navigation has six destinations and Admin stays in Contact', ()
   }
   assert.equal(html.includes('data-target="admin"'), false);
   assert.equal(html.includes('href="/admin/login"'), false);
-  assert.ok(bundle.includes('children:"ADMIN PORTAL"'));
-  assert.ok(bundle.includes('children:"ADMIN SIGN IN"'));
-  assert.ok(bundle.includes('to:"/admin/login"'));
+  assert.ok(bundle.includes('children:"CONTENT EDITOR"'));
+  assert.ok(bundle.includes('children:"OPEN EDITOR"'));
+  assert.ok(bundle.includes('to:"/admin"'));
+  assert.equal(bundle.includes('to:"/admin/login"'), false);
 });
 
 test('each other navigation route retains its own page component', () => {
@@ -96,7 +97,7 @@ test('Contact shows Hawassa location and Yzak Software developer credit', () => 
 });
 
 test('Contact social links use icon-only buttons with accessible platform names', () => {
-  const socialBlock = bundle.slice(bundle.indexOf('children:"CONNECT ON SOCIAL"'), bundle.indexOf('children:"ADMIN PORTAL"'));
+  const socialBlock = bundle.slice(bundle.indexOf('children:"CONNECT ON SOCIAL"'), bundle.indexOf('children:"CONTENT EDITOR"'));
   for (const platform of ['YouTube', 'Instagram', 'TikTok', 'Facebook']) {
     assert.ok(socialBlock.includes('"aria-label":"' + platform + '"'));
     assert.ok(socialBlock.includes('"title":"' + platform + '"'));
