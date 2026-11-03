@@ -2012,6 +2012,51 @@
           filterBar.appendChild(button);
         });
 
+        // Industry -> sub-industry -> company filters for the full client portfolio.
+        var taxonomyWrap = document.createElement('div');
+        taxonomyWrap.className = 'w-full flex flex-wrap gap-2 mt-3';
+        taxonomyWrap.id = 'archive-taxonomy-filters';
+        function makeTaxonomySelect(id, placeholder, values) {
+          var select = document.createElement('select');
+          select.id = id;
+          select.className = 'min-w-[170px] bg-zinc-950 text-white border border-white/20 px-3 py-2 text-[11px] font-bold uppercase tracking-wide rounded-sm';
+          var first = document.createElement('option');
+          first.value = '';
+          first.textContent = placeholder;
+          select.appendChild(first);
+          values.forEach(function(value) {
+            var option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+          });
+          return select;
+        }
+        var industrySelect = makeTaxonomySelect('archive-industry-filter', 'ALL INDUSTRIES', Array.from(new Set(items.map(function(it){return it.industry || 'Other Industries';}))).sort());
+        var subIndustrySelect = makeTaxonomySelect('archive-subindustry-filter', 'ALL SUB-INDUSTRIES', Array.from(new Set(items.map(function(it){return it.subIndustry || 'General Commercial Design';}))).sort());
+        var companySelect = makeTaxonomySelect('archive-company-filter', 'ALL COMPANIES', Array.from(new Set(items.map(function(it){return it.company || it.client || 'Unspecified Client';}))).sort());
+        taxonomyWrap.appendChild(industrySelect);
+        taxonomyWrap.appendChild(subIndustrySelect);
+        taxonomyWrap.appendChild(companySelect);
+        filterBar.appendChild(taxonomyWrap);
+        [industrySelect, subIndustrySelect, companySelect].forEach(function(select) {
+          select.addEventListener('change', function() {
+            var cards = document.querySelectorAll('#archive-items-grid .archive-card');
+            var loadMoreWrap = document.getElementById('archive-load-more-wrap');
+            if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+            cards.forEach(function(card) {
+              var matches = (!industrySelect.value || card.dataset.industry === industrySelect.value) &&
+                (!subIndustrySelect.value || card.dataset.subindustry === subIndustrySelect.value) &&
+                (!companySelect.value || card.dataset.company === companySelect.value);
+              if (matches) { card.style.display = 'flex'; card.removeAttribute('data-overflow'); }
+              else card.style.display = 'none';
+            });
+            document.querySelectorAll('.archive-cat-btn').forEach(function(btn) {
+              btn.classList.remove('bg-[#B6FF00]','text-black','border-[#B6FF00]');
+            });
+          });
+        });
+
         var archiveLink = document.createElement('a');
         archiveLink.href = '/gallery';
         archiveLink.className = 'inline-flex items-center gap-1 px-3 py-1.5 border border-white/20 text-[#B6FF00] hover:border-[#B6FF00] hover:bg-[#B6FF00] hover:text-black font-extrabold text-[11px] uppercase tracking-wider transition-all';
@@ -2025,6 +2070,9 @@
           var card = document.createElement('div');
           card.className = 'archive-card group';
           card.setAttribute('data-category', String(item.category || ''));
+          card.dataset.industry = String(item.industry || 'Other Industries');
+          card.dataset.subindustry = String(item.subIndustry || 'General Commercial Design');
+          card.dataset.company = String(item.company || item.client || 'Unspecified Client');
           card.title = 'Click to view full size';
           card.addEventListener('click', function() { openLightbox(idx); });
           if (idx >= 12) {
