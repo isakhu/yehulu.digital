@@ -90,7 +90,8 @@ function normalizePortfolioGallery(items) {
 function sendJSON(res, status, body) {
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
-    'X-Content-Type-Options': 'nosniff'
+    'X-Content-Type-Options': 'nosniff',
+    'Cache-Control': 'no-store'
   });
   res.end(JSON.stringify(body));
 }
@@ -354,7 +355,7 @@ async function handleApiRequest(req, res) {
   if (pathname.startsWith('/api/') && !isPublicApiRequest(pathname, method)) {
     authenticatedUser = await getAuthenticatedUser(req);
     if (!authenticatedUser) {
-      return sendJSON(res, 401, { error: 'Authentication required. Please sign in as an administrator.' });
+      return sendJSON(res, 401, { error: 'Please log in to continue.' });
     }
   }
 
