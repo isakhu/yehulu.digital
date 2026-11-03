@@ -97,7 +97,7 @@ test('Contact shows Hawassa location and Yzak Software developer credit', () => 
 });
 
 test('Contact social links use icon-only buttons with accessible platform names', () => {
-  const socialBlock = bundle.slice(bundle.indexOf('children:"CONNECT ON SOCIAL"'), bundle.indexOf('children:"ADMIN PORTAL"'));
+  const socialBlock = bundle.slice(bundle.indexOf('children:"CONNECT ON SOCIAL"'), bundle.indexOf('children:"CONTENT EDITOR"'));
   for (const platform of ['YouTube', 'Instagram', 'TikTok', 'Facebook']) {
     assert.ok(socialBlock.includes('"aria-label":"' + platform + '"'));
     assert.ok(socialBlock.includes('"title":"' + platform + '"'));
