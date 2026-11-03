@@ -65,7 +65,7 @@ test('the expanded homepage archive and lightbox use the same project fallback',
 });
 
 test('the offline shell caches the project data snapshot', () => {
-  assert.ok(serviceWorker.includes('yehulu-digital-shell-v14'));
+  assert.ok(serviceWorker.includes('yehulu-digital-shell-v15'));
   assert.ok(serviceWorker.includes("'/projects-fallback.json'"));
-  assert.ok(html.includes("register('/sw.js?v=14')"));
+  assert.ok(html.includes("register('/sw.js?v=15')"));
 });

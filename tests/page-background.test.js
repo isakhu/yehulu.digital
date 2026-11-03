@@ -22,6 +22,6 @@ test('offline page uses the same rectangular grid background', () => {
 });
 
 test('service worker cache is refreshed when the site background changes', () => {
-  assert.match(indexHtml, /register\('\/sw\.js\?v=14'\)/);
-  assert.match(serviceWorker, /CACHE_NAME = 'yehulu-digital-shell-v14'/);
+  assert.match(indexHtml, /register\('\/sw\.js\?v=15'\)/);
+  assert.match(serviceWorker, /CACHE_NAME = 'yehulu-digital-shell-v15'/);
 });

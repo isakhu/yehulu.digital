@@ -16,6 +16,9 @@ test('editor routes render without a login or session check', () => {
   assert.ok(!bundle.includes('LOGGED IN AS'));
   assert.ok(!bundle.includes('name:"Contact Messages"'));
   assert.ok(!bundle.includes('name:"Account & Team"'));
+  assert.ok(!bundle.includes('children:"ADMIN SIGN IN"'));
+  assert.ok(!bundle.includes('to:"/admin/login"'));
+  assert.ok(!bundle.includes('LOGIN TO ADMIN TO ADD WORK'));
 });
 
 test('dashboard home contains only public content-management links', () => {
