@@ -2012,7 +2012,7 @@
           filterBar.appendChild(button);
         });
 
-        // Industry -> sub-industry -> company filters for the full client portfolio.
+        // Projects -> industry -> organization (for example: Projects -> Hotel -> Rori Hotel).
         var taxonomyWrap = document.createElement('div');
         taxonomyWrap.className = 'w-full flex flex-wrap gap-2 mt-3';
         taxonomyWrap.id = 'archive-taxonomy-filters';
@@ -2033,29 +2033,52 @@
           return select;
         }
         var industrySelect = makeTaxonomySelect('archive-industry-filter', 'ALL INDUSTRIES', Array.from(new Set(items.map(function(it){return it.industry || 'Other Industries';}))).sort());
-        var subIndustrySelect = makeTaxonomySelect('archive-subindustry-filter', 'ALL SUB-INDUSTRIES', Array.from(new Set(items.map(function(it){return it.subIndustry || 'General Commercial Design';}))).sort());
-        var companySelect = makeTaxonomySelect('archive-company-filter', 'ALL COMPANIES', Array.from(new Set(items.map(function(it){return it.company || it.client || 'Unspecified Client';}))).sort());
-        taxonomyWrap.appendChild(industrySelect);
-        taxonomyWrap.appendChild(subIndustrySelect);
-        taxonomyWrap.appendChild(companySelect);
-        filterBar.appendChild(taxonomyWrap);
-        [industrySelect, subIndustrySelect, companySelect].forEach(function(select) {
-          select.addEventListener('change', function() {
-            var cards = document.querySelectorAll('#archive-items-grid .archive-card');
-            var loadMoreWrap = document.getElementById('archive-load-more-wrap');
-            if (loadMoreWrap) loadMoreWrap.style.display = 'none';
-            cards.forEach(function(card) {
-              var matches = (!industrySelect.value || card.dataset.industry === industrySelect.value) &&
-                (!subIndustrySelect.value || card.dataset.subindustry === subIndustrySelect.value) &&
-                (!companySelect.value || card.dataset.company === companySelect.value);
-              if (matches) { card.style.display = 'flex'; card.removeAttribute('data-overflow'); }
-              else card.style.display = 'none';
-            });
-            document.querySelectorAll('.archive-cat-btn').forEach(function(btn) {
-              btn.classList.remove('bg-[#B6FF00]','text-black','border-[#B6FF00]');
-            });
+        var organizationSelect = makeTaxonomySelect('archive-organization-filter', 'ALL ORGANIZATIONS', []);
+        function refreshOrganizationOptions() {
+          var selectedIndustry = industrySelect.value;
+          var selectedOrganization = organizationSelect.value;
+          var organizations = Array.from(new Set(items.filter(function(it) {
+            return !selectedIndustry || it.industry === selectedIndustry;
+          }).map(function(it) {
+            return it.company || it.client || 'Unspecified Organization';
+          }))).sort();
+          organizationSelect.innerHTML = '';
+          var first = document.createElement('option');
+          first.value = '';
+          first.textContent = 'ALL ORGANIZATIONS';
+          organizationSelect.appendChild(first);
+          organizations.forEach(function(value) {
+            var option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            organizationSelect.appendChild(option);
           });
+          organizationSelect.value = organizations.includes(selectedOrganization) ? selectedOrganization : '';
+        }
+        taxonomyWrap.appendChild(industrySelect);
+        taxonomyWrap.appendChild(organizationSelect);
+        filterBar.appendChild(taxonomyWrap);
+        function applyTaxonomyFilters() {
+          var cards = document.querySelectorAll('#archive-items-grid .archive-card');
+          var loadMoreWrap = document.getElementById('archive-load-more-wrap');
+          if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+          cards.forEach(function(card) {
+            var matches = (!industrySelect.value || card.dataset.industry === industrySelect.value) &&
+              (!organizationSelect.value || card.dataset.company === organizationSelect.value);
+            if (matches) { card.style.display = 'flex'; card.removeAttribute('data-overflow'); }
+            else card.style.display = 'none';
+          });
+          document.querySelectorAll('.archive-cat-btn').forEach(function(btn) {
+            btn.classList.remove('bg-[#B6FF00]','text-black','border-[#B6FF00]');
+          });
+        }
+        industrySelect.addEventListener('change', function() {
+          organizationSelect.value = '';
+          refreshOrganizationOptions();
+          applyTaxonomyFilters();
         });
+        organizationSelect.addEventListener('change', applyTaxonomyFilters);
+        refreshOrganizationOptions();
 
         var archiveLink = document.createElement('a');
         archiveLink.href = '/gallery';
@@ -2118,7 +2141,7 @@
           var taxonomyMeta = document.createElement('p');
           taxonomyMeta.className = 'text-[9px] leading-relaxed uppercase tracking-wider mt-2';
           taxonomyMeta.style.color = 'var(--text-muted)';
-          taxonomyMeta.textContent = String(item.industry || 'Other Industries') + ' / ' + String(item.subIndustry || 'General Commercial Design');
+          taxonomyMeta.textContent = String(item.industry || 'Other Industries') + ' / ' + String(item.company || item.client || 'Unspecified Organization');
           cardBody.appendChild(taxonomyMeta);
 
           var footer = document.createElement('div');
