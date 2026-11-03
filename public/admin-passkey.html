@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050505">
+  <title>Admin Access — Yehulu Digital</title>
+  <style>
+    :root{color-scheme:dark;--lime:#b6ff00;--bg:#050505;--panel:#0c0c0c;--muted:#929292}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#18220a 0%,transparent 47%),var(--bg);color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;padding:24px}
+    .shell{width:min(100%,470px);border:1px solid #ffffff18;background:linear-gradient(145deg,#111 0%,#080808 66%);padding:clamp(28px,6vw,48px);box-shadow:0 32px 100px #000b}
+    .brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:38px}
+    .mark{width:38px;height:38px;border:1px solid var(--lime);display:grid;place-items:center;color:var(--lime);font-size:16px;font-weight:950;letter-spacing:-2px}
+    .brand-name{font-weight:900;letter-spacing:.18em;font-size:12px;text-transform:uppercase}
+    .eyebrow{color:var(--lime);font-size:10px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;text-align:center}
+    h1{text-align:center;font-size:clamp(26px,7vw,34px);line-height:1.08;letter-spacing:-.045em;margin:12px 0}
+    .intro{text-align:center;color:#a6a6a6;font-size:13px;line-height:1.7;margin:0 auto 34px;max-width:320px}
+    .divider{height:1px;background:#ffffff13;margin:28px 0}
+    .status{min-height:48px;padding:14px 16px;border:1px solid #ffffff17;background:#ffffff06;color:#c8c8c8;font-size:12px;line-height:1.55;text-align:center}
+    .status.error{border-color:#713333;color:#ffaaaa;background:#2b0d0d66}
+    .status.success{border-color:#466400;color:var(--lime);background:#b6ff0010}
+    .swipe-wrap{margin-top:24px}
+    .swipe-label{font-size:10px;font-weight:850;letter-spacing:.2em;text-transform:uppercase;color:#aaa;text-align:center;margin-bottom:12px}
+    .swipe-track{position:relative;height:64px;border:1px solid #ffffff25;background:#111;overflow:hidden;touch-action:pan-y;user-select:none}
+    .swipe-fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#b6ff0020,#b6ff0040);pointer-events:none}
+    .swipe-text{position:absolute;inset:0;display:grid;place-items:center;color:#ddd;font-size:10px;font-weight:900;letter-spacing:.19em;text-transform:uppercase;pointer-events:none}
+    .swipe-thumb{position:absolute;left:5px;top:5px;width:52px;height:52px;border:1px solid var(--lime);background:var(--lime);color:#090909;display:grid;place-items:center;cursor:grab;touch-action:none;z-index:2}
+    .swipe-thumb:active{cursor:grabbing}
+    .swipe-thumb svg{width:20px;height:20px}
+    .swipe-track[aria-disabled="true"]{opacity:.5}
+    .action{width:100%;min-height:54px;border:0;background:var(--lime);color:#050505;font-size:11px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;margin-top:20px;transition:background .18s,transform .18s}
+    .action:hover{background:#fff;transform:translateY(-1px)}
+    .action:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .device-hint{text-align:center;color:#777;font-size:11px;line-height:1.65;margin:16px auto 0;max-width:330px}
+    .footer{margin-top:34px;text-align:center;color:#606060;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    .back{display:block;margin-top:20px;text-align:center;color:#777;font-size:10px;font-weight:800;letter-spacing:.14em;text-decoration:none;text-transform:uppercase}
+    .back:hover{color:var(--lime)}
+    .hidden{display:none!important}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand" aria-label="Yehulu Digital">
+      <div class="mark">Y.</div>
+      <div class="brand-name">Yehulu Digital</div>
+    </div>
+    <div class="eyebrow">Private workspace</div>
+    <h1 id="heading">Welcome back.</h1>
+    <p class="intro" id="intro">Use your verified device to unlock the Yehulu Digital admin workspace. No username or password needed.</p>
+    <div id="status" class="status" role="status" aria-live="polite">Checking secure device access…</div>
+
+    <section id="loginPanel" class="swipe-wrap hidden">
+      <div class="swipe-label">Swipe to verify your identity</div>
+      <div class="swipe-track" id="swipeTrack" aria-label="Swipe to sign in">
+        <div class="swipe-fill" id="swipeFill"></div>
+        <div class="swipe-text" id="swipeText">Slide to unlock</div>
+        <div class="swipe-thumb" id="swipeThumb" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Swipe to unlock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <p class="device-hint">Your device may ask for fingerprint, Face ID, Windows Hello, or your screen-lock PIN.</p>
+    </section>
+
+    <section id="setupPanel" class="hidden">
+      <button id="setupButton" class="action" type="button">Verify and register this device</button>
+      <p class="device-hint">This is a one-time setup. Your browser will ask you to verify yourself and save a passkey on this device.</p>
+    </section>
+
+    <a class="back" href="/">← Return to public website</a>
+    <div class="footer">Yehulu Digital · Authorized administration</div>
+  </main>
+
+  <script>
+    (function () {
+      const statusBox = document.getElementById('status');
+      const heading = document.getElementById('heading');
+      const intro = document.getElementById('intro');
+      const loginPanel = document.getElementById('loginPanel');
+      const setupPanel = document.getElementById('setupPanel');
+      const setupButton = document.getElementById('setupButton');
+      const swipeTrack = document.getElementById('swipeTrack');
+      const swipeThumb = document.getElementById('swipeThumb');
+      const swipeFill = document.getElementById('swipeFill');
+      const swipeText = document.getElementById('swipeText');
+
+      let setupToken = '';
+      let registrationOptions = null;
+      let authenticationOptions = null;
+      let busy = false;
+      let dragging = false;
+      let startX = 0;
+      let startLeft = 5;
+      let maxLeft = 0;
+
+      const fragment = new URLSearchParams(location.hash.slice(1));
+      setupToken = fragment.get('setup') || '';
+      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+
+      function setStatus(message, type) {
+        statusBox.textContent = message;
+        statusBox.className = 'status' + (type ? ' ' + type : '');
+      }
+
+      function base64urlToBytes(value) {
+        const base64 = value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - value.length % 4) % 4);
+        const binary = atob(base64);
+        return Uint8Array.from(binary, ch => ch.charCodeAt(0));
+      }
+
+      function bytesToBase64url(value) {
+        const bytes = new Uint8Array(value);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+      }
+
+      function decodeCreationOptions(options) {
+        return {
+          ...options,
+          challenge: base64urlToBytes(options.challenge),
+          user: { ...options.user, id: base64urlToBytes(options.user.id) },
+          excludeCredentials: (options.excludeCredentials || []).map(item => ({ ...item, id: base64urlToBytes(item.id) }))
+        };
+      }
+
+      function decodeRequestOptions(options) {
+        return {
+          ...options,
+          challenge: base64urlToBytes(options.challenge),
+          allowCredentials: (options.allowCredentials || []).map(item => ({ ...item, id: base64urlToBytes(item.id) }))
+        };
+      }
+
+      function serializeCredential(credential) {
+        const response = credential.response;
+        const output = {
+          id: credential.id,
+          rawId: bytesToBase64url(credential.rawId),
+          type: credential.type,
+          authenticatorAttachment: credential.authenticatorAttachment || undefined,
+          clientExtensionResults: credential.getClientExtensionResults(),
+          response: {
+            clientDataJSON: bytesToBase64url(response.clientDataJSON)
+          }
+        };
+        if (response.attestationObject) {
+          output.response.attestationObject = bytesToBase64url(response.attestationObject);
+          output.response.transports = typeof response.getTransports === 'function' ? response.getTransports() : [];
+        } else {
+          output.response.authenticatorData = bytesToBase64url(response.authenticatorData);
+          output.response.signature = bytesToBase64url(response.signature);
+          output.response.userHandle = response.userHandle ? bytesToBase64url(response.userHandle) : null;
+        }
+        return output;
+      }
+
+      async function post(path, payload) {
+        const result = await fetch(path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          cache: 'no-store',
+          body: JSON.stringify(payload || {})
+        });
+        const data = await result.json().catch(() => ({}));
+        if (!result.ok) {
+          const error = new Error(data.error || 'The request could not be completed.');
+          error.status = result.status;
+          throw error;
+        }
+        return data;
+      }
+
+      function enterDashboard(data) {
+        if (!data || !data.token) throw new Error('The secure sign-in did not return an admin session.');
+        localStorage.setItem('admin_token', data.token);
+        location.replace('/admin');
+      }
+
+      async function loadOptions() {
+        if (setupToken) {
+          registrationOptions = await post('/api/auth/passkey/register/options', { setupToken });
+          heading.textContent = 'Secure this device.';
+          intro.textContent = 'Create your private Yehulu Digital admin passkey on this device. This setup link can only initialize the first admin device.';
+          setupPanel.classList.remove('hidden');
+          loginPanel.classList.add('hidden');
+          setStatus('One-time device setup is ready.', 'success');
+          return;
+        }
+
+        const statusResponse = await fetch('/api/auth/passkey/status', { cache: 'no-store' });
+        const statusData = await statusResponse.json().catch(() => ({}));
+        if (!statusResponse.ok) throw new Error(statusData.error || 'Secure admin access is unavailable.');
+
+        if (!statusData.configured) {
+          heading.textContent = 'Device setup required.';
+          intro.textContent = 'This admin workspace has not been linked to a verified device yet.';
+          setStatus('Open the one-time setup link provided by the site owner to register your device.', 'error');
+          return;
+        }
+
+        if (!window.PublicKeyCredential || !navigator.credentials) {
+          setStatus('This browser does not support passkeys. Open this page in a modern browser on your verified device.', 'error');
+          return;
+        }
+
+        authenticationOptions = await post('/api/auth/passkey/authenticate/options', {});
+        loginPanel.classList.remove('hidden');
+        setStatus('Secure device access is ready.', 'success');
+      }
+
+      async function registerDevice() {
+        if (busy || !registrationOptions) return;
+        busy = true;
+        setupButton.disabled = true;
+        setupButton.textContent = 'VERIFYING DEVICE…';
+        setStatus('Follow your device prompt to save the passkey.');
+        try {
+          const credential = await navigator.credentials.create({
+            publicKey: decodeCreationOptions(registrationOptions)
+          });
+          if (!credential) throw new Error('Device registration was cancelled.');
+          const result = await post('/api/auth/passkey/register/verify', {
+            credential: serializeCredential(credential),
+            setupToken
+          });
+          setStatus('Device verified. Opening your admin workspace…', 'success');
+          enterDashboard(result);
+        } catch (error) {
+          setStatus(error.name === 'NotAllowedError' ? 'Device verification was cancelled. Try again.' : error.message, 'error');
+          setupButton.disabled = false;
+          setupButton.textContent = 'Verify and register this device';
+          try {
+            registrationOptions = await post('/api/auth/passkey/register/options', { setupToken });
+          } catch (_) {}
+        } finally {
+          busy = false;
+        }
+      }
+
+      function resetSwipe() {
+        swipeThumb.style.left = '5px';
+        swipeFill.style.width = '0';
+        swipeThumb.setAttribute('aria-valuenow', '0');
+      }
+
+      async function authenticate() {
+        if (busy || !authenticationOptions) return;
+        busy = true;
+        swipeTrack.setAttribute('aria-disabled', 'true');
+        swipeText.textContent = 'Verifying device…';
+        try {
+          // The passkey prompt is invoked directly from the swipe release gesture.
+          const credential = await navigator.credentials.get({
+            publicKey: decodeRequestOptions(authenticationOptions)
+          });
+          if (!credential) throw new Error('Device verification was cancelled.');
+          const result = await post('/api/auth/passkey/authenticate/verify', {
+            credential: serializeCredential(credential)
+          });
+          setStatus('Identity verified. Opening your admin workspace…', 'success');
+          enterDashboard(result);
+        } catch (error) {
+          setStatus(error.name === 'NotAllowedError' ? 'Verification was cancelled or timed out. Swipe to try again.' : error.message, 'error');
+          try {
+            authenticationOptions = await post('/api/auth/passkey/authenticate/options', {});
+          } catch (_) {
+            authenticationOptions = null;
+          }
+          resetSwipe();
+          swipeText.textContent = 'Slide to unlock';
+        } finally {
+          busy = false;
+          swipeTrack.setAttribute('aria-disabled', 'false');
+        }
+      }
+
+      function setSwipePosition(clientX) {
+        const rect = swipeTrack.getBoundingClientRect();
+        maxLeft = rect.width - swipeThumb.offsetWidth - 10;
+        const next = Math.max(5, Math.min(maxLeft + 5, startLeft + clientX - startX));
+        const left = next - 5;
+        swipeThumb.style.left = next + 'px';
+        swipeFill.style.width = (next + swipeThumb.offsetWidth / 2) + 'px';
+        const percent = maxLeft > 0 ? Math.round((left / maxLeft) * 100) : 0;
+        swipeThumb.setAttribute('aria-valuenow', String(percent));
+        if (percent >= 94) swipeText.textContent = 'Release to verify';
+        else swipeText.textContent = 'Slide to unlock';
+      }
+
+      swipeThumb.addEventListener('pointerdown', event => {
+        if (busy) return;
+        dragging = true;
+        startX = event.clientX;
+        startLeft = parseFloat(swipeThumb.style.left || '5');
+        swipeThumb.setPointerCapture(event.pointerId);
+      });
+      swipeThumb.addEventListener('pointermove', event => {
+        if (dragging) setSwipePosition(event.clientX);
+      });
+      swipeThumb.addEventListener('pointerup', () => {
+        if (!dragging) return;
+        dragging = false;
+        const value = Number(swipeThumb.getAttribute('aria-valuenow') || 0);
+        if (value >= 94) {
+          authenticate();
+        } else {
+          resetSwipe();
+        }
+      });
+      swipeThumb.addEventListener('pointercancel', () => {
+        dragging = false;
+        resetSwipe();
+      });
+      swipeThumb.addEventListener('keydown', event => {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          const current = Number(swipeThumb.getAttribute('aria-valuenow') || 0);
+          const next = Math.min(100, current + 12);
+          const rect = swipeTrack.getBoundingClientRect();
+          maxLeft = rect.width - swipeThumb.offsetWidth - 10;
+          const left = 5 + (maxLeft * next / 100);
+          swipeThumb.style.left = left + 'px';
+          swipeFill.style.width = (left + swipeThumb.offsetWidth / 2) + 'px';
+          swipeThumb.setAttribute('aria-valuenow', String(next));
+          swipeText.textContent = next >= 94 ? 'Press Enter to verify' : 'Slide to unlock';
+        } else if (event.key === 'Enter' && Number(swipeThumb.getAttribute('aria-valuenow') || 0) >= 94) {
+          authenticate();
+        } else if (event.key === 'Home') {
+          resetSwipe();
+        }
+      });
+
+      setupButton.addEventListener('click', registerDevice);
+
+      if (!window.isSecureContext) {
+        setStatus('Passkeys require a secure HTTPS connection. Open the official website using HTTPS.', 'error');
+        return;
+      }
+
+      loadOptions().catch(error => setStatus(error.message, 'error'));
+    })();
+  </script>
+</body>
+</html>
