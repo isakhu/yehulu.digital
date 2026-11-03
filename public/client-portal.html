@@ -297,7 +297,7 @@
           var organizations=(item.organizations||[]).map(function(org){
             var sub=(item.subIndustries||[]).find(function(s){return s.id===org.subIndustryId;});
             var social=(org.socialLinks||[]).map(function(link){return '<a href="'+escapeHTML(link.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(link.platform)+' ↗</a>';}).join('');
-            return '<article class="record"><div class="eyebrow">'+escapeHTML(item.name)+'</div><h3 style="margin-top:8px">'+escapeHTML(org.name)+'</h3><p>'+escapeHTML(org.description||'')+'</p>'+(sub?'<span class="tag">'+escapeHTML(sub.name)+'</span>':'')+(org.website?'<p style="margin-top:10px"><a class="muted" href="'+escapeHTML(org.website)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(org.website)+'</a></p>':'')+'<div class="social-list">'+(social||'<span class="help">No social profiles added.</span>')+'</div><div class="record-actions"><button class="btn small edit-org" type="button" data-industry="'+escapeHTML(item.id)+'" data-org="'+escapeHTML(org.id)+'">Edit organization</button></div></article>';
+            return '<article class="record"><div class="eyebrow">'+escapeHTML(item.name)+'</div><h3 style="margin-top:8px">'+escapeHTML(org.name)+'</h3><p>'+escapeHTML(org.description||'')+'</p>'+(sub?'<span class="tag">'+escapeHTML(sub.name)+'</span>':'')+(org.website?'<p style="margin-top:10px"><a class="muted" href="'+escapeHTML(org.website)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(org.website)+'</a></p>':'')+'<div class="social-list">'+(social||'<span class="help">No social profiles added.</span>')+'</div><div class="record-actions"><button class="btn small edit-org" type="button" data-industry="'+escapeHTML(item.id)+'" data-org="'+escapeHTML(org.id)+'">Edit organization</button><button class="btn small danger delete-org" type="button" data-industry="'+escapeHTML(item.id)+'" data-org="'+escapeHTML(org.id)+'">Remove</button></div></article>';
           }).join('');
           return organizations?'<div class="stack"><div class="panel-head" style="margin:4px 0 0"><div><h2>'+escapeHTML(item.name)+'</h2><p>'+(item.organizations||[]).length+' organizations</p></div></div><div class="card-grid">'+organizations+'</div></div>':'';
         }).join('');
@@ -320,9 +320,15 @@
           }catch(error){notify(error.message);}
         });
         document.querySelectorAll('.edit-org').forEach(function(button){button.addEventListener('click',function(){editOrganization(button.dataset.industry,button.dataset.org);});});
+        document.querySelectorAll('.delete-org').forEach(function(button){button.addEventListener('click',async function(){
+          if(!confirm('Remove this organization and its social profile links? Portfolio images already assigned to it will remain in the gallery.'))return;
+          try{await api('/api/industries/'+encodeURIComponent(button.dataset.industry)+'/organizations/'+encodeURIComponent(button.dataset.org),{method:'DELETE'});await refreshData();renderOrganizations();notify('Organization removed.');}
+          catch(error){notify(error.message);}
+        });});
         populateOrgSubIndustries(industries[0].id,'');
         if(editingOrganization){
           $('orgIndustry').value=editingOrganization.industryId;
+          $('orgIndustry').disabled=true;
           var org=editingOrganization.org;
           populateOrgSubIndustries(editingOrganization.industryId,org.subIndustryId||'');
           $('orgForm').elements.name.value=org.name||'';
