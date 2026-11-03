@@ -29,6 +29,64 @@ let cachedGallery = null;
 let cachedVideos = null;
 let cachedCourses = null;
 
+const PORTFOLIO_ORGANIZATIONS = {
+  "Rori Hotel": { industryId:"industry-hotel", industry:"Hotel", organizationId:"org-rori-hotel" },
+  "Panacea Hospital": { industryId:"industry-hospital", industry:"Hospital", organizationId:"org-panacea-hospital", subIndustryId:"sub-hospitals-medical-centers", subIndustry:"Hospitals & Medical Centers" },
+  "Social Growth Partner": { industryId:"industry-advertising-marketing", industry:"Advertising & Marketing", organizationId:"org-social-growth-partner", subIndustryId:"sub-digital-marketing-social", subIndustry:"Digital Marketing & Social Media Campaigns" },
+  "Digital Campaign Partner": { industryId:"industry-advertising-marketing", industry:"Advertising & Marketing", organizationId:"org-digital-campaign-partner", subIndustryId:"sub-digital-marketing-social", subIndustry:"Digital Marketing & Social Media Campaigns" },
+  "Brand Activation Partner": { industryId:"industry-advertising-marketing", industry:"Advertising & Marketing", organizationId:"org-brand-activation-partner", subIndustryId:"sub-outdoor-advertising-print", subIndustry:"Outdoor Advertising & Large-Format Printing" },
+  "Commercial Client": { industryId:"industry-advertising-marketing", industry:"Advertising & Marketing", organizationId:"org-commercial-client", subIndustryId:"sub-outdoor-advertising-print", subIndustry:"Outdoor Advertising & Large-Format Printing" },
+  "Outdoor Commercial Advertising": { industryId:"industry-advertising-marketing", industry:"Advertising & Marketing", organizationId:"org-outdoor-commercial-advertising", subIndustryId:"sub-outdoor-advertising-print", subIndustry:"Outdoor Advertising & Large-Format Printing" },
+  "Retail Brand Partner": { industryId:"industry-retail-ecommerce", industry:"Retail & E-commerce", organizationId:"org-retail-brand-partner", subIndustryId:"sub-retail-storefront-advertising", subIndustry:"Retail Stores & Storefront Advertising" },
+  "Corporate Client": { industryId:"industry-corporate-professional", industry:"Corporate & Professional Services", organizationId:"org-corporate-client", subIndustryId:"sub-corporate-branding-identity", subIndustry:"Corporate Branding & Visual Identity" }
+};
+function normalizePortfolioProject(project) {
+  if (!project || typeof project !== 'object') return project;
+  const identity = [project.client, project.title, project.company, project.description].join(' ').toLowerCase();
+  let organization = '';
+  if (identity.includes('rori hotel')) organization = 'Rori Hotel';
+  else if (identity.includes('panacea hospital')) organization = 'Panacea Hospital';
+  else organization = Object.keys(PORTFOLIO_ORGANIZATIONS).find(name =>
+    String(project.client || '').toLowerCase() === name.toLowerCase() ||
+    String(project.company || '').toLowerCase() === name.toLowerCase()
+  ) || '';
+  const data = PORTFOLIO_ORGANIZATIONS[organization];
+  if (!data) return project;
+  let subIndustry = data.subIndustry || '';
+  let subIndustryId = data.subIndustryId || '';
+  if (organization === 'Rori Hotel') {
+    const content = [project.title, project.description, project.slug].join(' ').toLowerCase();
+    let key = 'marketing';
+    if (/brand identity|visual identity|branding/.test(content)) key = 'branding';
+    else if (/melkam|holiday|workers day|celebration|event/.test(content)) key = 'events';
+    else if (/pizza|dining|lounge|bamboo|restaurant|culinary/.test(content)) key = 'dining';
+    else if (/jacuzzi|suite|staycation|getaway|guest experience|booking|guest room|accommodation|room/.test(content)) key = 'accommodation';
+    const subs = {
+      accommodation:['sub-hotels-guest-rooms','Hotels, Guest Rooms & Accommodation'],
+      dining:['sub-hotel-restaurants-dining','Hotel Restaurants, Dining & Lounge'],
+      events:['sub-hotel-events-culture','Hotel Events, Culture & Guest Experiences'],
+      branding:['sub-hotel-brand-identity','Hotel Branding & Identity'],
+      marketing:['sub-hotel-marketing-social','Hotel Marketing & Social Media']
+    };
+    subIndustryId = subs[key][0];
+    subIndustry = subs[key][1];
+  }
+  return {
+    ...project,
+    client:project.client || organization,
+    company:organization,
+    industry:data.industry,
+    subIndustry,
+    industryId:data.industryId,
+    subIndustryId,
+    organizationId:data.organizationId
+  };
+}
+function normalizePortfolioGallery(items) {
+  return Array.isArray(items) ? items.map(normalizePortfolioProject) : [];
+}
+
+
 function sendJSON(res, status, body) {
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
@@ -128,7 +186,7 @@ async function getGalleryData() {
         if (fetchRes.ok) {
           const remoteData = await fetchRes.json();
           if (Array.isArray(remoteData) && remoteData.length) {
-            cachedGallery = remoteData;
+            cachedGallery = normalizePortfolioGallery(remoteData);
             return cachedGallery;
           }
         }
@@ -139,7 +197,7 @@ async function getGalleryData() {
   // Fallback to local data/gallery.json bundled in repo
   const file = path.join(DATA_DIR, 'gallery.json');
   if (fs.existsSync(file)) {
-    try { cachedGallery = JSON.parse(fs.readFileSync(file, 'utf8')); return cachedGallery; } catch (_) {}
+    try { cachedGallery = normalizePortfolioGallery(JSON.parse(fs.readFileSync(file, 'utf8'))); return cachedGallery; } catch (_) {}
   }
   return [];
 }
@@ -174,6 +232,7 @@ async function getVideosData() {
 }
 
 async function persistGallery(gallery) {
+  gallery = normalizePortfolioGallery(gallery);
   const serialized = JSON.stringify(gallery);
   let persisted = false;
 
