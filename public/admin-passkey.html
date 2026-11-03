@@ -107,6 +107,17 @@
             throw new Error(result.error || 'Sign-in failed. Check your password and try again.');
           }
 
+          // Verify the session before navigating so API auth issues are shown on this page.
+          const sessionCheck = await fetch('/api/auth/me', {
+            headers: { Authorization: 'Bearer ' + result.token },
+            credentials: 'same-origin',
+            cache: 'no-store'
+          });
+          if (!sessionCheck.ok) {
+            const sessionError = await sessionCheck.json().catch(() => ({}));
+            throw new Error(sessionError.error || 'The password was accepted, but the admin session could not be verified. Please try again.');
+          }
+
           localStorage.setItem('admin_token', result.token);
           setStatus('Access granted. Opening your workspace…', 'success');
           location.replace('/admin');
