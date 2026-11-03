@@ -1100,13 +1100,13 @@
       /* Project cards use white typography over photography. Keep a dedicated
          bottom gradient independent of the page theme so bright images never
          wash out titles, descriptions, or category labels. */
-      #work .aspect-\\[4\\/5\\] {
+      #work .aspect-\[4\/5\] {
         position: relative !important;
         isolation: isolate;
         overflow: hidden;
         background: #080808;
       }
-      #work .aspect-\\[4\\/5\\]::after {
+      #work .aspect-\[4\/5\]::after {
         content: "";
         position: absolute;
         inset: 28% 0 0;
@@ -1120,28 +1120,28 @@
           rgba(0, 0, 0, .88) 100%
         );
       }
-      #work .aspect-\\[4\\/5\\] > img,
-      #work .aspect-\\[4\\/5\\] img {
+      #work .aspect-\[4\/5\] > img,
+      #work .aspect-\[4\/5\] img {
         position: relative;
         z-index: 0;
       }
-      #work .aspect-\\[4\\/5\\] :is(h1, h2, h3, h4, p, span, small, a) {
+      #work .aspect-\[4\/5\] :is(h1, h2, h3, h4, p, span, small, a) {
         color: #fff !important;
         text-shadow: 0 1px 3px rgba(0,0,0,.9), 0 2px 12px rgba(0,0,0,.72);
       }
-      #work .aspect-\\[4\\/5\\] :is(h1, h2, h3, h4, p, span, small, a) {
+      #work .aspect-\[4\/5\] :is(h1, h2, h3, h4, p, span, small, a) {
         position: relative;
         z-index: 2;
       }
-      #work .aspect-\\[4\\/5\\] :is(.text-\\[\\#B6FF00\\], .text-\\[\\#b6ff00\\]) {
+      #work .aspect-\[4\/5\] :is(.text-\[\#B6FF00\], .text-\[\#b6ff00\]) {
         color: #B6FF00 !important;
       }
-      #work .aspect-\\[4\\/5\\] :is(button, [role="button"]) {
+      #work .aspect-\[4\/5\] :is(button, [role="button"]) {
         position: relative;
         z-index: 3;
       }
-      [data-theme="light"] #work .aspect-\\[4\\/5\\]::after,
-      [data-theme="dark"] #work .aspect-\\[4\\/5\\]::after {
+      [data-theme="light"] #work .aspect-\[4\/5\]::after,
+      [data-theme="dark"] #work .aspect-\[4\/5\]::after {
         /* Deliberately identical in both themes: image-overlay contrast is
            a component property, not a page-surface theme color. */
         opacity: 1;
