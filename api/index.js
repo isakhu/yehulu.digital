@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getAuthenticatedUser } = require('../lib/accounts');
 const { handleAccountApi } = require('../lib/account-api');
+const { handlePasskeyApi } = require('../lib/passkey-api');
 const { handleIndustryApi } = require('../lib/industry-api');
 const { readRequestBuffer } = require('../lib/request-body');
 const { readJSON: readStoredJSON, writeJSON: writeStoredJSON } = require('../lib/data-store');
@@ -302,6 +303,12 @@ async function handleApiRequest(req, res) {
   if (accountResponse) {
     Object.entries(accountResponse.headers || {}).forEach(([name, value]) => res.setHeader(name, value));
     return sendJSON(res, accountResponse.status, accountResponse.body);
+  }
+
+  const passkeyResponse = await handlePasskeyApi(pathname, method, req);
+  if (passkeyResponse) {
+    Object.entries(passkeyResponse.headers || {}).forEach(([name, value]) => res.setHeader(name, value));
+    return sendJSON(res, passkeyResponse.status, passkeyResponse.body);
   }
 
   const industryResponse = await handleIndustryApi(pathname, method, req);
