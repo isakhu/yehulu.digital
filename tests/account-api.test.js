@@ -49,3 +49,54 @@ test('changing the current administrator password revokes existing sessions', as
     else process.env.SESSION_SECRET = originalSecret;
   }
 });
+
+
+test('admin login does not require a CMS Blob store on Vercel', async () => {
+  const original = {
+    vercel: process.env.VERCEL,
+    storeId: process.env.CMS_BLOB_STORE_ID,
+    cmsToken: process.env.CMS_BLOB_READ_WRITE_TOKEN,
+    username: process.env.ADMIN_USERNAME,
+    secret: process.env.SESSION_SECRET
+  };
+
+  process.env.VERCEL = '1';
+  delete process.env.CMS_BLOB_STORE_ID;
+  delete process.env.CMS_BLOB_READ_WRITE_TOKEN;
+  process.env.ADMIN_USERNAME = 'owner';
+  process.env.SESSION_SECRET = 'test-only-login-secret-with-at-least-32-characters';
+
+  const user = {
+    id: 'admin-login-test',
+    username: 'owner',
+    name: 'Test Owner',
+    email: 'owner@example.com',
+    passwordHash: hashPassword('test-only-password'),
+    role: 'ADMIN',
+    tokenVersion: 0
+  };
+  users = [user];
+
+  try {
+    const result = await handleAccountApi('/api/auth/login', 'POST', {
+      headers: {},
+      body: { username: 'owner', password: 'test-only-password' }
+    }, null);
+
+    assert.equal(result.status, 200);
+    assert.equal(typeof result.body.token, 'string');
+    assert.equal(verifySessionToken(result.body.token).sub, user.id);
+  } finally {
+    if (original.vercel === undefined) delete process.env.VERCEL;
+    else process.env.VERCEL = original.vercel;
+    if (original.storeId === undefined) delete process.env.CMS_BLOB_STORE_ID;
+    else process.env.CMS_BLOB_STORE_ID = original.storeId;
+    if (original.cmsToken === undefined) delete process.env.CMS_BLOB_READ_WRITE_TOKEN;
+    else process.env.CMS_BLOB_READ_WRITE_TOKEN = original.cmsToken;
+    if (original.username === undefined) delete process.env.ADMIN_USERNAME;
+    else process.env.ADMIN_USERNAME = original.username;
+    if (original.secret === undefined) delete process.env.SESSION_SECRET;
+    else process.env.SESSION_SECRET = original.secret;
+    users = [];
+  }
+});

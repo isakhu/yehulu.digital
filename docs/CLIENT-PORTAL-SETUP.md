@@ -17,7 +17,7 @@ In the Vercel project **yehulu-digital**:
 3. Use the `CMS_BLOB` environment-variable prefix when connecting the private store. Vercel creates `CMS_BLOB_STORE_ID` for the OIDC connection. The application uses this store ID with Vercel's short-lived OIDC authentication; a long-lived `CMS_BLOB_READ_WRITE_TOKEN` is not required.
 4. The application also supports a manually configured `CMS_BLOB_READ_WRITE_TOKEN` for deployments that use a static read/write token instead of OIDC.
 
-The private store holds administrator records, industries, sub-industries, organizations, and social profile links. Never use the public media-store credentials for this private data.
+The private store persists administrator records, industries, sub-industries, organizations, and social profile links. It is used for dashboard data changes, not for accepting the admin login. The configured owner can still sign in when CMS storage is unavailable; saving CMS changes requires the private store to be connected. Never use the public media-store credentials for this private data.
 
 ## 2. Configure the initial login
 
