@@ -216,7 +216,7 @@
       });
       function selectTab(tab){
         currentTab=tab;
-        editingOrganization=null;
+        if(tab!=='organizations')editingOrganization=null;
         document.querySelectorAll('.nav-btn').forEach(function(button){button.classList.toggle('active',button.dataset.tab===tab);});
         var titles={overview:'Overview',industries:'Industry structure',organizations:'Organizations & social links',portfolio:'Portfolio image manager'};
         $('pageTitle').textContent=titles[tab]||'Workspace';
