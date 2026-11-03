@@ -26,6 +26,12 @@ test('public authentication endpoints are never mistaken for protected admin rou
   assert.equal(isPublicApiRequest('/api/auth/me', 'GET'), true);
   assert.equal(isPublicApiRequest('/api/auth/me', 'HEAD'), true);
   assert.equal(isPublicApiRequest('/api/auth/logout', 'POST'), false);
+  assert.equal(isPublicApiRequest('/api/auth/passkey/status', 'GET'), true);
+  assert.equal(isPublicApiRequest('/api/auth/passkey/register/options', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/auth/passkey/register/verify', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/auth/passkey/authenticate/options', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/auth/passkey/authenticate/verify', 'POST'), true);
+  assert.equal(isPublicApiRequest('/api/auth/passkey/register/options', 'GET'), false);
 });
 
 test('admin mutation endpoints remain protected', () => {
