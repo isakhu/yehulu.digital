@@ -6,6 +6,7 @@ const { handleIndustryApi } = require('../lib/industry-api');
 const { readRequestBuffer } = require('../lib/request-body');
 const { readJSON: readStoredJSON, writeJSON: writeStoredJSON } = require('../lib/data-store');
 const { buildCourseRecord } = require('../lib/courses');
+const { isPublicApiRequest, resolveApiPath } = require('../lib/api-routing');
 
 let putBlob = null;
 let getBlob = null;
@@ -259,23 +260,6 @@ async function persistVideos(videos) {
   cachedVideos = videos;
 }
 
-function isPublicApiRequest(pathname, method) {
-  if (pathname === '/api/auth/login' && method === 'POST') return true;
-  if (pathname === '/api/auth/me' && (method === 'GET' || method === 'HEAD')) return true;
-  if (pathname === '/api/messages' && method === 'POST') return true;
-  if (method !== 'GET' && method !== 'HEAD') return false;
-
-  return pathname === '/api/gallery' ||
-    /^\/api\/gallery\/[^/]+$/.test(pathname) ||
-    pathname === '/api/videos' ||
-    /^\/api\/videos\/[^/]+$/.test(pathname) ||
-    pathname === '/api/contact-info' ||
-    pathname === '/api/estimator-config' ||
-    pathname === '/api/courses' ||
-    /^\/api\/courses\/[^/]+$/.test(pathname) ||
-    pathname === '/api/blob-proxy';
-}
-
 async function getCoursesData() {
   if (cachedCourses !== null) return cachedCourses;
   const data = await readStoredJSON('courses.json', []);
@@ -291,10 +275,7 @@ async function persistCourses(courses) {
 async function handleApiRequest(req, res) {
   const method = (req.method || 'GET').toUpperCase();
   const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const rewrittenPath = parsed.searchParams.get('__route');
-  const pathname = rewrittenPath && rewrittenPath.startsWith('/api/')
-    ? rewrittenPath
-    : parsed.pathname;
+  const pathname = resolveApiPath(req.url, req.headers.host);
 
   // Global CORS headers
   // Frontend and API are same-origin; cross-origin access is intentionally disabled.
