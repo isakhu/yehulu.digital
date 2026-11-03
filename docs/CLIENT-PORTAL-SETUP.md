@@ -51,3 +51,6 @@ The existing administrator account page at `/admin/account` supports changing th
 ## Local development
 
 For local development, add `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and `SESSION_SECRET` to your untracked `.env` file. Local development can persist CMS records in `data/`. Never commit `.env` or any Blob credentials.
+
+
+The private CMS connection can use Vercel OIDC when the store is connected with the `CMS_BLOB` environment-variable prefix. A new production deployment is required after changing administrator secrets.
