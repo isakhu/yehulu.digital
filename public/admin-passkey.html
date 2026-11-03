@@ -6,7 +6,7 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#050505">
-  <title>Admin Login — Yehulu Digital</title>
+  <title>Login — Yehulu Digital</title>
   <style>
     :root{color-scheme:dark;--lime:#b6ff00;--bg:#050505;--panel:#0c0c0c;--muted:#929292}
     *{box-sizing:border-box}
@@ -40,18 +40,18 @@
       <div class="mark">Y.</div>
       <div class="brand-name">Yehulu Digital</div>
     </div>
-    <div class="eyebrow">Owner workspace</div>
-    <h1>Welcome back.</h1>
-    <p class="intro">Enter your admin password to manage Yehulu Digital projects, images, videos, and links.</p>
+    <div class="eyebrow">YEHULU DIGITAL</div>
+    <h1>Login</h1>
+    <p class="intro">Enter your password to continue to the dashboard.</p>
 
     <form id="loginForm" autocomplete="on">
-      <label for="password">Admin password</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required autofocus>
-      <button id="submitButton" class="action" type="submit">Sign in</button>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" required autofocus>
+      <button id="submitButton" class="action" type="submit">Login</button>
     </form>
-    <div id="status" class="status" role="status" aria-live="polite">Enter your password to continue.</div>
+    <div id="status" class="status" role="status" aria-live="polite">Enter your password.</div>
     <a class="back" href="/">← Return to public website</a>
-    <div class="footer">Yehulu Digital · Private administration</div>
+    
   </main>
 
   <script>
@@ -72,10 +72,11 @@
         try {
           const response = await fetch('/api/auth/me', {
             headers: { Authorization: 'Bearer ' + token },
+            credentials: 'same-origin',
             cache: 'no-store'
           });
           if (response.ok) location.replace('/admin');
-          else localStorage.removeItem('admin_token');
+          else if (localStorage.getItem('admin_token') === token) localStorage.removeItem('admin_token');
         } catch (_) {
           // Keep the login form available when the network is temporarily unavailable.
         }
@@ -85,13 +86,13 @@
         event.preventDefault();
         const password = passwordInput.value;
         if (!password) {
-          setStatus('Enter your admin password.', 'error');
+          setStatus('Enter your password.', 'error');
           passwordInput.focus();
           return;
         }
 
         submitButton.disabled = true;
-        submitButton.textContent = 'Signing in…';
+        submitButton.textContent = 'Please wait…';
         setStatus('Checking password…');
 
         try {
@@ -126,7 +127,7 @@
           passwordInput.select();
         } finally {
           submitButton.disabled = false;
-          submitButton.textContent = 'Sign in';
+          submitButton.textContent = 'Login';
         }
       });
 
