@@ -12,12 +12,12 @@
     "displayOrder": 37,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotels, Guest Rooms & Accommodation",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotels-guest-rooms",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-14waru",
@@ -32,12 +32,12 @@
     "displayOrder": 36,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Restaurants, Dining & Lounge",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-fxzdfr",
@@ -52,12 +52,12 @@
     "displayOrder": 35,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotels, Guest Rooms & Accommodation",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotels-guest-rooms",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-jzidco",
@@ -72,12 +72,12 @@
     "displayOrder": 34,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Healthcare",
-    "subIndustry": "Hospitals & Medical Centers",
-    "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Hotel",
+    "subIndustry": "Hotel Events, Culture & Guest Experiences",
+    "company": "Rori Hotel",
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-events-culture",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-ug2yij",
@@ -92,12 +92,12 @@
     "displayOrder": 33,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
-    "subIndustry": "Hotel Marketing & Social Media",
+    "industry": "Hotel",
+    "subIndustry": "Hotel Events, Culture & Guest Experiences",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-events-culture",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-alxw34",
@@ -112,12 +112,12 @@
     "displayOrder": 32,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Restaurants, Dining & Lounge",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-5l0u77",
@@ -132,12 +132,12 @@
     "displayOrder": 31,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Healthcare",
-    "subIndustry": "Hospitals & Medical Centers",
-    "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Hotel",
+    "subIndustry": "Hotels, Guest Rooms & Accommodation",
+    "company": "Rori Hotel",
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotels-guest-rooms",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-ljdlfu",
@@ -152,12 +152,12 @@
     "displayOrder": 30,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotels, Guest Rooms & Accommodation",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotels-guest-rooms",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-gj61k4",
@@ -172,12 +172,12 @@
     "displayOrder": 29,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Restaurants, Dining & Lounge",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-tmq1vk",
@@ -195,9 +195,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Digital Marketing & Social Media Campaigns",
     "company": "Social Growth Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-digital-marketing-social",
+    "organizationId": "org-social-growth-partner"
   },
   {
     "id": "project-1793395188327-afikas",
@@ -213,11 +213,11 @@
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
     "industry": "Advertising & Marketing",
-    "subIndustry": "Outdoor Advertising & Large-Format Printing",
+    "subIndustry": "Digital Marketing & Social Media Campaigns",
     "company": "Social Growth Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-digital-marketing-social",
+    "organizationId": "org-social-growth-partner"
   },
   {
     "id": "project-1793395188327-jwmgwm",
@@ -235,9 +235,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Digital Marketing & Social Media Campaigns",
     "company": "Social Growth Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-digital-marketing-social",
+    "organizationId": "org-social-growth-partner"
   },
   {
     "id": "project-1793395188327-86jgh3",
@@ -255,9 +255,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Digital Marketing & Social Media Campaigns",
     "company": "Social Growth Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-digital-marketing-social",
+    "organizationId": "org-social-growth-partner"
   },
   {
     "id": "project-1793395188327-arh9ec",
@@ -272,12 +272,12 @@
     "displayOrder": 24,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Restaurants, Dining & Lounge",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793395188327-ufjulg",
@@ -295,9 +295,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Outdoor Advertising & Large-Format Printing",
     "company": "Brand Activation Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-outdoor-advertising-print",
+    "organizationId": "org-brand-activation-partner"
   },
   {
     "id": "project-1793395188327-mhb8ck",
@@ -315,9 +315,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Outdoor Advertising & Large-Format Printing",
     "company": "Brand Activation Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-outdoor-advertising-print",
+    "organizationId": "org-brand-activation-partner"
   },
   {
     "id": "project-1793395188327-qc2p4v",
@@ -335,9 +335,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Digital Marketing & Social Media Campaigns",
     "company": "Digital Campaign Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-digital-marketing-social",
+    "organizationId": "org-digital-campaign-partner"
   },
   {
     "id": "project-1793395188327-vv7qbi",
@@ -355,9 +355,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Outdoor Advertising & Large-Format Printing",
     "company": "Commercial Client",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-outdoor-advertising-print",
+    "organizationId": "org-commercial-client"
   },
   {
     "id": "project-1793395188327-tdevy4",
@@ -375,9 +375,9 @@
     "industry": "Retail & E-commerce",
     "subIndustry": "Retail Stores & Storefront Advertising",
     "company": "Retail Brand Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-retail-ecommerce",
+    "subIndustryId": "sub-retail-storefront-advertising",
+    "organizationId": "org-retail-brand-partner"
   },
   {
     "id": "project-1793395188327-7odvuh",
@@ -392,12 +392,12 @@
     "displayOrder": 18,
     "createdAt": "2026-10-30T21:19:48.327Z",
     "updatedAt": "2026-10-30T21:19:48.327Z",
-    "industry": "Retail & E-commerce",
-    "subIndustry": "Retail Stores & Storefront Advertising",
-    "company": "Retail Brand Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Advertising & Marketing",
+    "subIndustry": "Outdoor Advertising & Large-Format Printing",
+    "company": "Outdoor Commercial Advertising",
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-outdoor-advertising-print",
+    "organizationId": "org-outdoor-commercial-advertising"
   },
   {
     "id": "project-1793395188327-m6jgox",
@@ -415,9 +415,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Digital Marketing & Social Media Campaigns",
     "company": "Digital Campaign Partner",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-digital-marketing-social",
+    "organizationId": "org-digital-campaign-partner"
   },
   {
     "id": "project-1793395188327-kbii40",
@@ -435,9 +435,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Outdoor Advertising & Large-Format Printing",
     "company": "Outdoor Commercial Advertising",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-outdoor-advertising-print",
+    "organizationId": "org-outdoor-commercial-advertising"
   },
   {
     "id": "project-1793395188326-8c1puu",
@@ -455,9 +455,9 @@
     "industry": "Advertising & Marketing",
     "subIndustry": "Outdoor Advertising & Large-Format Printing",
     "company": "Outdoor Commercial Advertising",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-advertising-marketing",
+    "subIndustryId": "sub-outdoor-advertising-print",
+    "organizationId": "org-outdoor-commercial-advertising"
   },
   {
     "id": "project-1793395188326-imauxd",
@@ -475,9 +475,9 @@
     "industry": "Corporate & Professional Services",
     "subIndustry": "Corporate Branding & Visual Identity",
     "company": "Corporate Client",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-corporate-professional",
+    "subIndustryId": "sub-corporate-branding-identity",
+    "organizationId": "org-corporate-client"
   },
   {
     "id": "project-1793393131156-taufct",
@@ -492,12 +492,12 @@
     "createdAt": "2026-10-30T20:45:31.156Z",
     "updatedAt": "2026-10-30T20:45:31.156Z",
     "client": "Rori Hotel Hawassa",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotels, Guest Rooms & Accommodation",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotels-guest-rooms",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793393131156-ajpxro",
@@ -512,12 +512,12 @@
     "createdAt": "2026-10-30T20:45:31.156Z",
     "updatedAt": "2026-10-30T20:45:31.156Z",
     "client": "Rori Hotel Hawassa",
-    "industry": "Healthcare",
-    "subIndustry": "Hospitals & Medical Centers",
-    "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Hotel",
+    "subIndustry": "Hotel Events, Culture & Guest Experiences",
+    "company": "Rori Hotel",
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-events-culture",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793393131156-tamsqv",
@@ -532,12 +532,12 @@
     "createdAt": "2026-10-30T20:45:31.156Z",
     "updatedAt": "2026-10-30T20:45:31.156Z",
     "client": "Rori Hotel Hawassa",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Events, Culture & Guest Experiences",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-events-culture",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793393131156-06pocr",
@@ -552,12 +552,12 @@
     "createdAt": "2026-10-30T20:45:31.156Z",
     "updatedAt": "2026-10-30T20:45:31.156Z",
     "client": "Rori Hotel Hawassa",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Restaurants, Dining & Lounge",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "project-1793393131154-3s0jvo",
@@ -572,12 +572,12 @@
     "createdAt": "2026-10-30T20:45:31.155Z",
     "updatedAt": "2026-10-30T20:45:31.155Z",
     "client": "Rori Hotel Hawassa",
-    "industry": "Healthcare",
-    "subIndustry": "Hospitals & Medical Centers",
-    "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Hotel",
+    "subIndustry": "Hotel Restaurants, Dining & Lounge",
+    "company": "Rori Hotel",
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "rori-hotel-marketing",
@@ -592,12 +592,12 @@
     "displayOrder": 1,
     "createdAt": "2026-10-30T23:35:00.000Z",
     "updatedAt": "2026-10-30T23:35:00.000Z",
-    "industry": "Hospitality & Tourism",
-    "subIndustry": "Hotel Restaurants, Dining & Lounge",
+    "industry": "Hotel",
+    "subIndustry": "Hotel Branding & Identity",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-brand-identity",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "rori-hotel-suite",
@@ -612,12 +612,12 @@
     "displayOrder": 2,
     "createdAt": "2026-10-30T23:35:00.000Z",
     "updatedAt": "2026-10-30T23:35:00.000Z",
-    "industry": "Healthcare",
-    "subIndustry": "Hospitals & Medical Centers",
-    "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Hotel",
+    "subIndustry": "Hotels, Guest Rooms & Accommodation",
+    "company": "Rori Hotel",
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotels-guest-rooms",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "rori-hotel-lounge",
@@ -632,12 +632,12 @@
     "displayOrder": 3,
     "createdAt": "2026-10-30T23:35:00.000Z",
     "updatedAt": "2026-10-30T23:35:00.000Z",
-    "industry": "Healthcare",
-    "subIndustry": "Hospitals & Medical Centers",
-    "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industry": "Hotel",
+    "subIndustry": "Hotel Restaurants, Dining & Lounge",
+    "company": "Rori Hotel",
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "rori-hotel-workers-01",
@@ -652,12 +652,12 @@
     "displayOrder": 4,
     "createdAt": "2026-10-30T23:35:00.000Z",
     "updatedAt": "2026-10-30T23:35:00.000Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Events, Culture & Guest Experiences",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-events-culture",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "rori-hotel-workers-02",
@@ -672,12 +672,12 @@
     "displayOrder": 5,
     "createdAt": "2026-10-30T23:35:00.000Z",
     "updatedAt": "2026-10-30T23:35:00.000Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Events, Culture & Guest Experiences",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-events-culture",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "fc9d6079-79fc-44bb-8ee6-854e94d3f20c",
@@ -692,12 +692,12 @@
     "displayOrder": 6,
     "createdAt": "2026-09-03T12:42:45.314Z",
     "updatedAt": "2026-09-03T12:42:45.314Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Branding & Identity",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-brand-identity",
+    "organizationId": "org-rori-hotel"
   },
   {
     "id": "14331fea-4996-46fe-af6d-662b444019a2",
@@ -712,12 +712,12 @@
     "displayOrder": 7,
     "createdAt": "2026-09-03T12:35:47.924Z",
     "updatedAt": "2026-09-03T12:35:47.924Z",
-    "industry": "Healthcare",
+    "industry": "Hospital",
     "subIndustry": "Hospitals & Medical Centers",
     "company": "Panacea Hospital",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hospital",
+    "subIndustryId": "sub-hospitals-medical-centers",
+    "organizationId": "org-panacea-hospital"
   },
   {
     "id": "232f49b3-8348-4690-9a8d-baee8f28f6d2",
@@ -732,11 +732,11 @@
     "displayOrder": 8,
     "createdAt": "2026-09-03T12:23:56.543Z",
     "updatedAt": "2026-09-03T12:23:56.543Z",
-    "industry": "Hospitality & Tourism",
+    "industry": "Hotel",
     "subIndustry": "Hotel Restaurants, Dining & Lounge",
     "company": "Rori Hotel",
-    "industryId": "",
-    "subIndustryId": "",
-    "organizationId": ""
+    "industryId": "industry-hotel",
+    "subIndustryId": "sub-hotel-restaurants-dining",
+    "organizationId": "org-rori-hotel"
   }
 ]
