@@ -4,6 +4,7 @@ const http = require('http');
 const { getAuthenticatedUser } = require('./lib/accounts');
 const { handleAccountApi } = require('./lib/account-api');
 const { handleIndustryApi } = require('./lib/industry-api');
+const { isPublicApiRequest, normalizeApiPath } = require('./lib/api-routing');
 const { buildCourseRecord } = require('./lib/courses');
 const { readRequestBuffer } = require('./lib/request-body');
 const fs = require('fs');
@@ -140,23 +141,6 @@ function writeJsonFile(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-function isPublicApiRequest(pathname, method) {
-  if (pathname === '/api/auth/login' && method === 'POST') return true;
-  if (pathname === '/api/auth/me' && (method === 'GET' || method === 'HEAD')) return true;
-  if (pathname === '/api/messages' && method === 'POST') return true;
-  if (method !== 'GET' && method !== 'HEAD') return false;
-
-  return pathname === '/api/gallery' ||
-    /^\/api\/gallery\/[^/]+$/.test(pathname) ||
-    pathname === '/api/videos' ||
-    /^\/api\/videos\/[^/]+$/.test(pathname) ||
-    pathname === '/api/contact-info' ||
-    pathname === '/api/estimator-config' ||
-    pathname === '/api/courses' ||
-    /^\/api\/courses\/[^/]+$/.test(pathname) ||
-    pathname === '/api/blob-proxy';
-}
-
 // ─── Server ───
 const server = http.createServer((req, res) => {
   handleRequest(req, res).catch(err => {
@@ -174,7 +158,7 @@ const server = http.createServer((req, res) => {
 
 async function handleRequest(req, res) {
   const parsed   = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = parsed.pathname;
+  const pathname = normalizeApiPath(parsed.pathname);
   const method   = req.method.toUpperCase();
 
   // The website and API are same-origin; do not enable arbitrary cross-origin access.
