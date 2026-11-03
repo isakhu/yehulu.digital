@@ -3,6 +3,7 @@ require('./lib/load-env')();
 const http = require('http');
 const { getAuthenticatedUser } = require('./lib/accounts');
 const { handleAccountApi } = require('./lib/account-api');
+const { handleIndustryApi } = require('./lib/industry-api');
 const { buildCourseRecord } = require('./lib/courses');
 const { readRequestBuffer } = require('./lib/request-body');
 const fs = require('fs');
@@ -192,6 +193,11 @@ async function handleRequest(req, res) {
     return sendJSON(res, accountResponse.status, accountResponse.body);
   }
 
+  const industryResponse = await handleIndustryApi(pathname, method, req);
+  if (industryResponse) {
+    return sendJSON(res, industryResponse.status, industryResponse.body);
+  }
+
   // Shared authentication and account routes are handled above.
 
   // ── GET /api/blob-proxy (Streaming support for private blob stores) ──
@@ -330,9 +336,15 @@ async function handleRequest(req, res) {
       title: body.title || 'Untitled Project',
       slug: (body.title || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       category: body.category || 'COMMERCIAL',
-      client: body.client || 'Client Partner',
+      client: body.client || body.company || 'Client Partner',
       description: body.description || '',
       imageUrl: body.imageUrl || '',
+      industry: body.industry || '',
+      subIndustry: body.subIndustry || '',
+      company: body.company || body.client || 'Client Partner',
+      industryId: body.industryId || '',
+      subIndustryId: body.subIndustryId || '',
+      organizationId: body.organizationId || '',
       year: body.year || new Date().getFullYear().toString(),
       featured: body.featured !== undefined ? !!body.featured : true,
       displayOrder: parseInt(body.displayOrder) || 1,
